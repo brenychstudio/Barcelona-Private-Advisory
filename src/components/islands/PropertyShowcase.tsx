@@ -506,6 +506,7 @@ export default function PropertyShowcase({
         index={lbIndex}
         setIndex={setLbIndex}
         onClose={() => setLbOpen(false)}
+        lang={lang}
       />
     </div>
   );

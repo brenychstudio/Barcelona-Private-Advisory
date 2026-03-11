@@ -2,6 +2,25 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
 
 export type LightboxImage = { src: string; alt?: string };
+type Lang = "en" | "es";
+
+const ui = (lang: Lang) => {
+  const en = {
+    prev: "Prev",
+    next: "Next",
+    close: "Close",
+    hint: "ESC to close · ← → to navigate",
+    view: "VIEW",
+  };
+  const es = {
+    prev: "Ant.",
+    next: "Sig.",
+    close: "Cerrar",
+    hint: "ESC para cerrar · ← → para navegar",
+    view: "VER",
+  };
+  return lang === "es" ? es : en;
+};
 
 export default function Lightbox({
   open,
@@ -9,13 +28,17 @@ export default function Lightbox({
   index,
   setIndex,
   onClose,
+  lang = "en",
 }: {
   open: boolean;
   images: LightboxImage[];
   index: number;
   setIndex: (i: number) => void;
   onClose: () => void;
+  lang?: Lang;
 }) {
+  const L = ui(lang);
+
   useEffect(() => {
     if (!open) return;
 
@@ -56,33 +79,32 @@ export default function Lightbox({
           />
 
           <motion.div
-            className="fixed inset-0 z-[150] grid place-items-center px-4 py-6"
+            className="fixed inset-0 z-[150] grid place-items-center px-2 py-3 sm:px-4 sm:py-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="relative w-[min(92vw,980px)] rounded-2xl border border-black/10 bg-white shadow-[0_30px_120px_rgba(0,0,0,0.18)]"
+              className="relative flex max-h-[92vh] w-[min(96vw,980px)] flex-col overflow-hidden rounded-2xl border border-black/10 bg-white shadow-[0_30px_120px_rgba(0,0,0,0.18)]"
               initial={{ y: 10, opacity: 0, filter: "blur(10px)" }}
               animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
               exit={{ y: 10, opacity: 0, filter: "blur(10px)" }}
               transition={{ duration: 0.45, ease: [0.2, 0.8, 0.2, 1] }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* top bar */}
-              <div className="flex h-12 items-center justify-between border-b border-black/10 px-3">
+              <div className="flex flex-wrap items-center gap-2 border-b border-black/10 px-3 py-3">
                 <div className="text-[11px] tracking-[0.18em] text-black/50">
-                  VIEW · {String(index + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
+                  {L.view} · {String(index + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="ml-auto flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={prev}
                     disabled={index === 0}
                     className="rounded-full border border-black/10 px-3 py-1.5 text-[12px] text-black/70 disabled:opacity-40"
                   >
-                    Prev
+                    {L.prev}
                   </button>
                   <button
                     type="button"
@@ -90,26 +112,25 @@ export default function Lightbox({
                     disabled={index === images.length - 1}
                     className="rounded-full border border-black/10 px-3 py-1.5 text-[12px] text-black/70 disabled:opacity-40"
                   >
-                    Next
+                    {L.next}
                   </button>
                   <button
                     type="button"
                     onClick={onClose}
                     className="rounded-full border border-black/15 px-3 py-1.5 text-[12px] hover:border-black/25"
                   >
-                    Close
+                    {L.close}
                   </button>
                 </div>
               </div>
 
-              {/* image */}
-              <div className="bg-black/5">
-                <div className="grid place-items-center p-3">
+              <div className="min-h-0 flex-1 overflow-auto bg-black/5">
+                <div className="grid min-h-full place-items-center p-3">
                   <motion.img
                     key={src}
                     src={src}
                     alt={alt}
-                    className="max-h-[70vh] w-auto max-w-full select-none rounded-xl object-contain"
+                    className="max-h-[58vh] w-auto max-w-full select-none rounded-xl object-contain sm:max-h-[70vh]"
                     initial={{ opacity: 0, filter: "blur(10px)", scale: 1.01 }}
                     animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
                     exit={{ opacity: 0, filter: "blur(10px)", scale: 1.01 }}
@@ -119,7 +140,6 @@ export default function Lightbox({
                 </div>
               </div>
 
-              {/* thumbs */}
               <div className="border-t border-black/10 p-3">
                 <div className="flex gap-2 overflow-x-auto">
                   {images.map((im, i) => (
@@ -128,10 +148,9 @@ export default function Lightbox({
                       type="button"
                       onClick={() => setIndex(i)}
                       className={[
-                        "relative overflow-hidden rounded-xl border bg-white",
+                        "relative h-12 w-14 flex-none overflow-hidden rounded-xl border bg-white sm:h-14 sm:w-[72px]",
                         i === index ? "border-black/25" : "border-black/10 hover:border-black/20",
                       ].join(" ")}
-                      style={{ width: 72, height: 56 }}
                       aria-label={`Open image ${i + 1}`}
                     >
                       <img
@@ -145,9 +164,7 @@ export default function Lightbox({
                   ))}
                 </div>
 
-                <div className="mt-2 text-[11px] text-black/45">
-                  ESC to close · ← → to navigate
-                </div>
+                <div className="mt-2 text-[11px] text-black/45">{L.hint}</div>
               </div>
             </motion.div>
           </motion.div>
