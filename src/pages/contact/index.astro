@@ -1,88 +1,314 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import ContactForm from "../../components/islands/ContactForm";
 ---
 
-<BaseLayout title="Contact — Barcelona Private Advisory">
-  <section class="space-y-3">
-    <div class="text-[12px] tracking-[0.18em] text-black/50">CONTACT</div>
-    <h1 class="text-[26px] tracking-tight">Start a conversation.</h1>
-    <p class="max-w-[820px] text-[12px] text-black/60">
-      Premium advisory intake. In production, the form connects to Formspree / CRM / email.
-      Here we provide demo-level automation (copy/email/WhatsApp drafts).
-    </p>
+<BaseLayout
+  title="Contact — Barcelona Private Advisory"
+  description="Private intake for Barcelona Private Advisory — request a shortlist, advisory call, or next-step guidance."
+>
+  <section class="space-y-4">
+    <div class="text-[12px] tracking-[0.18em] text-black/42">PRIVATE INTAKE</div>
+
+    <div class="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
+      <div class="space-y-4">
+        <h1 class="max-w-[720px] text-[30px] leading-[1.03] tracking-tight sm:text-[38px]">
+          Start a private search,
+          <br />
+          not a generic inquiry.
+        </h1>
+
+        <p class="max-w-[700px] text-[13px] leading-[1.9] text-black/58">
+          This intake is designed as a buyer brief, not a broad contact form. Share your timing,
+          district preferences, budget range, and constraints — then turn it into a curated email or WhatsApp draft.
+        </p>
+      </div>
+
+      <div class="max-w-[760px] border-l border-black/10 pl-5 text-[12px] leading-[1.85] text-black/48 lg:ml-auto">
+        In production, this section would connect to Formspree, CRM, or a private inbox workflow.
+        In the demo, it is structured as a premium advisory intake with copy / email / WhatsApp actions.
+      </div>
+    </div>
   </section>
 
-  <section class="mt-10 grid gap-6 lg:grid-cols-[1fr_520px]">
-    <!-- CONTACT CARDS -->
-    <div class="space-y-3">
-      <div class="rounded-2xl border border-black/10 bg-white p-5">
-        <div class="text-[12px] tracking-[0.18em] text-black/50">DIRECT</div>
+  <section class="mt-16 grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+    <div class="space-y-10">
+      <div class="space-y-0 border-t border-black/10">
+        {[
+          ["Direct line", "+34 600 000 000", "Demo placeholder · priority channel for high-intent inquiries."],
+          ["Email", "advisory@example.com", "Used for briefs, follow-ups, and shortlist delivery."],
+          ["WhatsApp", "Open WhatsApp", "Fastest route for a first brief or a shortlist follow-up."],
+          ["Office", "Barcelona — Eixample (demo)", "Mon–Fri · 10:00–18:00 · meetings by appointment."],
+        ].map(([label, value, note], i) => (
+          <div class="grid gap-2 border-b border-black/10 py-4 last:border-b-0 sm:grid-cols-[150px_1fr]">
+            <div class="text-[12px] tracking-[0.18em] text-black/42">{label}</div>
 
-        <div class="mt-4 grid gap-3">
-          <div class="rounded-2xl border border-black/10 bg-white p-4">
-            <div class="text-[12px] text-black/50">Phone</div>
-            <a class="mt-1 block text-[13px] font-medium" href="tel:+34600000000">+34 600 000 000</a>
-            <div class="mt-1 text-[12px] text-black/60">Demo placeholder</div>
-          </div>
+            <div class="space-y-2">
+              {i === 2 ? (
+                <a
+                  href="https://wa.me/34600000000"
+                  target="_blank"
+                  rel="noreferrer"
+                  class="inline-flex rounded-full border border-black/15 px-3 py-1.5 text-[12px] hover:border-black/25"
+                >
+                  {value}
+                </a>
+              ) : i === 1 ? (
+                <a
+                  href="mailto:advisory@example.com"
+                  class="text-[15px] tracking-tight hover:text-black/70"
+                >
+                  {value}
+                </a>
+              ) : i === 3 ? (
+                <div class="space-y-2">
+                  <div class="text-[15px] tracking-tight">{value}</div>
+                  <a
+                    href="https://maps.google.com/?q=Barcelona+Eixample"
+                    target="_blank"
+                    rel="noreferrer"
+                    class="inline-flex rounded-full border border-black/10 px-3 py-1.5 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
+                  >
+                    Open in Google Maps
+                  </a>
+                </div>
+              ) : (
+                <a
+                  href="tel:+34600000000"
+                  class="text-[15px] tracking-tight hover:text-black/70"
+                >
+                  {value}
+                </a>
+              )}
 
-          <div class="rounded-2xl border border-black/10 bg-white p-4">
-            <div class="text-[12px] text-black/50">Email</div>
-            <a class="mt-1 block text-[13px] font-medium" href="mailto:advisory@example.com">advisory@example.com</a>
-            <div class="mt-1 text-[12px] text-black/60">Demo placeholder</div>
+              <div class="max-w-[460px] text-[12px] leading-[1.8] text-black/56">{note}</div>
+            </div>
           </div>
+        ))}
+      </div>
 
-          <div class="rounded-2xl border border-black/10 bg-white p-4">
-            <div class="text-[12px] text-black/50">WhatsApp</div>
-            <a
-              class="mt-1 inline-flex items-center gap-2 rounded-full border border-black/15 px-4 py-2 text-[12px] hover:border-black/25"
-              href="https://wa.me/34600000000?text=Hi%21%20I%E2%80%99d%20like%20to%20start%20a%20Barcelona%20property%20search.%20Please%20curate%20a%20shortlist%20in%2072h."
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Open WhatsApp
-            </a>
-            <div class="mt-2 text-[12px] text-black/60">Demo placeholder</div>
+      <div class="space-y-0 border-t border-black/10">
+        {[
+          ["Response window", "Within one working day for qualified briefs."],
+          ["Best for", "Buying, relocation, investment, shortlisting, advisory calls."],
+          ["Output", "Email draft, WhatsApp draft, or a shortlist-ready brief."],
+        ].map(([label, value]) => (
+          <div class="grid gap-2 border-b border-black/10 py-4 last:border-b-0 sm:grid-cols-[150px_1fr]">
+            <div class="text-[12px] tracking-[0.18em] text-black/42">{label}</div>
+            <div class="text-[12px] leading-[1.8] text-black/56">{value}</div>
           </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="rounded-[30px] border border-black/10 bg-white p-5 sm:p-6">
+      <div class="space-y-2">
+        <div class="text-[12px] tracking-[0.18em] text-black/42">REQUEST BRIEF</div>
+        <div class="max-w-[520px] text-[24px] leading-[1.08] tracking-tight">
+          Build a clearer request before sending it.
         </div>
       </div>
 
-      <div class="rounded-2xl border border-black/10 bg-white p-5">
-        <div class="text-[12px] tracking-[0.18em] text-black/50">OFFICE</div>
-
-        <div class="mt-4 rounded-2xl border border-black/10 bg-white p-4">
-          <div class="text-[12px] text-black/50">Location</div>
-          <div class="mt-1 text-[13px] font-medium">Barcelona — Eixample (demo)</div>
-          <a
-            class="mt-2 inline-flex rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
-            href="https://www.google.com/maps?q=Passeig%20de%20Gr%C3%A0cia%201%2C%20Barcelona"
-            target="_blank"
-            rel="noopener noreferrer"
+      <form id="private-intake-form" class="mt-6 space-y-4">
+        <div class="grid gap-3 sm:grid-cols-2">
+          <select
+            name="requestType"
+            class="h-11 rounded-full border border-black/10 bg-white px-4 text-[12px] text-black/70"
           >
-            Open in Google Maps
-          </a>
-          <div class="mt-3 text-[12px] text-black/60">
-            Mon–Fri · 10:00–18:00 (demo)
-          </div>
+            <option value="Buying">Buying</option>
+            <option value="Investment">Investment</option>
+            <option value="Relocation">Relocation</option>
+            <option value="Advisory call">Advisory call</option>
+            <option value="Selling">Selling</option>
+          </select>
+
+          <input
+            name="name"
+            type="text"
+            placeholder="Name"
+            class="h-11 rounded-full border border-black/10 bg-white px-4 text-[12px] text-black/70 placeholder:text-black/32"
+          />
         </div>
 
-        <div class="mt-3 rounded-2xl border border-black/10 bg-white p-4">
-          <div class="text-[12px] text-black/50">Social</div>
-          <div class="mt-2 flex flex-wrap gap-2">
-            <a class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black" href="https://instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a>
-            <a class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black" href="https://linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black" href="https://facebook.com/" target="_blank" rel="noopener noreferrer">Facebook</a>
-          </div>
-          <div class="mt-3 text-[12px] text-black/60">
-            Demo links — replace with real profiles.
-          </div>
+        <div class="grid gap-3 sm:grid-cols-2">
+          <input
+            name="email"
+            type="email"
+            placeholder="Email"
+            class="h-11 rounded-full border border-black/10 bg-white px-4 text-[12px] text-black/70 placeholder:text-black/32"
+          />
+          <input
+            name="districts"
+            type="text"
+            placeholder="Preferred districts (e.g. Eixample, Gràcia)"
+            class="h-11 rounded-full border border-black/10 bg-white px-4 text-[12px] text-black/70 placeholder:text-black/32"
+          />
         </div>
-      </div>
-    </div>
 
-    <!-- FORM -->
-    <div class="rounded-2xl border border-black/10 bg-white p-5">
-      <ContactForm client:load />
+        <div class="grid gap-3 sm:grid-cols-3">
+          <select
+            name="budget"
+            class="h-11 rounded-full border border-black/10 bg-white px-4 text-[12px] text-black/70"
+          >
+            <option value="Open budget">Open budget</option>
+            <option value="Up to €500k">Up to €500k</option>
+            <option value="€500k–€900k">€500k–€900k</option>
+            <option value="€900k–€1.5M">€900k–€1.5M</option>
+            <option value="€1.5M+">€1.5M+</option>
+          </select>
+
+          <select
+            name="timing"
+            class="h-11 rounded-full border border-black/10 bg-white px-4 text-[12px] text-black/70"
+          >
+            <option value="Flexible timing">Flexible timing</option>
+            <option value="Within 30 days">Within 30 days</option>
+            <option value="1–3 months">1–3 months</option>
+            <option value="3–6 months">3–6 months</option>
+            <option value="Exploratory">Exploratory</option>
+          </select>
+
+          <select
+            name="propertyType"
+            class="h-11 rounded-full border border-black/10 bg-white px-4 text-[12px] text-black/70"
+          >
+            <option value="Any property type">Any property type</option>
+            <option value="Apartment">Apartment</option>
+            <option value="Penthouse">Penthouse</option>
+            <option value="Family home">Family home</option>
+            <option value="Investment unit">Investment unit</option>
+          </select>
+        </div>
+
+        <textarea
+          name="notes"
+          placeholder="Notes (light preference, quiet street, renovation tolerance, family needs, investment angle, etc.)"
+          class="min-h-[160px] w-full rounded-[24px] border border-black/10 bg-white px-4 py-3 text-[12px] leading-[1.8] text-black/70 placeholder:text-black/32"
+        ></textarea>
+
+        <div class="border-t border-black/10 pt-4">
+          <div class="text-[12px] leading-[1.75] text-black/50">
+            Demo actions below generate a formatted brief — useful for testing the intake flow before connecting a real backend.
+          </div>
+
+          <div class="mt-4 flex flex-wrap gap-2">
+            <button
+              id="copy-brief-btn"
+              type="button"
+              class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/75 hover:border-black/20 hover:text-black"
+            >
+              Copy brief
+            </button>
+
+            <button
+              id="email-draft-btn"
+              type="button"
+              class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/75 hover:border-black/20 hover:text-black"
+            >
+              Email draft
+            </button>
+
+            <button
+              id="whatsapp-draft-btn"
+              type="button"
+              class="rounded-full border border-black/20 px-4 py-2 text-[12px] hover:border-black/30"
+            >
+              WhatsApp draft
+            </button>
+          </div>
+
+          <div id="intake-status" class="mt-3 text-[12px] text-black/50"></div>
+        </div>
+      </form>
     </div>
   </section>
+
+  <section class="mt-16 border-t border-black/10 pt-8">
+    <div class="grid gap-0 md:grid-cols-3">
+      {[
+        ["01", "Receive brief", "The intake is formatted into a more useful request than a generic contact message."],
+        ["02", "Review fit", "District logic, timing, and budget are assessed before any shortlist is proposed."],
+        ["03", "Reply with next step", "In production: shortlist, viewing path, or an advisory call depending on the brief."],
+      ].map(([n, title, text]) => (
+        <div class="border-b border-black/10 py-5 md:border-b-0 md:border-r md:px-5 md:last:border-r-0">
+          <div class="text-[11px] tracking-[0.18em] text-black/38">{n}</div>
+          <div class="mt-3 text-[17px] tracking-tight">{title}</div>
+          <div class="mt-2 max-w-[280px] text-[12px] leading-[1.8] text-black/56">{text}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <script is:inline>
+    const form = document.getElementById("private-intake-form");
+    const status = document.getElementById("intake-status");
+
+    const copyBtn = document.getElementById("copy-brief-btn");
+    const emailBtn = document.getElementById("email-draft-btn");
+    const waBtn = document.getElementById("whatsapp-draft-btn");
+
+    const phoneDigits = "34600000000";
+    const emailTo = "advisory@example.com";
+
+    const getValue = (name) => {
+      const field = form?.elements?.namedItem(name);
+      return field && "value" in field ? field.value.trim() : "";
+    };
+
+    const buildBrief = () => {
+      const requestType = getValue("requestType") || "Buying";
+      const name = getValue("name") || "—";
+      const email = getValue("email") || "—";
+      const districts = getValue("districts") || "Open";
+      const budget = getValue("budget") || "Open budget";
+      const timing = getValue("timing") || "Flexible timing";
+      const propertyType = getValue("propertyType") || "Any property type";
+      const notes = getValue("notes") || "—";
+
+      return [
+        "Barcelona Private Advisory — Client Brief",
+        "",
+        `Request type: ${requestType}`,
+        `Name: ${name}`,
+        `Email: ${email}`,
+        `Preferred districts: ${districts}`,
+        `Budget: ${budget}`,
+        `Timing: ${timing}`,
+        `Property type: ${propertyType}`,
+        `Notes: ${notes}`,
+      ].join("\n");
+    };
+
+    const setStatus = (message) => {
+      if (status) status.textContent = message;
+      window.setTimeout(() => {
+        if (status && status.textContent === message) status.textContent = "";
+      }, 2200);
+    };
+
+    copyBtn?.addEventListener("click", async () => {
+      const brief = buildBrief();
+
+      try {
+        await navigator.clipboard.writeText(brief);
+        setStatus("Brief copied.");
+      } catch {
+        window.prompt("Copy brief:", brief);
+      }
+    });
+
+    emailBtn?.addEventListener("click", () => {
+      const brief = buildBrief();
+      const subject = encodeURIComponent("Barcelona Private Advisory — Client Brief");
+      const body = encodeURIComponent(brief);
+      window.location.href = `mailto:${emailTo}?subject=${subject}&body=${body}`;
+      setStatus("Opening email draft…");
+    });
+
+    waBtn?.addEventListener("click", () => {
+      const brief = buildBrief();
+      const text = encodeURIComponent(brief);
+      window.open(`https://wa.me/${phoneDigits}?text=${text}`, "_blank", "noopener,noreferrer");
+      setStatus("Opening WhatsApp draft…");
+    });
+  </script>
 </BaseLayout>
