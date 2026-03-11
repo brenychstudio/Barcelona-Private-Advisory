@@ -42,10 +42,8 @@ const districts = Array.from(new Set(listings.map((x) => x.district).filter(Bool
       Barcelona Private Advisory
     </a>
 
-    <!-- One mounted widget instance for all screens; trigger visible only on desktop -->
-    <div class="hidden">
-      <ShortlistWidget client:load listings={listings} lang={lang} className="hidden md:inline-flex" />
-    </div>
+    <!-- IMPORTANT: widget must stay mounted on all screens -->
+    <ShortlistWidget client:load listings={listings} lang={lang} className="hidden md:inline-flex" />
 
     <!-- Desktop -->
     <nav class="hidden items-center gap-3 text-[12px] text-black/70 md:flex">
@@ -86,7 +84,7 @@ const districts = Array.from(new Set(listings.map((x) => x.district).filter(Bool
         ES
       </a>
 
-      <details class="relative">
+      <details id="mobile-nav" class="relative">
         <summary class="list-none rounded-full border border-black/15 px-3 py-1.5 text-[12px] text-black/75">
           {lang === "es" ? "Menú" : "Menu"}
         </summary>
@@ -112,8 +110,8 @@ const districts = Array.from(new Set(listings.map((x) => x.district).filter(Bool
           <div class="p-3">
             <div class="grid gap-2">
               <button
+                id="mobile-open-shortlist"
                 type="button"
-                onclick="window.dispatchEvent(new CustomEvent('sc:shortlist_ui_open')); this.closest('details')?.removeAttribute('open');"
                 class="rounded-full border border-black/10 px-4 py-2 text-center text-[12px] text-black/75 hover:border-black/20 hover:text-black"
               >
                 {lang === "es" ? "Abrir selección" : "Open shortlist"}
@@ -131,4 +129,23 @@ const districts = Array.from(new Set(listings.map((x) => x.district).filter(Bool
       </details>
     </div>
   </div>
+
+  <script is:inline>
+    const bindMobileShortlist = () => {
+      const btn = document.getElementById("mobile-open-shortlist");
+      const nav = document.getElementById("mobile-nav");
+
+      if (!btn) return;
+
+      btn.onclick = () => {
+        if (nav) nav.removeAttribute("open");
+        window.setTimeout(() => {
+          window.dispatchEvent(new CustomEvent("sc:shortlist_ui_open"));
+        }, 60);
+      };
+    };
+
+    bindMobileShortlist();
+    document.addEventListener("astro:after-swap", bindMobileShortlist);
+  </script>
 </header>
