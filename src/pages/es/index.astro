@@ -55,85 +55,118 @@ const featured = listings.slice(0, 3);
   </section>
 
   <section class="mt-20 space-y-10">
-    <div class="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+    <div class="grid gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
       <div class="space-y-4">
-        <div class="text-[12px] tracking-[0.18em] text-black/45">M?TODO ADVISORY</div>
+        <div class="text-[12px] tracking-[0.18em] text-black/42">MÉTODO ADVISORY</div>
 
-        <h2 class="max-w-[720px] text-[30px] leading-[1.02] tracking-tight sm:text-[36px]">
-          Una shortlist m?s estrecha.
+        <h2 class="max-w-[760px] text-[30px] leading-[1.01] tracking-tight sm:text-[38px]">
+          Una shortlist más estrecha.
           <br />
-          Una decisi?n m?s inteligente.
+          Una decisión mejor calibrada.
         </h2>
 
-        <p class="max-w-[660px] text-[13px] leading-[1.8] text-black/58">
-          Este producto no est? dise?ado para aumentar volumen. Est? dise?ado para reducir ruido:
-          encaje de distrito, l?gica de compra, ranking explicable y trade-offs reales para construir
-          una shortlist que el comprador realmente pueda usar.
+        <p class="max-w-[660px] text-[13px] leading-[1.9] text-black/56">
+          El objetivo no es ampliar opciones. El objetivo es reducir ruido: encaje de distrito,
+          lógica de compra, ranking explicable y trade-offs reales para construir una shortlist
+          serena, selectiva y accionable.
         </p>
       </div>
 
-      <div class="border-y border-black/10">
+      <div class="space-y-0 border-t border-black/10">
         {[
-          ["Barcelona-first", "Encaje de barrio antes que volumen gen?rico."],
-          ["Shortlist en 72h", "Primera selecci?n r?pida y controlada."],
-          ["Picks explicables", "L?gica clara: por qu? encaja / por qu? no."],
-          ["Lente de due diligence", "Costes, restricciones, liquidez y se?ales d?biles."],
+          ["Barcelona-first", "Encaje de barrio antes que volumen genérico."],
+          ["Shortlist en 72h", "Primera curaduría rápida y controlada."],
+          ["Picks explicables", "Por qué encaja / por qué no."],
+          ["Lente de due diligence", "Costes, restricciones, liquidez y señales débiles."],
         ].map(([title, text]) => (
-          <div class="grid gap-2 border-b border-black/10 py-4 last:border-b-0 sm:grid-cols-[170px_1fr]">
+          <div class="grid gap-2 border-b border-black/10 py-4 sm:grid-cols-[180px_1fr]">
             <div class="text-[13px] font-medium">{title}</div>
-            <div class="text-[12px] leading-[1.7] text-black/58">{text}</div>
+            <div class="text-[12px] leading-[1.75] text-black/56">{text}</div>
           </div>
         ))}
       </div>
     </div>
 
-    <div class="overflow-hidden rounded-[28px] border border-black/10 bg-white">
-      <div class="grid gap-0 md:grid-cols-4">
-        {[
-          ["01", "Definir", "Presupuesto, distritos, habitaciones, estilo de vida y criterios."],
-          ["02", "Curar", "Rankear por encaje, no por volumen bruto."],
-          ["03", "Reducir riesgo", "Detectar costes, restricciones y se?ales d?biles."],
-          ["04", "Cerrar", "Apoyar siguientes pasos, visitas y claridad de oferta."],
-        ].map(([n, title, text]) => (
-          <div class="border-b border-black/10 p-5 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0">
-            <div class="text-[11px] tracking-[0.18em] text-black/40">{n}</div>
-            <div class="mt-3 text-[17px] tracking-tight">{title}</div>
-            <div class="mt-2 text-[12px] leading-[1.7] text-black/58">{text}</div>
-          </div>
-        ))}
-      </div>
+    <div class="grid gap-0 border-y border-black/10 md:grid-cols-4">
+      {[
+        ["01", "Definir", "Presupuesto, distritos, habitaciones, estilo de vida y criterios."],
+        ["02", "Curar", "Rankear por encaje, no por volumen bruto."],
+        ["03", "Reducir riesgo", "Detectar costes, restricciones y señales débiles."],
+        ["04", "Cerrar", "Apoyar visitas, siguientes pasos y claridad de oferta."],
+      ].map(([n, title, text]) => (
+        <div class="border-b border-black/10 py-5 md:border-b-0 md:border-r md:px-5 md:last:border-r-0">
+          <div class="text-[11px] tracking-[0.18em] text-black/38">{n}</div>
+          <div class="mt-3 text-[17px] tracking-tight">{title}</div>
+          <div class="mt-2 max-w-[240px] text-[12px] leading-[1.75] text-black/56">{text}</div>
+        </div>
+      ))}
     </div>
 
-    <div class="grid gap-6 border-t border-black/10 pt-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+    <div class="grid gap-6 border-t border-black/10 pt-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-start">
       <div class="space-y-3">
-        <div class="text-[12px] tracking-[0.18em] text-black/45">ADVISORY, NO CAT?LOGO</div>
-        <div class="max-w-[420px] text-[28px] leading-[1.06] tracking-tight">
+        <div class="text-[12px] tracking-[0.18em] text-black/42">ADVISORY, NO CATÁLOGO</div>
+        <div class="max-w-[460px] text-[28px] leading-[1.05] tracking-tight">
           Una shortlist construida por encaje, no por ruido.
         </div>
       </div>
 
-      <div class="max-w-[760px] text-[13px] leading-[1.85] text-black/58">
-        El objetivo no es mostrarlo todo. El objetivo es reducir la fatiga de decisi?n, sacar a la
-        superficie las opciones m?s fuertes antes y hacer visibles los trade-offs desde el principio:
-        encaje de barrio, perfil de compra y claridad de siguiente paso dentro de un flujo sereno y premium.
+      <div class="max-w-[780px] text-[13px] leading-[1.9] text-black/56">
+        La versión más fuerte de este producto es silenciosa: menos opciones, claridad antes y trade-offs
+        visibles más pronto. Encaje de barrio, perfil de compra y lógica del siguiente paso aparecen como
+        un flujo premium, no como un catálogo amplio de tarjetas intercambiables.
       </div>
     </div>
   </section>
 
-  <section class="mt-14 space-y-3">
-    <div class="text-[12px] tracking-[0.18em] text-black/50">BARCELONA LENS</div>
-    <div class="grid gap-3 md:grid-cols-4">
-      {districts.slice(0, 4).map((d) => (
-        <a href={`/es/district/${d.slug}`} class="overflow-hidden rounded-2xl border border-black/10 bg-white hover:border-black/20">
-          <div class="aspect-[4/3] bg-black/5">
-            <img src={d.image} alt="" class="h-full w-full object-cover" loading="lazy" />
-          </div>
-          <div class="p-4">
-            <div class="text-[13px] font-medium">{d.title}</div>
-            <div class="mt-1 text-[12px] text-black/60">{d.fit}</div>
-          </div>
-        </a>
-      ))}
+<section class="mt-20 space-y-8">
+  <div class="grid gap-8 border-t border-black/10 pt-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+    <div class="space-y-4">
+      <div class="text-[12px] tracking-[0.18em] text-black/42">BARCELONA LENS</div>
+
+      <h2 class="max-w-[520px] text-[28px] leading-[1.05] tracking-tight sm:text-[34px]">
+        Encaje de barrio,
+        <br />
+        no solo encaje de propiedad.
+      </h2>
+
+      <p class="max-w-[520px] text-[13px] leading-[1.85] text-black/56">
+        Barcelona no es un único mercado. Ritmo de distrito, caminabilidad, lógica de reforma
+        y textura de vida diaria cambian el significado de una propiedad. La capa advisory empieza ahí.
+      </p>
     </div>
-  </section>
+
+    <div class="max-w-[760px] text-[13px] leading-[1.85] text-black/56">
+      Estas cuatro lentes de distrito muestran cómo cambia la selección cuando estilo de vida y
+      contexto urbano se tratan como criterios de primera línea. La pregunta no es solo qué es la
+      vivienda, sino qué tipo de vida diaria permite el tejido que la rodea.
+    </div>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    {[
+      ["/es/district/eixample", "/demo/neighborhood/nb-01.png", "Eixample", "geometría · caminable · reforma clásica"],
+      ["/es/district/gracia", "/demo/neighborhood/nb-02.png", "Gràcia", "escala humana · diseño · calles tranquilas"],
+      ["/es/district/sarria", "/demo/neighborhood/nb-03.png", "Sarrià", "familia · verde · vida diaria serena"],
+      ["/es/district/poblenou", "/demo/neighborhood/nb-04.png", "Poblenou", "moderno · creativo · cerca de hubs tech"],
+    ].map(([href, src, title, meta]) => (
+      <a href={href} class="group block">
+        <div class="overflow-hidden rounded-[26px] bg-black/5">
+          <div class="aspect-[4/5] overflow-hidden">
+            <img
+              src={src}
+              alt=""
+              class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.02]"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        <div class="mt-3 px-1">
+          <div class="text-[15px] tracking-tight">{title}</div>
+          <div class="mt-1 text-[12px] leading-[1.7] text-black/50">{meta}</div>
+        </div>
+      </a>
+    ))}
+  </div>
+</section>
 </BaseLayout>
