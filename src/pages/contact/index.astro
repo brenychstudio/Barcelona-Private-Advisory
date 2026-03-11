@@ -1,0 +1,88 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ContactForm from "../../components/islands/ContactForm";
+---
+
+<BaseLayout title="Contact — Barcelona Private Advisory">
+  <section class="space-y-3">
+    <div class="text-[12px] tracking-[0.18em] text-black/50">CONTACT</div>
+    <h1 class="text-[26px] tracking-tight">Start a conversation.</h1>
+    <p class="max-w-[820px] text-[12px] text-black/60">
+      Premium advisory intake. In production, the form connects to Formspree / CRM / email.
+      Here we provide demo-level automation (copy/email/WhatsApp drafts).
+    </p>
+  </section>
+
+  <section class="mt-10 grid gap-6 lg:grid-cols-[1fr_520px]">
+    <!-- CONTACT CARDS -->
+    <div class="space-y-3">
+      <div class="rounded-2xl border border-black/10 bg-white p-5">
+        <div class="text-[12px] tracking-[0.18em] text-black/50">DIRECT</div>
+
+        <div class="mt-4 grid gap-3">
+          <div class="rounded-2xl border border-black/10 bg-white p-4">
+            <div class="text-[12px] text-black/50">Phone</div>
+            <a class="mt-1 block text-[13px] font-medium" href="tel:+34600000000">+34 600 000 000</a>
+            <div class="mt-1 text-[12px] text-black/60">Demo placeholder</div>
+          </div>
+
+          <div class="rounded-2xl border border-black/10 bg-white p-4">
+            <div class="text-[12px] text-black/50">Email</div>
+            <a class="mt-1 block text-[13px] font-medium" href="mailto:advisory@example.com">advisory@example.com</a>
+            <div class="mt-1 text-[12px] text-black/60">Demo placeholder</div>
+          </div>
+
+          <div class="rounded-2xl border border-black/10 bg-white p-4">
+            <div class="text-[12px] text-black/50">WhatsApp</div>
+            <a
+              class="mt-1 inline-flex items-center gap-2 rounded-full border border-black/15 px-4 py-2 text-[12px] hover:border-black/25"
+              href="https://wa.me/34600000000?text=Hi%21%20I%E2%80%99d%20like%20to%20start%20a%20Barcelona%20property%20search.%20Please%20curate%20a%20shortlist%20in%2072h."
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open WhatsApp
+            </a>
+            <div class="mt-2 text-[12px] text-black/60">Demo placeholder</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-black/10 bg-white p-5">
+        <div class="text-[12px] tracking-[0.18em] text-black/50">OFFICE</div>
+
+        <div class="mt-4 rounded-2xl border border-black/10 bg-white p-4">
+          <div class="text-[12px] text-black/50">Location</div>
+          <div class="mt-1 text-[13px] font-medium">Barcelona — Eixample (demo)</div>
+          <a
+            class="mt-2 inline-flex rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
+            href="https://www.google.com/maps?q=Passeig%20de%20Gr%C3%A0cia%201%2C%20Barcelona"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open in Google Maps
+          </a>
+          <div class="mt-3 text-[12px] text-black/60">
+            Mon–Fri · 10:00–18:00 (demo)
+          </div>
+        </div>
+
+        <div class="mt-3 rounded-2xl border border-black/10 bg-white p-4">
+          <div class="text-[12px] text-black/50">Social</div>
+          <div class="mt-2 flex flex-wrap gap-2">
+            <a class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black" href="https://instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black" href="https://linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black" href="https://facebook.com/" target="_blank" rel="noopener noreferrer">Facebook</a>
+          </div>
+          <div class="mt-3 text-[12px] text-black/60">
+            Demo links — replace with real profiles.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="rounded-2xl border border-black/10 bg-white p-5">
+      <ContactForm client:load />
+    </div>
+  </section>
+</BaseLayout>

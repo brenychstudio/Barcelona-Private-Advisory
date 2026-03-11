@@ -1,0 +1,9 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import SearchExperience from "../../../components/islands/SearchExperience";
+import { listings } from "../../../data/listings";
+---
+
+<BaseLayout title="Buscar — Barcelona Private Advisory">
+  <SearchExperience client:load listings={listings} lang="es" />
+</BaseLayout>

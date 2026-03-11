@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PropertyShowcase from "../../../components/islands/PropertyShowcase";
+import { listings } from "../../../data/listings";
+
+export function getStaticPaths() {
+  return listings.map((l) => ({
+    params: { id: l.id },
+    props: { listing: l },
+  }));
+}
+
+const { listing } = Astro.props;
+const title = listing.title_es ?? listing.title;
+---
+
+<BaseLayout title={`${title} — Barcelona Private Advisory`}>
+  <PropertyShowcase client:load listing={listing} lang="es" />
+</BaseLayout>

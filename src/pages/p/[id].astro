@@ -1,0 +1,18 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PropertyShowcase from "../../components/islands/PropertyShowcase";
+import { listings } from "../../data/listings";
+
+export function getStaticPaths() {
+  return listings.map((x) => ({
+    params: { id: x.id },
+    props: { listing: x },
+  }));
+}
+
+const { listing } = Astro.props;
+---
+
+<BaseLayout title={listing.title}>
+  <PropertyShowcase client:load listing={listing} />
+</BaseLayout>

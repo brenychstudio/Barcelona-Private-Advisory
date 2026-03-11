@@ -1,0 +1,74 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="About — Barcelona Private Advisory">
+  <section class="space-y-3">
+    <div class="text-[12px] tracking-[0.18em] text-black/50">ABOUT</div>
+    <h1 class="text-[26px] tracking-tight">Private advisory, not catalog.</h1>
+    <p class="max-w-[820px] text-[12px] text-black/60">
+      This demo shows a product direction for Spain Costas: curated shortlist in 72h, due diligence
+      flags, negotiation support, and neighborhood-first recommendations.
+    </p>
+
+    <div class="mt-6 grid gap-3 md:grid-cols-2">
+      {[
+        ["Curated shortlist", "We rank inventory by fit, not by volume. Lens + lifestyle tags."],
+        ["Due diligence lens", "Fees, constraints, HOA signals, and risk flags (demo layer)."],
+        ["Negotiation support", "Offer strategy, terms, and closing support aligned to constraints."],
+        ["Barcelona Lens", "District-first browsing and fit guidance (walkability, noise, lifestyle)."],
+      ].map(([t, d]) => (
+        <div class="rounded-2xl border border-black/10 bg-white p-5">
+          <div class="text-[13px] font-medium">{t}</div>
+          <div class="mt-2 text-[12px] text-black/60">{d}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="mt-14 space-y-4">
+    <div class="text-[12px] tracking-[0.18em] text-black/50">HOW WE WORK</div>
+
+    <div class="grid gap-3 md:grid-cols-4">
+      {[
+        ["01", "Define constraints", "Budget, districts, beds, lifestyle, risk profile."],
+        ["02", "Curate shortlist", "Rank by fit + lens. Explainable picks."],
+        ["03", "Due diligence", "Fees, flags, negotiation preparation."],
+        ["04", "Viewings & close", "Schedule, offer strategy, closing support."],
+      ].map(([n, t, d]) => (
+        <div class="rounded-2xl border border-black/10 bg-white p-4">
+          <div class="text-[12px] text-black/50">{n}</div>
+          <div class="mt-1 text-[13px] font-medium">{t}</div>
+          <div class="mt-1 text-[12px] text-black/60">{d}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="mt-14 space-y-4">
+    <div class="text-[12px] tracking-[0.18em] text-black/50">FAQ</div>
+
+    <div class="grid gap-3 md:grid-cols-2">
+      {[
+        ["Can clients update listings themselves?", "Yes — with a CMS layer (Sheets or feed). Demo uses local data for speed."],
+        ["Is this Barcelona-only?", "The product experience is Barcelona-first. Other regions can be added as layers."],
+        ["What makes it premium?", "Controlled motion, editorial layout, shortlist + share, and advisory lens for decisions."],
+        ["What’s next after demo?", "Connect to real inventory (CRM/feed) + multilingual + SEO + support plan."],
+      ].map(([q, a]) => (
+        <div class="rounded-2xl border border-black/10 bg-white p-5">
+          <div class="text-[13px] font-medium">{q}</div>
+          <div class="mt-2 text-[12px] text-black/60">{a}</div>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-6 flex flex-wrap gap-2">
+      <a href="/search" class="rounded-full border border-black/15 px-4 py-2 text-[12px] hover:border-black/25">
+        Start a search
+      </a>
+      <a href="/contact" class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black">
+        Contact
+      </a>
+    </div>
+  </section>
+</BaseLayout>

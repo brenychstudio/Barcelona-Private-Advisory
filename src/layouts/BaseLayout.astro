@@ -1,0 +1,95 @@
+---
+import "../styles/global.css";
+import Header from "../components/ui/Header.astro";
+import WhatsAppFab from "../components/ui/WhatsAppFab.astro";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, OG_IMAGE, INDEXABLE } from "../config/site";
+import { ClientRouter, fade } from "astro:transitions";
+
+type Props = {
+  title?: string;
+  description?: string;
+};
+
+const { title = SITE_NAME, description = SITE_DESCRIPTION } = Astro.props;
+
+const path = Astro.url.pathname;
+const isEs = path.startsWith("/es");
+const lang = isEs ? "es" : "en";
+
+// canonical without query params
+const canonical = new URL(path, SITE_URL).toString();
+const ogImageAbs = new URL(OG_IMAGE, SITE_URL).toString();
+
+const robots = INDEXABLE ? "index,follow" : "noindex,nofollow";
+
+const base = isEs ? (path.replace(/^\/es/, "") || "/") : path;
+const enPath = base;
+const esPath = base === "/" ? "/es" : `/es${base}`;
+const altEn = new URL(enPath, SITE_URL).toString();
+const altEs = new URL(esPath, SITE_URL).toString();
+
+const schemaOrg = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "Organization", "@id": `${SITE_URL}#org`, name: SITE_NAME, url: SITE_URL },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      description: SITE_DESCRIPTION,
+      publisher: { "@id": `${SITE_URL}#org` },
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+
+    <link rel="canonical" href={canonical} />
+
+    <!-- hreflang -->
+    <link rel="alternate" hreflang="en" href={altEn} />
+    <link rel="alternate" hreflang="es" href={altEs} />
+    <link rel="alternate" hreflang="x-default" href={altEn} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageAbs} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageAbs} />
+
+    <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
+
+    <ClientRouter />
+  </head>
+
+  <body>
+    <Header />
+
+    <main
+      transition:animate={fade({ duration: "0.35s" })}
+      class="mx-auto w-full max-w-[1200px] px-4 pb-24 pt-10"
+    >
+      <slot />
+    </main>
+
+    <WhatsAppFab />
+  </body>
+</html>

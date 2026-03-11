@@ -1,0 +1,74 @@
+﻿---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Sobre — Barcelona Private Advisory">
+  <section class="space-y-3">
+    <div class="text-[12px] tracking-[0.18em] text-black/50">SOBRE</div>
+    <h1 class="text-[26px] tracking-tight">Asesoría privada, no catálogo.</h1>
+    <p class="max-w-[820px] text-[12px] text-black/60">
+      Demo de producto para Spain Costas: selección curada en 72h, señales de riesgo, apoyo en negociación
+      y recomendaciones “Barcelona-first”.
+    </p>
+
+    <div class="mt-6 grid gap-3 md:grid-cols-2">
+      {[
+        ["Selección curada", "Ranking por encaje (enfoque + estilo de vida), no por volumen."],
+        ["Due diligence", "Costes, restricciones, señales HOA y banderas de riesgo (demo)."],
+        ["Negociación", "Estrategia de oferta y apoyo al cierre según criterios."],
+        ["Barcelona Lens", "Barrios, caminabilidad y trade-offs reales de vida diaria."],
+      ].map(([t, d]) => (
+        <div class="rounded-2xl border border-black/10 bg-white p-5">
+          <div class="text-[13px] font-medium">{t}</div>
+          <div class="mt-2 text-[12px] text-black/60">{d}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="mt-14 space-y-4">
+    <div class="text-[12px] tracking-[0.18em] text-black/50">CÓMO TRABAJAMOS</div>
+
+    <div class="grid gap-3 md:grid-cols-4">
+      {[
+        ["01", "Definir criterios", "Presupuesto, distritos, habitaciones, estilo de vida, riesgo."],
+        ["02", "Curar selección", "Ranking por encaje + enfoque. Picks explicables."],
+        ["03", "Due diligence", "Costes, banderas, preparación de negociación."],
+        ["04", "Visitas y cierre", "Agenda, estrategia de oferta, apoyo al cierre."],
+      ].map(([n, t, d]) => (
+        <div class="rounded-2xl border border-black/10 bg-white p-4">
+          <div class="text-[12px] text-black/50">{n}</div>
+          <div class="mt-1 text-[13px] font-medium">{t}</div>
+          <div class="mt-1 text-[12px] text-black/60">{d}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="mt-14 space-y-4">
+    <div class="text-[12px] tracking-[0.18em] text-black/50">FAQ</div>
+
+    <div class="grid gap-3 md:grid-cols-2">
+      {[
+        ["¿El cliente puede actualizar listados?", "Sí — con una capa CMS (Sheets o feed/CRM). El demo usa datos locales por velocidad."],
+        ["¿Es solo Barcelona?", "La experiencia es Barcelona-first. Se pueden añadir otras zonas como capas."],
+        ["¿Qué lo hace premium?", "Motion controlado, layout editorial, shortlist compartible y lente advisory."],
+        ["¿Siguiente paso tras el demo?", "Conectar inventario real (CRM/feed) + multilenguaje + SEO + soporte."],
+      ].map(([q, a]) => (
+        <div class="rounded-2xl border border-black/10 bg-white p-5">
+          <div class="text-[13px] font-medium">{q}</div>
+          <div class="mt-2 text-[12px] text-black/60">{a}</div>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-6 flex flex-wrap gap-2">
+      <a href="/es/search" class="rounded-full border border-black/15 px-4 py-2 text-[12px] hover:border-black/25">
+        Iniciar búsqueda
+      </a>
+      <a href="/es/contact" class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black">
+        Contacto
+      </a>
+    </div>
+  </section>
+</BaseLayout>
