@@ -27,7 +27,6 @@ const nav =
       ];
 
 const searchHref = lang === "es" ? "/es/search" : "/search";
-const shortlistHref = `${searchHref}?open_shortlist=1`;
 
 const districts = Array.from(new Set(listings.map((x) => x.district).filter(Boolean))).sort((a, b) =>
   a.localeCompare(b)
@@ -42,6 +41,11 @@ const districts = Array.from(new Set(listings.map((x) => x.district).filter(Bool
     >
       Barcelona Private Advisory
     </a>
+
+    <!-- One mounted widget instance for all screens; trigger visible only on desktop -->
+    <div class="hidden">
+      <ShortlistWidget client:load listings={listings} lang={lang} className="hidden md:inline-flex" />
+    </div>
 
     <!-- Desktop -->
     <nav class="hidden items-center gap-3 text-[12px] text-black/70 md:flex">
@@ -64,67 +68,67 @@ const districts = Array.from(new Set(listings.map((x) => x.district).filter(Bool
         ES
       </a>
 
-      <ShortlistWidget client:load listings={listings} lang={lang} />
       <SearchIntake client:load districts={districts} lang={lang} />
     </nav>
 
     <!-- Mobile -->
-    <details class="relative md:hidden">
-      <summary class="list-none rounded-full border border-black/15 px-3 py-1.5 text-[12px] text-black/75">
-        {lang === "es" ? "Menú" : "Menu"}
-      </summary>
+    <div class="flex items-center gap-2 md:hidden">
+      <a
+        href={enHref}
+        class={"rounded-full border px-3 py-1.5 text-[12px] " + (lang === "en" ? "border-black/25 text-black" : "border-black/10 text-black/60")}
+      >
+        EN
+      </a>
+      <a
+        href={esHref}
+        class={"rounded-full border px-3 py-1.5 text-[12px] " + (lang === "es" ? "border-black/25 text-black" : "border-black/10 text-black/60")}
+      >
+        ES
+      </a>
 
-      <div class="absolute right-0 top-[calc(100%+12px)] z-[90] w-[min(92vw,360px)] overflow-hidden rounded-2xl border border-black/10 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.08)]">
-        <div class="border-b border-black/10 px-4 py-3 text-[11px] tracking-[0.18em] text-black/45">
-          {lang === "es" ? "NAVEGACIÓN" : "NAVIGATION"}
-        </div>
+      <details class="relative">
+        <summary class="list-none rounded-full border border-black/15 px-3 py-1.5 text-[12px] text-black/75">
+          {lang === "es" ? "Menú" : "Menu"}
+        </summary>
 
-        <div class="grid gap-1 p-2">
-          {nav.map((x) => (
-            <a
-              href={x.href}
-              class="rounded-xl px-3 py-2 text-[13px] text-black/75 hover:bg-black/[0.03] hover:text-black"
-            >
-              {x.label}
-            </a>
-          ))}
-        </div>
-
-        <div class="mx-2 h-px bg-black/10"></div>
-
-        <div class="p-3">
-          <div class="flex flex-wrap gap-2">
-            <a
-              href={enHref}
-              class={"rounded-full border px-3 py-1.5 text-[12px] " + (lang === "en" ? "border-black/25 text-black" : "border-black/10 text-black/60")}
-            >
-              EN
-            </a>
-            <a
-              href={esHref}
-              class={"rounded-full border px-3 py-1.5 text-[12px] " + (lang === "es" ? "border-black/25 text-black" : "border-black/10 text-black/60")}
-            >
-              ES
-            </a>
+        <div class="absolute right-0 top-[calc(100%+12px)] z-[90] w-[min(92vw,360px)] overflow-hidden rounded-2xl border border-black/10 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.08)]">
+          <div class="border-b border-black/10 px-4 py-3 text-[11px] tracking-[0.18em] text-black/45">
+            {lang === "es" ? "NAVEGACIÓN" : "NAVIGATION"}
           </div>
 
-          <div class="mt-3 grid gap-2">
-            <a
-              href={shortlistHref}
-              class="rounded-full border border-black/10 px-4 py-2 text-center text-[12px] text-black/75 hover:border-black/20 hover:text-black"
-            >
-              {lang === "es" ? "Abrir selección" : "Open shortlist"}
-            </a>
+          <div class="grid gap-1 p-2">
+            {nav.map((x) => (
+              <a
+                href={x.href}
+                class="rounded-xl px-3 py-2 text-[13px] text-black/75 hover:bg-black/[0.03] hover:text-black"
+              >
+                {x.label}
+              </a>
+            ))}
+          </div>
 
-            <a
-              href={searchHref}
-              class="rounded-full border border-black/25 bg-white px-4 py-2 text-center text-[12px] text-black hover:border-black/35"
-            >
-              {lang === "es" ? "Iniciar búsqueda" : "Start a search"}
-            </a>
+          <div class="mx-2 h-px bg-black/10"></div>
+
+          <div class="p-3">
+            <div class="grid gap-2">
+              <button
+                type="button"
+                onclick="window.dispatchEvent(new CustomEvent('sc:shortlist_ui_open')); this.closest('details')?.removeAttribute('open');"
+                class="rounded-full border border-black/10 px-4 py-2 text-center text-[12px] text-black/75 hover:border-black/20 hover:text-black"
+              >
+                {lang === "es" ? "Abrir selección" : "Open shortlist"}
+              </button>
+
+              <a
+                href={searchHref}
+                class="rounded-full border border-black/25 bg-white px-4 py-2 text-center text-[12px] text-black hover:border-black/35"
+              >
+                {lang === "es" ? "Iniciar búsqueda" : "Start a search"}
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-    </details>
+      </details>
+    </div>
   </div>
 </header>

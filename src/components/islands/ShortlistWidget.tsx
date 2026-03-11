@@ -1,4 +1,4 @@
-﻿import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import type { Listing } from "../../data/listings";
 import { useShortlist } from "../../hooks/useShortlist";
@@ -36,9 +36,11 @@ const ui = (lang: Lang) => {
 export default function ShortlistWidget({
   listings,
   lang = "en",
+  className = "",
 }: {
   listings: Listing[];
   lang?: Lang;
+  className?: string;
 }) {
   const L = ui(lang);
   const prefix = lang === "es" ? "/es" : "";
@@ -61,21 +63,18 @@ export default function ShortlistWidget({
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // close drawer on Astro navigation
   useEffect(() => {
     const close = () => setOpen(false);
     document.addEventListener("astro:before-swap", close);
     return () => document.removeEventListener("astro:before-swap", close);
   }, []);
 
-  // open drawer via custom event (from PropertyShowcase CTA)
   useEffect(() => {
     const onOpen = () => setOpen(true);
     window.addEventListener("sc:shortlist_ui_open", onOpen as EventListener);
     return () => window.removeEventListener("sc:shortlist_ui_open", onOpen as EventListener);
   }, []);
 
-  // Auto-open drawer when coming from a shared link
   useEffect(() => {
     const url = new URL(window.location.href);
 
@@ -118,7 +117,10 @@ export default function ShortlistWidget({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-full border border-black/15 px-3 py-1.5 text-[12px] text-black/70 hover:border-black/25 hover:text-black"
+        className={[
+          "rounded-full border border-black/15 px-3 py-1.5 text-[12px] text-black/70 hover:border-black/25 hover:text-black",
+          className,
+        ].join(" ")}
         aria-label="Open shortlist"
       >
         {L.button}
