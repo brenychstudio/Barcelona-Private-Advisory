@@ -9,46 +9,48 @@ const featured = listings.slice(0, 3);
 
 <BaseLayout title="Barcelona Private Advisory">
   <section class="space-y-5">
-    <div class="overflow-hidden rounded-[30px] border border-black/10 bg-black/5">
-      <div class="aspect-[16/9] overflow-hidden">
-        <img
-          src="/demo/hero-home/hero-01.png"
-          alt=""
-          class="h-full w-full object-cover"
-          loading="eager"
-        />
-      </div>
+  <div class="overflow-hidden rounded-[30px] border border-black/10 bg-black/5">
+    <div class="aspect-[16/9] overflow-hidden">
+      <img
+        src="/demo/hero-home/hero-01.png"
+        alt=""
+        class="h-full w-full object-cover"
+        loading="eager"
+      />
+    </div>
+  </div>
+
+  <div class="grid gap-5 lg:grid-cols-[1.05fr_auto] lg:items-end">
+    <div class="space-y-3">
+      <h1 class="max-w-[860px] text-[30px] leading-[1.03] tracking-tight sm:text-[38px]">
+        Barcelona Private Property Advisory.
+        <span class="mt-1 block text-[24px] leading-[1.06] tracking-tight text-black/50 sm:text-[30px]">
+          Curated shortlist in 72h.
+        </span>
+      </h1>
+
+      <p class="max-w-[700px] text-[13px] leading-[1.85] text-black/58">
+        Barcelona-first selection shaped by district fit, acquisition logic, due diligence
+        signals, and a calmer next-step flow for buyers who prefer precision over volume.
+      </p>
     </div>
 
-    <div class="grid gap-5 lg:grid-cols-[1.05fr_auto] lg:items-end">
-      <div class="space-y-3">
-        <h1 class="max-w-[860px] text-[30px] leading-[1.03] tracking-tight sm:text-[38px]">
-          Barcelona Private Property Advisory.
-          <span class="text-black/50"> Curated shortlist in 72h.</span>
-        </h1>
-
-        <p class="max-w-[700px] text-[13px] leading-[1.85] text-black/58">
-          Barcelona-first selection shaped by district fit, acquisition logic, due diligence
-          signals, and a calmer next-step flow for buyers who prefer precision over volume.
-        </p>
-      </div>
-
-      <div class="flex flex-wrap gap-2">
-        <a
-          href="/search"
-          class="rounded-full border border-black/15 px-4 py-2 text-[12px] hover:border-black/25"
-        >
-          Start a search
-        </a>
-        <a
-          href="/about"
-          class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
-        >
-          How we work
-        </a>
-      </div>
+    <div class="flex flex-wrap gap-2">
+      <a
+        href="/search"
+        class="rounded-full border border-black/15 px-4 py-2 text-[12px] hover:border-black/25"
+      >
+        Start a search
+      </a>
+      <a
+        href="/about"
+        class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
+      >
+        How we work
+      </a>
     </div>
-  </section>
+  </div>
+</section>
 
   <section class="mt-14 space-y-3">
     <div class="text-[12px] tracking-[0.18em] text-black/50">CURATED DROPS</div>
@@ -159,7 +161,7 @@ const featured = listings.slice(0, 3);
     </div>
   </div>
 
-  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+  <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
     {[
       ["/district/eixample", "/demo/neighborhood/nb-01.png", "Eixample", "geometry · walkable · classic-renovation"],
       ["/district/gracia", "/demo/neighborhood/nb-02.png", "Gràcia", "human scale · design · quiet streets"],
