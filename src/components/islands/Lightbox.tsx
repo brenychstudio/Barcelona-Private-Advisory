@@ -79,20 +79,20 @@ export default function Lightbox({
           />
 
           <motion.div
-            className="fixed inset-0 z-[150] grid place-items-center px-2 py-3 sm:px-4 sm:py-6"
+            className="fixed inset-0 z-[150] flex items-center justify-center px-2 pb-[max(12px,env(safe-area-inset-bottom))] pt-[max(76px,env(safe-area-inset-top))] sm:px-4 sm:py-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="relative flex max-h-[92vh] w-[min(96vw,980px)] flex-col overflow-hidden rounded-2xl border border-black/10 bg-white shadow-[0_30px_120px_rgba(0,0,0,0.18)]"
+              className="relative flex w-full max-w-[980px] flex-col overflow-hidden rounded-2xl border border-black/10 bg-white shadow-[0_30px_120px_rgba(0,0,0,0.18)] max-h-[calc(100dvh-88px)] sm:max-h-[92vh]"
               initial={{ y: 10, opacity: 0, filter: "blur(10px)" }}
               animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
               exit={{ y: 10, opacity: 0, filter: "blur(10px)" }}
               transition={{ duration: 0.45, ease: [0.2, 0.8, 0.2, 1] }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex flex-wrap items-center gap-2 border-b border-black/10 px-3 py-3">
+              <div className="sticky top-0 z-10 flex flex-wrap items-center gap-2 border-b border-black/10 bg-white px-3 py-3">
                 <div className="text-[11px] tracking-[0.18em] text-black/50">
                   {L.view} · {String(index + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
                 </div>
@@ -130,7 +130,7 @@ export default function Lightbox({
                     key={src}
                     src={src}
                     alt={alt}
-                    className="max-h-[58vh] w-auto max-w-full select-none rounded-xl object-contain sm:max-h-[70vh]"
+                    className="h-auto max-h-[calc(100dvh-250px)] w-auto max-w-full select-none rounded-xl object-contain sm:max-h-[70vh]"
                     initial={{ opacity: 0, filter: "blur(10px)", scale: 1.01 }}
                     animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
                     exit={{ opacity: 0, filter: "blur(10px)", scale: 1.01 }}
@@ -140,7 +140,7 @@ export default function Lightbox({
                 </div>
               </div>
 
-              <div className="border-t border-black/10 p-3">
+              <div className="border-t border-black/10 bg-white p-3">
                 <div className="flex gap-2 overflow-x-auto">
                   {images.map((im, i) => (
                     <button
@@ -164,7 +164,7 @@ export default function Lightbox({
                   ))}
                 </div>
 
-                <div className="mt-2 text-[11px] text-black/45">{L.hint}</div>
+                <div className="mt-2 hidden text-[11px] text-black/45 sm:block">{L.hint}</div>
               </div>
             </motion.div>
           </motion.div>
