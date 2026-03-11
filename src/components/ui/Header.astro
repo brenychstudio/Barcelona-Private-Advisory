@@ -42,9 +42,6 @@ const districts = Array.from(new Set(listings.map((x) => x.district).filter(Bool
       Barcelona Private Advisory
     </a>
 
-    <!-- IMPORTANT: widget must stay mounted on all screens -->
-    <ShortlistWidget client:load listings={listings} lang={lang} className="hidden md:inline-flex" />
-
     <!-- Desktop -->
     <nav class="hidden items-center gap-3 text-[12px] text-black/70 md:flex">
       {nav.map((x) => (
@@ -66,6 +63,7 @@ const districts = Array.from(new Set(listings.map((x) => x.district).filter(Bool
         ES
       </a>
 
+      <ShortlistWidget client:load listings={listings} lang={lang} className="hidden md:inline-flex" />
       <SearchIntake client:load districts={districts} lang={lang} />
     </nav>
 
