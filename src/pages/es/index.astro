@@ -8,28 +8,46 @@ const featured = listings.slice(0, 3);
 ---
 
 <BaseLayout title="Barcelona Private Advisory">
-  <section class="space-y-4">
-    <div class="overflow-hidden rounded-2xl border border-black/10 bg-white">
-      <div class="aspect-[16/9] bg-black/5">
-        <img src="/demo/hero-home/hero-01.png" alt="" class="h-full w-full object-cover" loading="eager" />
+  <section class="space-y-5">
+    <div class="overflow-hidden rounded-[30px] border border-black/10 bg-black/5">
+      <div class="aspect-[16/9] overflow-hidden">
+        <img
+          src="/demo/hero-home/hero-01.png"
+          alt=""
+          class="h-full w-full object-cover"
+          loading="eager"
+        />
       </div>
     </div>
 
-    <h1 class="max-w-[780px] text-[28px] leading-[1.1] tracking-tight">
-      Asesoría privada inmobiliaria en Barcelona.
-      <span class="text-black/55"> Selección curada en 72h.</span>
-    </h1>
+    <div class="grid gap-5 lg:grid-cols-[1.05fr_auto] lg:items-end">
+      <div class="space-y-3">
+        <h1 class="max-w-[860px] text-[30px] leading-[1.03] tracking-tight sm:text-[38px]">
+          Asesoría privada inmobiliaria en Barcelona.
+          <span class="text-black/50"> Selección curada en 72h.</span>
+        </h1>
 
-    <div class="flex gap-2">
-      <a href="/es/search" class="rounded-full border border-black/15 px-4 py-2 text-[12px] hover:border-black/25">
-        Iniciar búsqueda
-      </a>
-      <a
-        href="/es/about"
-        class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
-      >
-        Cómo trabajamos
-      </a>
+        <p class="max-w-[700px] text-[13px] leading-[1.85] text-black/58">
+          Selección Barcelona-first construida por encaje de distrito, lógica de compra,
+          señales de due diligence y un flujo más sereno y preciso para compradores que
+          prefieren claridad antes que volumen.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <a
+          href="/es/search"
+          class="rounded-full border border-black/15 px-4 py-2 text-[12px] hover:border-black/25"
+        >
+          Iniciar búsqueda
+        </a>
+        <a
+          href="/es/about"
+          class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
+        >
+          Cómo trabajamos
+        </a>
+      </div>
     </div>
   </section>
 
@@ -118,55 +136,55 @@ const featured = listings.slice(0, 3);
     </div>
   </section>
 
-<section class="mt-20 space-y-8">
-  <div class="grid gap-8 border-t border-black/10 pt-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-    <div class="space-y-4">
-      <div class="text-[12px] tracking-[0.18em] text-black/42">BARCELONA LENS</div>
+  <section class="mt-20 space-y-8">
+    <div class="grid gap-8 border-t border-black/10 pt-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-end">
+      <div class="space-y-4">
+        <div class="text-[12px] tracking-[0.18em] text-black/42">BARCELONA LENS</div>
 
-      <h2 class="max-w-[520px] text-[28px] leading-[1.05] tracking-tight sm:text-[34px]">
-        Encaje de barrio,
-        <br />
-        no solo encaje de propiedad.
-      </h2>
+        <h2 class="max-w-[520px] text-[28px] leading-[1.05] tracking-tight sm:text-[34px]">
+          Encaje de barrio,
+          <br />
+          no solo encaje de propiedad.
+        </h2>
 
-      <p class="max-w-[520px] text-[13px] leading-[1.85] text-black/56">
-        Barcelona no es un único mercado. Ritmo de distrito, caminabilidad, lógica de reforma
-        y textura de vida diaria cambian el significado de una propiedad. La capa advisory empieza ahí.
-      </p>
+        <p class="max-w-[520px] text-[13px] leading-[1.85] text-black/56">
+          Barcelona no es un único mercado. Ritmo de distrito, caminabilidad, lógica de reforma
+          y textura de vida diaria cambian el significado de una propiedad. La capa advisory empieza ahí.
+        </p>
+      </div>
+
+      <div class="max-w-[760px] border-l border-black/10 pl-5 text-[12px] leading-[1.85] text-black/48 lg:ml-auto">
+        Estas cuatro lentes de distrito muestran cómo cambia la selección cuando estilo de vida y
+        contexto urbano se tratan como criterios de primera línea. La pregunta no es solo qué es la
+        vivienda, sino qué tipo de vida diaria permite el tejido que la rodea.
+      </div>
     </div>
 
-    <div class="max-w-[760px] text-[13px] leading-[1.85] text-black/56">
-      Estas cuatro lentes de distrito muestran cómo cambia la selección cuando estilo de vida y
-      contexto urbano se tratan como criterios de primera línea. La pregunta no es solo qué es la
-      vivienda, sino qué tipo de vida diaria permite el tejido que la rodea.
-    </div>
-  </div>
-
-  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-    {[
-      ["/es/district/eixample", "/demo/neighborhood/nb-01.png", "Eixample", "geometría · caminable · reforma clásica"],
-      ["/es/district/gracia", "/demo/neighborhood/nb-02.png", "Gràcia", "escala humana · diseño · calles tranquilas"],
-      ["/es/district/sarria", "/demo/neighborhood/nb-03.png", "Sarrià", "familia · verde · vida diaria serena"],
-      ["/es/district/poblenou", "/demo/neighborhood/nb-04.png", "Poblenou", "moderno · creativo · cerca de hubs tech"],
-    ].map(([href, src, title, meta]) => (
-      <a href={href} class="group block">
-        <div class="overflow-hidden rounded-[26px] bg-black/5">
-          <div class="aspect-[4/5] overflow-hidden">
-            <img
-              src={src}
-              alt=""
-              class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.02]"
-              loading="lazy"
-            />
+    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      {[
+        ["/es/district/eixample", "/demo/neighborhood/nb-01.png", "Eixample", "geometría · caminable · reforma clásica"],
+        ["/es/district/gracia", "/demo/neighborhood/nb-02.png", "Gràcia", "escala humana · diseño · calles tranquilas"],
+        ["/es/district/sarria", "/demo/neighborhood/nb-03.png", "Sarrià", "familia · verde · vida diaria serena"],
+        ["/es/district/poblenou", "/demo/neighborhood/nb-04.png", "Poblenou", "moderno · creativo · cerca de hubs tech"],
+      ].map(([href, src, title, meta]) => (
+        <a href={href} class="group block">
+          <div class="overflow-hidden rounded-[26px] bg-black/5">
+            <div class="aspect-[4/5] overflow-hidden">
+              <img
+                src={src}
+                alt=""
+                class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.02]"
+                loading="lazy"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="mt-3 px-1">
-          <div class="text-[15px] tracking-tight">{title}</div>
-          <div class="mt-1 text-[12px] leading-[1.7] text-black/50">{meta}</div>
-        </div>
-      </a>
-    ))}
-  </div>
-</section>
+          <div class="mt-3 px-1">
+            <div class="text-[15px] tracking-tight">{title}</div>
+            <div class="mt-1 text-[12px] leading-[1.7] text-black/50">{meta}</div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
 </BaseLayout>

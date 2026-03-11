@@ -8,9 +8,9 @@ const featured = listings.slice(0, 3);
 ---
 
 <BaseLayout title="Barcelona Private Advisory">
-  <section class="space-y-4">
-    <div class="overflow-hidden rounded-2xl border border-black/10 bg-white">
-      <div class="aspect-[16/9] bg-black/5">
+  <section class="space-y-5">
+    <div class="overflow-hidden rounded-[30px] border border-black/10 bg-black/5">
+      <div class="aspect-[16/9] overflow-hidden">
         <img
           src="/demo/hero-home/hero-01.png"
           alt=""
@@ -20,18 +20,33 @@ const featured = listings.slice(0, 3);
       </div>
     </div>
 
-    <h1 class="max-w-[780px] text-[28px] leading-[1.1] tracking-tight">
-      Barcelona Private Property Advisory.
-      <span class="text-black/55"> Curated shortlist in 72h.</span>
-    </h1>
+    <div class="grid gap-5 lg:grid-cols-[1.05fr_auto] lg:items-end">
+      <div class="space-y-3">
+        <h1 class="max-w-[860px] text-[30px] leading-[1.03] tracking-tight sm:text-[38px]">
+          Barcelona Private Property Advisory.
+          <span class="text-black/50"> Curated shortlist in 72h.</span>
+        </h1>
 
-    <div class="flex gap-2">
-      <a href="/search" class="rounded-full border border-black/15 px-4 py-2 text-[12px] hover:border-black/25">
-        Start a search
-      </a>
-      <a href="/about" class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black">
-        How we work
-      </a>
+        <p class="max-w-[700px] text-[13px] leading-[1.85] text-black/58">
+          Barcelona-first selection shaped by district fit, acquisition logic, due diligence
+          signals, and a calmer next-step flow for buyers who prefer precision over volume.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <a
+          href="/search"
+          class="rounded-full border border-black/15 px-4 py-2 text-[12px] hover:border-black/25"
+        >
+          Start a search
+        </a>
+        <a
+          href="/about"
+          class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
+        >
+          How we work
+        </a>
+      </div>
     </div>
   </section>
 
@@ -121,7 +136,7 @@ const featured = listings.slice(0, 3);
   </section>
 
 <section class="mt-20 space-y-8">
-  <div class="grid gap-8 border-t border-black/10 pt-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+  <div class="grid gap-8 border-t border-black/10 pt-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-end">
     <div class="space-y-4">
       <div class="text-[12px] tracking-[0.18em] text-black/42">BARCELONA LENS</div>
 
@@ -137,7 +152,7 @@ const featured = listings.slice(0, 3);
       </p>
     </div>
 
-    <div class="max-w-[760px] text-[13px] leading-[1.85] text-black/56">
+    <div class="max-w-[760px] border-l border-black/10 pl-5 text-[12px] leading-[1.85] text-black/48 lg:ml-auto">
       Four sample district lenses below show how selection shifts when lifestyle and urban context
       are treated as first-order criteria. The point is not only what the apartment is — but what
       kind of daily life the surrounding fabric allows.
