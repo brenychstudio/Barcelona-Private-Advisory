@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import Header from "../components/ui/Header.astro";
 import WhatsAppFab from "../components/ui/WhatsAppFab.astro";
+import SiteCredit from "../components/ui/SiteCredit.astro";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, OG_IMAGE, INDEXABLE } from "../config/site";
 import { ClientRouter, fade } from "astro:transitions";
 
@@ -92,5 +93,6 @@ const schemaOrg = {
     </main>
 
     <WhatsAppFab />
+    <SiteCredit />
   </body>
 </html>

@@ -2,73 +2,141 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="About — Barcelona Private Advisory">
-  <section class="space-y-3">
-    <div class="text-[12px] tracking-[0.18em] text-black/50">ABOUT</div>
-    <h1 class="text-[26px] tracking-tight">Private advisory, not catalog.</h1>
-    <p class="max-w-[820px] text-[12px] text-black/60">
-      This demo shows a product direction for Spain Costas: curated shortlist in 72h, due diligence
-      flags, negotiation support, and neighborhood-first recommendations.
+<BaseLayout
+  title="About — Barcelona Private Advisory"
+  description="Barcelona-first private property advisory demo — curated shortlist, due diligence lens, negotiation support, and neighborhood-fit selection."
+>
+  <section class="space-y-4">
+    <div class="text-[12px] tracking-[0.18em] text-black/42">ABOUT</div>
+
+    <h1 class="max-w-[760px] text-[30px] leading-[1.03] tracking-tight sm:text-[38px]">
+      Private advisory,
+      <br />
+      not catalog.
+    </h1>
+
+    <p class="max-w-[760px] text-[13px] leading-[1.9] text-black/58">
+      This demo is not designed as a broad inventory portal. It presents a more selective product direction
+      for Spain Costas: shortlist-first browsing, district-fit logic, due diligence signals, and calmer next-step support.
     </p>
+  </section>
 
-    <div class="mt-6 grid gap-3 md:grid-cols-2">
+  <section class="mt-16 space-y-10">
+    <div class="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+      <div class="space-y-4">
+        <div class="text-[12px] tracking-[0.18em] text-black/42">PRODUCT DIRECTION</div>
+
+        <h2 class="max-w-[620px] text-[28px] leading-[1.05] tracking-tight sm:text-[34px]">
+          A premium real-estate experience shaped by selection, not by volume.
+        </h2>
+
+        <p class="max-w-[620px] text-[13px] leading-[1.9] text-black/56">
+          The advisory layer is the real differentiator: fewer options, clearer ranking logic,
+          more visible trade-offs, and a stronger sense of neighborhood fit from the first screen.
+        </p>
+      </div>
+
+      <div class="space-y-0 border-t border-black/10">
+        {[
+          ["Curated shortlist", "Inventory is ranked by fit, not by raw quantity. Lens + lifestyle logic sit above catalog browsing."],
+          ["Due diligence lens", "Acquisition costs, restrictions, HOA signals, liquidity notes, and weak signals can be surfaced earlier."],
+          ["Negotiation support", "The product can frame next-step logic, viewing support, offer strategy, and calmer buyer progression."],
+          ["Barcelona Lens", "District-first browsing shifts the experience toward local fit: walkability, rhythm, noise, family logic, and daily texture."],
+        ].map(([title, text]) => (
+          <div class="grid gap-2 border-b border-black/10 py-4 last:border-b-0 sm:grid-cols-[180px_1fr]">
+            <div class="text-[13px] font-medium">{title}</div>
+            <div class="text-[12px] leading-[1.8] text-black/56">{text}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="grid gap-0 border-y border-black/10 md:grid-cols-4">
       {[
-        ["Curated shortlist", "We rank inventory by fit, not by volume. Lens + lifestyle tags."],
-        ["Due diligence lens", "Fees, constraints, HOA signals, and risk flags (demo layer)."],
-        ["Negotiation support", "Offer strategy, terms, and closing support aligned to constraints."],
-        ["Barcelona Lens", "District-first browsing and fit guidance (walkability, noise, lifestyle)."],
-      ].map(([t, d]) => (
-        <div class="rounded-2xl border border-black/10 bg-white p-5">
-          <div class="text-[13px] font-medium">{t}</div>
-          <div class="mt-2 text-[12px] text-black/60">{d}</div>
+        ["01", "Define", "Budget, districts, beds, lifestyle, and risk profile."],
+        ["02", "Curate", "Rank by fit + lens. Shortlist first, not endless browsing."],
+        ["03", "De-risk", "Surface fees, flags, restrictions, and negotiation prep."],
+        ["04", "Close", "Support viewings, next steps, offer logic, and clarity."],
+      ].map(([n, title, text]) => (
+        <div class="border-b border-black/10 py-5 md:border-b-0 md:border-r md:px-5 md:last:border-r-0">
+          <div class="text-[11px] tracking-[0.18em] text-black/38">{n}</div>
+          <div class="mt-3 text-[17px] tracking-tight">{title}</div>
+          <div class="mt-2 max-w-[240px] text-[12px] leading-[1.75] text-black/56">{text}</div>
         </div>
       ))}
+    </div>
+
+    <div class="grid gap-6 border-t border-black/10 pt-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-start">
+      <div class="space-y-3">
+        <div class="text-[12px] tracking-[0.18em] text-black/42">ADVISORY, NOT CATALOG</div>
+        <div class="max-w-[460px] text-[28px] leading-[1.05] tracking-tight">
+          The value is not more listings.
+          <br />
+          The value is better calibration.
+        </div>
+      </div>
+
+      <div class="max-w-[780px] text-[13px] leading-[1.9] text-black/56">
+        This approach reduces decision fatigue and makes selection feel more premium.
+        Instead of a wide, interchangeable catalog, the buyer sees a narrower, explainable shortlist
+        shaped by district fit, acquisition profile, and next-step readiness.
+      </div>
     </div>
   </section>
 
-  <section class="mt-14 space-y-4">
-    <div class="text-[12px] tracking-[0.18em] text-black/50">HOW WE WORK</div>
+  <section class="mt-20 space-y-8">
+    <div class="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+      <div class="space-y-4">
+        <div class="text-[12px] tracking-[0.18em] text-black/42">FAQ</div>
 
-    <div class="grid gap-3 md:grid-cols-4">
-      {[
-        ["01", "Define constraints", "Budget, districts, beds, lifestyle, risk profile."],
-        ["02", "Curate shortlist", "Rank by fit + lens. Explainable picks."],
-        ["03", "Due diligence", "Fees, flags, negotiation preparation."],
-        ["04", "Viewings & close", "Schedule, offer strategy, closing support."],
-      ].map(([n, t, d]) => (
-        <div class="rounded-2xl border border-black/10 bg-white p-4">
-          <div class="text-[12px] text-black/50">{n}</div>
-          <div class="mt-1 text-[13px] font-medium">{t}</div>
-          <div class="mt-1 text-[12px] text-black/60">{d}</div>
-        </div>
-      ))}
+        <h2 class="max-w-[520px] text-[28px] leading-[1.05] tracking-tight sm:text-[34px]">
+          Questions a client would actually ask.
+        </h2>
+
+        <p class="max-w-[520px] text-[13px] leading-[1.85] text-black/56">
+          This section is intentionally written as client-facing reassurance, not product jargon.
+        </p>
+      </div>
+
+      <div class="space-y-0 border-t border-black/10">
+        {[
+          ["Can clients update listings themselves?", "Yes — with a CMS layer such as Google Sheets, Airtable, or a CRM/feed adapter. The demo currently uses local data for speed and control."],
+          ["Is this Barcelona-only?", "The product direction is intentionally Barcelona-first. Other geographies can be added later, but the premium advantage comes from local fit, not generic expansion."],
+          ["What makes this premium?", "Controlled motion, editorial rhythm, shortlist + share, district logic, bilingual UX, and a calmer decision path rather than a loud portal experience."],
+          ["What happens after the demo?", "Connect to live inventory or CRM, enable multilingual content editing, turn on analytics/SEO for production, and adapt the advisory tone to the final brand."],
+        ].map(([q, a]) => (
+          <div class="grid gap-2 border-b border-black/10 py-4 last:border-b-0 sm:grid-cols-[220px_1fr]">
+            <div class="text-[13px] font-medium">{q}</div>
+            <div class="text-[12px] leading-[1.8] text-black/56">{a}</div>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 
-  <section class="mt-14 space-y-4">
-    <div class="text-[12px] tracking-[0.18em] text-black/50">FAQ</div>
-
-    <div class="grid gap-3 md:grid-cols-2">
-      {[
-        ["Can clients update listings themselves?", "Yes — with a CMS layer (Sheets or feed). Demo uses local data for speed."],
-        ["Is this Barcelona-only?", "The product experience is Barcelona-first. Other regions can be added as layers."],
-        ["What makes it premium?", "Controlled motion, editorial layout, shortlist + share, and advisory lens for decisions."],
-        ["What’s next after demo?", "Connect to real inventory (CRM/feed) + multilingual + SEO + support plan."],
-      ].map(([q, a]) => (
-        <div class="rounded-2xl border border-black/10 bg-white p-5">
-          <div class="text-[13px] font-medium">{q}</div>
-          <div class="mt-2 text-[12px] text-black/60">{a}</div>
+  <section class="mt-16 border-t border-black/10 pt-8">
+    <div class="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
+      <div class="space-y-3">
+        <div class="text-[12px] tracking-[0.18em] text-black/42">NEXT STEP</div>
+        <div class="max-w-[620px] text-[24px] leading-[1.08] tracking-tight">
+          Turn the demo into a real client-facing advisory site.
         </div>
-      ))}
-    </div>
+      </div>
 
-    <div class="mt-6 flex flex-wrap gap-2">
-      <a href="/search" class="rounded-full border border-black/15 px-4 py-2 text-[12px] hover:border-black/25">
-        Start a search
-      </a>
-      <a href="/contact" class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black">
-        Contact
-      </a>
+      <div class="flex flex-wrap gap-2">
+        <a
+          href="/search"
+          class="rounded-full border border-black/15 px-4 py-2 text-[12px] hover:border-black/25"
+        >
+          Start a search
+        </a>
+        <a
+          href="/contact"
+          class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
+        >
+          Contact
+        </a>
+      </div>
     </div>
   </section>
 </BaseLayout>
