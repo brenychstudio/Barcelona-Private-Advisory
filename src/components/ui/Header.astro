@@ -129,21 +129,27 @@ const districts = Array.from(new Set(listings.map((x) => x.district).filter(Bool
   </div>
 
   <script is:inline>
-    const bindMobileShortlist = () => {
-      const btn = document.getElementById("mobile-open-shortlist");
-      const nav = document.getElementById("mobile-nav");
+    if (!window.__scShortlistDelegatedBound) {
+      window.__scShortlistDelegatedBound = true;
 
-      if (!btn) return;
+      document.addEventListener("click", (event) => {
+        const target =
+          event.target instanceof Element
+            ? event.target.closest("#mobile-open-shortlist, #desktop-open-shortlist")
+            : null;
 
-      btn.onclick = () => {
+        if (!target) return;
+
+        event.preventDefault();
+
+        const nav = document.getElementById("mobile-nav");
         if (nav) nav.removeAttribute("open");
+
         window.setTimeout(() => {
           window.dispatchEvent(new CustomEvent("sc:shortlist_ui_open"));
-        }, 60);
-      };
-    };
-
-    bindMobileShortlist();
-    document.addEventListener("astro:after-swap", bindMobileShortlist);
+        }, 70);
+      });
+    }
   </script>
 </header>
+
