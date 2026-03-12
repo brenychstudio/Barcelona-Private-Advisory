@@ -70,9 +70,19 @@ export default function ShortlistWidget({
   }, []);
 
   useEffect(() => {
-    const onOpen = () => setOpen(true);
-    window.addEventListener("sc:shortlist_ui_open", onOpen as EventListener);
-    return () => window.removeEventListener("sc:shortlist_ui_open", onOpen as EventListener);
+    const open = () => setOpen(true);
+
+    window.addEventListener("sc:shortlist_ui_open", open);
+    (window as typeof window & { __scOpenShortlist?: () => void }).__scOpenShortlist = open;
+
+    return () => {
+      window.removeEventListener("sc:shortlist_ui_open", open);
+
+      const w = window as typeof window & { __scOpenShortlist?: () => void };
+      if (w.__scOpenShortlist === open) {
+        delete w.__scOpenShortlist;
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -231,3 +241,4 @@ export default function ShortlistWidget({
     </>
   );
 }
+

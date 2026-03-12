@@ -145,6 +145,12 @@ const districts = Array.from(new Set(listings.map((x) => x.district).filter(Bool
         const nav = document.getElementById("mobile-nav");
         if (nav) nav.removeAttribute("open");
 
+        const openFn = window.__scOpenShortlist;
+        if (typeof openFn === "function") {
+          window.setTimeout(() => openFn(), 70);
+          return;
+        }
+
         window.setTimeout(() => {
           window.dispatchEvent(new CustomEvent("sc:shortlist_ui_open"));
         }, 70);
@@ -152,4 +158,5 @@ const districts = Array.from(new Set(listings.map((x) => x.district).filter(Bool
     }
   </script>
 </header>
+
 
