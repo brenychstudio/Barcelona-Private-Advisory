@@ -1,9 +1,11 @@
 ﻿import { AnimatePresence, motion } from "motion/react";
 import { useMemo, useState, type ReactNode } from "react";
 import type { Listing } from "../../data/listings";
+import { getListingAdvisoryCopy } from "../../lib/getListingAdvisoryCopy";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
 import { useShortlist } from "../../hooks/useShortlist";
 import Lightbox from "./Lightbox";
+import { openAdvisoryInquiry, type AdvisoryInquirySource } from "./AdvisoryInquiryPanel";
 
 type Lang = "en" | "es";
 
@@ -21,8 +23,8 @@ function MachineReadout({ code, progress }: { code: string; progress: number }) 
 
 function StickyStage({ src, alt }: { src: string; alt?: string }) {
   return (
-    <div className="sticky top-[84px]">
-      <div className="overflow-hidden rounded-2xl border border-black/10 bg-white">
+    <div className="bcn-property-stage sticky top-[84px]">
+      <div className="bcn-property-stage__surface overflow-hidden bg-[rgb(var(--paper))] shadow-[0_34px_120px_rgba(46,43,35,0.12)] ring-1 ring-black/10">
         <div className="relative aspect-[4/5] w-full">
           <AnimatePresence mode="wait">
             <motion.img
@@ -35,6 +37,7 @@ function StickyStage({ src, alt }: { src: string; alt?: string }) {
               exit={{ opacity: 0, filter: "blur(10px)", scale: 1.02 }}
               transition={{ duration: 0.75, ease: [0.2, 0.8, 0.2, 1] }}
               loading="lazy"
+              decoding="async"
             />
           </AnimatePresence>
         </div>
@@ -148,10 +151,10 @@ function computeAdvisory(listing: Listing, lang: Lang) {
 
   const roi =
     tags.has("investor")
-      ? (lang === "es" ? "Fuerte (demo)" : "Strong (demo)")
+      ? (lang === "es" ? "Fuerte" : "Strong")
       : tags.has("sea")
-      ? (lang === "es" ? "Selectivo (demo)" : "Selective (demo)")
-      : (lang === "es" ? "Equilibrado (demo)" : "Balanced (demo)");
+      ? (lang === "es" ? "Selectivo" : "Selective")
+      : (lang === "es" ? "Equilibrado" : "Balanced");
 
   const riskFlags: string[] = [];
   if (slug === "barceloneta")
@@ -173,8 +176,8 @@ function computeAdvisory(listing: Listing, lang: Lang) {
   if (!riskFlags.length)
     riskFlags.push(
       lang === "es"
-        ? "Diligencia estándar recomendada (demo)"
-        : "Standard due diligence recommended (demo)"
+        ? "Diligencia estándar recomendada"
+        : "Standard due diligence recommended"
     );
 
   return {
@@ -198,26 +201,42 @@ function Chip({ children }: { children: ReactNode }) {
 
 const ui = (lang: Lang) => {
   const en = {
-    request: "Request viewing",
+    request: "Request private viewing",
     save: "Save to shortlist",
     saved: "Saved",
     lens: "Barcelona Lens",
-    desc: "DESCRIPTION",
+    privateRecommendation: "Private recommendation",
+    selectedObject: "Acquisition file",
+    desc: "ADVISORY NOTES",
     gallery: "GALLERY",
+    inspectGallery: "Inspect gallery",
     neighborhood: "NEIGHBORHOOD FIT",
     openDistrict: "Open district →",
     recommended: "Recommended for:",
-    numbers: "NUMBERS",
+    advisorMemo: "Advisor memo",
+    signals: "Advisory signals",
+    bestFor: "Best for",
+    signal: "Signal",
+    tradeOff: "Trade-off",
+    riskNote: "Risk note",
+    readiness: "Viewing readiness",
+    priority: "Shortlist priority",
+    acquisitionNote: "Acquisition note",
+    advisoryPath: "Advisory path",
+    privateBrief: "Private brief",
+    districtFit: "district fit",
+    viewingPath: "viewing path",
+    numbers: "ACQUISITION LOGIC",
     ppsm: "Price / m²",
     est: "Est. acquisition costs*",
     liquidity: "Liquidity",
     roi: "ROI potential",
-    ref: "Reference metric (demo).",
-    estNote: "*Demo range. Varies by taxes/fees and scenario.",
-    lensNote: "Advisory lens (demo).",
-    roiNote: "High-level demo estimate.",
+    ref: "Reference metric.",
+    estNote: "*Indicative range. Varies by taxes/fees and scenario.",
+    lensNote: "Advisory lens.",
+    roiNote: "High-level advisory estimate.",
     risk: "RISK FLAGS",
-    ctaReq: "Request received (demo). We’ll confirm availability and propose slots.",
+    ctaReq: "Request prepared. Copy the inquiry brief or continue with a private viewing path.",
     ctaSaved: "Saved to shortlist.",
     ctaRemoved: "Removed from shortlist.",
     bd: "bd",
@@ -229,22 +248,38 @@ const ui = (lang: Lang) => {
     save: "Guardar en selección",
     saved: "Guardado",
     lens: "Barcelona Lens",
-    desc: "DESCRIPCIÓN",
+    privateRecommendation: "Recomendacion privada",
+    selectedObject: "Ficha de adquisición",
+    desc: "NOTAS ADVISORY",
     gallery: "GALERÍA",
+    inspectGallery: "Inspeccionar galería",
     neighborhood: "ENCAJE DE BARRIO",
     openDistrict: "Abrir distrito →",
     recommended: "Recomendado para:",
+    advisorMemo: "Memo del asesor",
+    signals: "Señales de asesoría",
+    bestFor: "Ideal para",
+    signal: "Señal",
+    tradeOff: "Trade-off",
+    riskNote: "Nota de riesgo",
+    readiness: "Preparación de visita",
+    priority: "Prioridad shortlist",
+    acquisitionNote: "Nota de adquisición",
+    advisoryPath: "Ruta advisory",
+    privateBrief: "Brief privado",
+    districtFit: "encaje de distrito",
+    viewingPath: "ruta de visita",
     numbers: "NÚMEROS",
     ppsm: "Precio / m²",
     est: "Costes de compra*",
     liquidity: "Liquidez",
     roi: "Potencial ROI",
-    ref: "Métrica de referencia (demo).",
-    estNote: "*Rango demo. Varía por impuestos/fees y escenario.",
-    lensNote: "Enfoque advisory (demo).",
-    roiNote: "Estimación demo de alto nivel.",
+    ref: "Métrica de referencia.",
+    estNote: "*Rango indicativo. Varia por impuestos, gastos y escenario.",
+    lensNote: "Enfoque advisory.",
+    roiNote: "Estimacion advisory de alto nivel.",
     risk: "SEÑALES DE RIESGO",
-    ctaReq: "Solicitud recibida (demo). Confirmaremos disponibilidad y propondremos horarios.",
+    ctaReq: "Solicitud preparada. Copia el brief o continua con una ruta de visita privada.",
     ctaSaved: "Guardado en selección.",
     ctaRemoved: "Quitado de la selección.",
     bd: "hab",
@@ -290,11 +325,6 @@ export default function PropertyShowcase({
 
   const [ctaMsg, setCtaMsg] = useState<string>("");
 
-  const requestViewing = () => {
-    setCtaMsg(L.ctaReq);
-    window.setTimeout(() => setCtaMsg(""), 2200);
-  };
-
   const saveToShortlist = () => {
     toggle(listing.id);
     window.dispatchEvent(new CustomEvent("sc:shortlist_ui_open"));
@@ -308,10 +338,44 @@ export default function PropertyShowcase({
   const titleText = lang === "es" ? (listing.title_es ?? listing.title) : listing.title;
   const descText = lang === "es" ? (listing.description_es ?? listing.description) : listing.description;
   const highlights = lang === "es" && listing.highlights_es ? listing.highlights_es : listing.highlights;
+  const advisoryCopy = getListingAdvisoryCopy(listing, lang);
+  const districtLabel = listing.districtLabel ?? listing.district;
+  const requestLabel = advisoryCopy.nextAction || L.request;
+  const advisorMemo = advisoryCopy.advisorReason || advisoryCopy.acquisitionNote || advisoryCopy.bestFor || descText;
+  const chamberMeta = `${districtLabel} / ${listing.sqm} m2 / ${listing.beds} ${L.bd} / EUR ${fmtEUR(listing.price)}`;
+  const pathIntent = advisoryCopy.bestFor || L.privateBrief;
+  const advisoryPath = `${pathIntent} -> ${districtLabel || L.districtFit} -> ${titleText} -> ${requestLabel || L.viewingPath}`;
+  const signalRows = [
+    { label: L.bestFor, value: advisoryCopy.bestFor },
+    { label: L.signal, value: advisoryCopy.signal },
+    { label: L.tradeOff, value: advisoryCopy.tradeOff },
+    { label: L.riskNote, value: advisoryCopy.riskNote },
+    { label: L.readiness, value: advisoryCopy.viewingReadinessLabel },
+  ].filter((row) => row.value);
+  const riskFlags = [advisoryCopy.riskNote, ...adv.riskFlags.filter((r) => r !== advisoryCopy.riskNote)].filter(Boolean);
+
+  const requestViewing = (source: Extract<AdvisoryInquirySource, "property" | "gallery"> = "property") => {
+    openAdvisoryInquiry({
+      source,
+      districtLabel,
+      propertyTitle: titleText,
+      propertyId: listing.id,
+      nextAction: requestLabel,
+      advisorNote: advisorMemo,
+    });
+    setCtaMsg(L.ctaReq);
+    window.setTimeout(() => setCtaMsg(""), 2200);
+  };
 
   const allImages = useMemo(
-    () => [{ src: listing.images.hero }, ...listing.images.gallery.map((src) => ({ src }))],
-    [listing.images.hero, listing.images.gallery]
+    () => [
+      { src: listing.images.hero, alt: `${titleText} private recommendation hero image` },
+      ...listing.images.gallery.map((src, i) => ({
+        src,
+        alt: `${titleText} gallery image ${i + 1}`,
+      })),
+    ],
+    [listing.images.hero, listing.images.gallery, titleText]
   );
 
   const [lbOpen, setLbOpen] = useState(false);
@@ -324,25 +388,39 @@ export default function PropertyShowcase({
   };
 
   return (
-    <div className="grid gap-10 lg:grid-cols-[1fr_420px]">
-      <div className="space-y-14">
-        <section data-section="overview" className="space-y-4">
-          <MachineReadout code={listing.code} progress={activeP} />
+    <div className="bcn-property-shell bcn-section grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)]">
+      <div className="space-y-16">
+        <section data-section="overview" className="bcn-property-file bcn-section--threshold space-y-8 border-b border-black/10 pb-10">
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.18em] text-black/42">
+              <span>{L.privateRecommendation}</span>
+              <span className="h-px w-10 bg-black/14" />
+              <span>{L.selectedObject} {listing.code}</span>
+            </div>
 
-          <h1 className="text-[26px] leading-[1.1] tracking-tight">{titleText}</h1>
+            <h1 className="bcn-advisory-line max-w-[820px] text-[42px] leading-[0.98] tracking-tight text-black/90 sm:text-[64px]">
+              {titleText}
+            </h1>
 
-          <div className="text-[12px] text-black/60">
-            {listing.district} · {listing.sqm} m² · {listing.beds} {L.bd} · {listing.baths} {L.ba} · €
-            {fmtEUR(listing.price)}
+            <div className="max-w-[760px] text-[13px] leading-[1.7] text-black/58">
+              {districtLabel} / {listing.sqm} m2 / {listing.beds} {L.bd} / {listing.baths} {L.ba} / EUR{" "}
+              {fmtEUR(listing.price)}
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2 text-[12px] text-black/62">
+            <span className="border border-black/10 bg-white/70 px-3 py-1.5">{L.readiness}: {advisoryCopy.viewingReadinessLabel}</span>
+            <span className="border border-black/10 bg-white/70 px-3 py-1.5">{L.priority}: #{listing.shortlistPriority}</span>
+            <span className="border border-black/10 bg-white/70 px-3 py-1.5">{L.lens}: {listing.district}</span>
           </div>
 
           <div className="flex flex-wrap items-center gap-2 pt-2">
             <button
               type="button"
-              onClick={requestViewing}
-              className="rounded-full border border-black/25 bg-white px-4 py-2 text-[12px] hover:border-black/35"
+              onClick={() => requestViewing("property")}
+              className="bcn-property-cta-primary rounded-full border border-black/25 bg-white px-4 py-2 text-[12px] hover:border-black/35"
             >
-              {L.request}
+              {requestLabel}
             </button>
 
             <button
@@ -356,6 +434,14 @@ export default function PropertyShowcase({
               ].join(" ")}
             >
               {saved ? L.saved : L.save}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => openLightboxBySrc(listing.images.hero)}
+              className="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
+            >
+              {L.inspectGallery}
             </button>
 
             <a
@@ -372,22 +458,50 @@ export default function PropertyShowcase({
             </div>
           )}
 
-          <div className="grid gap-2 pt-4">
+          <div className="flex flex-wrap gap-2 pt-2">
             {highlights.map((h) => (
-              <div key={h} className="rounded-xl border border-black/10 bg-white px-3 py-2 text-[12px]">
+              <span key={h} className="rounded-full border border-black/10 bg-[rgb(var(--paper))] px-3 py-1.5 text-[12px] text-black/64">
                 {h}
+              </span>
+            ))}
+          </div>
+
+          <div className="mt-8 grid gap-5 lg:grid-cols-[1.16fr_0.84fr]">
+            <div className="bcn-property-memo bcn-memo-surface bg-[var(--bcn-graphite)] p-6 pl-7 text-[var(--bcn-porcelain)] shadow-[0_30px_110px_rgba(28,28,24,0.16)]">
+              <div className="text-[11px] uppercase tracking-[0.18em] text-white/48">{L.advisorMemo}</div>
+              <p className="mt-5 text-[24px] leading-[1.3] tracking-tight text-white/86">{advisorMemo}</p>
+              {advisoryCopy.acquisitionNote && (
+                <p className="mt-6 border-t border-white/12 pt-5 text-[13px] leading-[1.75] text-white/62">
+                  <span className="mb-2 block text-[10px] uppercase tracking-[0.18em] text-white/38">{L.acquisitionNote}</span>
+                  {advisoryCopy.acquisitionNote}
+                </p>
+              )}
+            </div>
+
+            <div className="bcn-property-path bcn-editorial-surface border-l border-black/10 bg-[rgb(var(--paper))] p-5">
+              <div className="text-[11px] uppercase tracking-[0.18em] text-black/42">{L.advisoryPath}</div>
+              <p className="mt-4 text-[14px] leading-[1.65] text-black/66">{advisoryPath}</p>
+            </div>
+          </div>
+
+          <div className="bcn-property-signals bcn-section--threshold border-y border-black/10 py-2">
+            <div className="px-1 py-4 text-[11px] uppercase tracking-[0.18em] text-black/42">{L.signals}</div>
+            {signalRows.map((row) => (
+              <div key={row.label} className="grid gap-3 border-t border-black/10 px-1 py-4 sm:grid-cols-[170px_1fr]">
+                <div className="text-[11px] text-black/42">{row.label}</div>
+                <div className="text-[13px] leading-[1.65] text-black/66">{row.value}</div>
               </div>
             ))}
           </div>
 
           <div className="mt-6 space-y-3">
             <div className="text-[12px] tracking-[0.18em] text-black/50">{L.desc}</div>
-            <div className="rounded-2xl border border-black/10 bg-white p-4">
+            <div className="border-l border-black/10 bg-[rgb(var(--paper))] p-5">
               {descText
                 .split("\n\n")
                 .filter(Boolean)
                 .map((p, i) => (
-                  <p key={i} className={["text-[12px] text-black/60", i ? "mt-3" : ""].join(" ")}>
+                  <p key={i} className={["text-[13px] leading-[1.85] text-black/60", i ? "mt-4" : ""].join(" ")}>
                     {p}
                   </p>
                 ))}
@@ -395,11 +509,11 @@ export default function PropertyShowcase({
           </div>
         </section>
 
-        <section data-section="gallery" className="space-y-3">
+        <section data-section="gallery" className="bcn-section space-y-3">
           <div className="text-[12px] tracking-[0.18em] text-black/50">{L.gallery}</div>
           <div className="grid gap-3 md:grid-cols-2">
             {listing.images.gallery.map((src) => (
-              <div key={src} className="overflow-hidden rounded-2xl border border-black/10 bg-white">
+              <div key={src} className="overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
                 <div className="aspect-[4/5] bg-black/5">
                   <button
                     type="button"
@@ -407,7 +521,13 @@ export default function PropertyShowcase({
                     className="h-full w-full"
                     aria-label="Open image"
                   >
-                    <img className="h-full w-full object-cover" src={src} alt="" loading="lazy" />
+                    <img
+                      className="h-full w-full object-cover"
+                      src={src}
+                      alt={`${titleText} gallery view`}
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </button>
                 </div>
               </div>
@@ -415,7 +535,7 @@ export default function PropertyShowcase({
           </div>
         </section>
 
-        <section data-section="neighborhood" className="space-y-3">
+        <section data-section="neighborhood" className="bcn-section space-y-3">
           <div className="flex items-center justify-between">
             <div className="text-[12px] tracking-[0.18em] text-black/50">{L.neighborhood}</div>
             <a href={`${prefix}/district/${adv.districtSlug}`} className="text-[12px] text-black/50 hover:text-black">
@@ -423,7 +543,7 @@ export default function PropertyShowcase({
             </a>
           </div>
 
-          <div className="rounded-2xl border border-black/10 bg-white p-4">
+          <div className="border border-black/10 bg-[rgb(var(--paper))] p-5">
             <div className="text-[12px] text-black/60">{L.recommended}</div>
 
             <div className="mt-3 flex flex-wrap gap-2">
@@ -434,7 +554,7 @@ export default function PropertyShowcase({
               {adv.facts.slice(0, 4).map((f) => (
                 <div
                   key={f}
-                  className="rounded-xl border border-black/10 bg-white px-3 py-2 text-[12px] text-black/70"
+                  className="border border-black/10 bg-white px-3 py-2 text-[12px] text-black/70"
                 >
                   {f}
                 </div>
@@ -446,39 +566,30 @@ export default function PropertyShowcase({
         <section data-section="numbers" className="space-y-3">
           <div className="text-[12px] tracking-[0.18em] text-black/50">{L.numbers}</div>
 
-          <div className="grid gap-3 md:grid-cols-2">
-            <div className="rounded-2xl border border-black/10 bg-white p-4">
-              <div className="text-[12px] text-black/50">{L.ppsm}</div>
-              <div className="mt-1 text-[18px] tracking-tight">€{fmtEUR(adv.ppsm)}</div>
-              <div className="mt-1 text-[12px] text-black/60">{L.ref}</div>
-            </div>
-
-            <div className="rounded-2xl border border-black/10 bg-white p-4">
-              <div className="text-[12px] text-black/50">{L.est}</div>
-              <div className="mt-1 text-[18px] tracking-tight">{adv.estCosts}</div>
-              <div className="mt-1 text-[12px] text-black/60">{L.estNote}</div>
-            </div>
-
-            <div className="rounded-2xl border border-black/10 bg-white p-4">
-              <div className="text-[12px] text-black/50">{L.liquidity}</div>
-              <div className="mt-1 text-[18px] tracking-tight">{adv.liquidity}</div>
-              <div className="mt-1 text-[12px] text-black/60">{L.lensNote}</div>
-            </div>
-
-            <div className="rounded-2xl border border-black/10 bg-white p-4">
-              <div className="text-[12px] text-black/50">{L.roi}</div>
-              <div className="mt-1 text-[18px] tracking-tight">{adv.roi}</div>
-              <div className="mt-1 text-[12px] text-black/60">{L.roiNote}</div>
-            </div>
+          <div className="border-y border-black/10 bg-[rgb(var(--paper))]">
+            {[
+              [L.ppsm, `€${fmtEUR(adv.ppsm)}`, L.ref],
+              [L.est, adv.estCosts, L.estNote],
+              [L.liquidity, adv.liquidity, L.lensNote],
+              [L.roi, adv.roi, L.roiNote],
+            ].map(([label, value, note]) => (
+              <div key={label} className="grid gap-2 border-b border-black/10 px-4 py-4 last:border-b-0 sm:grid-cols-[190px_1fr]">
+                <div className="text-[12px] text-black/46">{label}</div>
+                <div>
+                  <div className="text-[18px] tracking-tight text-black/82">{value}</div>
+                  <div className="mt-1 text-[12px] leading-[1.55] text-black/54">{note}</div>
+                </div>
+              </div>
+            ))}
           </div>
 
-          <div className="rounded-2xl border border-black/10 bg-white p-4">
+          <div className="border-l border-black/10 bg-[rgb(var(--paper))] p-5">
             <div className="text-[12px] tracking-[0.18em] text-black/50">{L.risk}</div>
             <div className="mt-3 grid gap-2">
-              {adv.riskFlags.map((r) => (
+              {riskFlags.map((r) => (
                 <div
                   key={r}
-                  className="rounded-xl border border-black/10 bg-white px-3 py-2 text-[12px] text-black/70"
+                  className="border-t border-black/10 py-2 text-[12px] text-black/66 first:border-t-0"
                 >
                   {r}
                 </div>
@@ -507,6 +618,21 @@ export default function PropertyShowcase({
         setIndex={setLbIndex}
         onClose={() => setLbOpen(false)}
         lang={lang}
+        context={{
+          title: titleText,
+          meta: chamberMeta,
+          advisorNote: advisorMemo,
+          bestFor: advisoryCopy.bestFor,
+          signal: advisoryCopy.signal,
+          tradeOff: advisoryCopy.tradeOff,
+          readiness: advisoryCopy.viewingReadinessLabel,
+          requestLabel,
+          saveLabel: L.save,
+          savedLabel: L.saved,
+          isSaved: saved,
+        }}
+        onRequestAction={() => requestViewing("gallery")}
+        onSaveAction={saveToShortlist}
       />
     </div>
   );

@@ -1,0 +1,345 @@
+---
+import BarcelonaLensSystem from "../islands/BarcelonaLensSystem";
+import { bcnMedia } from "../../data/bcnMedia";
+import { bcnLensMedia } from "../../data/bcnLensMedia";
+
+type Lang = "en" | "es";
+
+const { lang = "en" } = Astro.props as { lang?: Lang };
+const prefix = lang === "es" ? "/es" : "";
+
+const copy = lang === "es"
+  ? {
+      eyebrow: "INTELIGENCIA PRIVADA DE PROPIEDAD",
+      title: "Asesoría privada inmobiliaria en Barcelona.",
+      intro: "Una superficie privada de adquisición para compradores que necesitan inteligencia de distrito, señal del inmueble y una shortlist que merezca conversación.",
+      start: "Iniciar búsqueda privada",
+      dossier: "Abrir dossier",
+      metrics: [
+        ["72h", "shortlist curada"],
+        ["3-5", "opciones listas para asesoría"],
+        ["Lens", "encaje de distrito primero"],
+        ["Acción", "ruta de visita"],
+      ],
+      journey: ["Intención comprador", "Lens de distrito", "Señal inmueble", "Shortlist privada", "Acción advisory"],
+      direction: "No portal. No grid-first browsing. Una experiencia privada para decidir con claridad.",
+      pathEyebrow: "RUTA DE ADQUISICIÓN",
+      thresholdHandoff: "El umbral privado se convierte en brief comprador, luego en lente de distrito y después en señal de propiedad.",
+      lensBridgeEyebrow: "INTENCIÓN → LENTE",
+      lensBridgeTitle: "La intención define la lente antes de comparar propiedades.",
+      lensBridgeCopy: "El siguiente campo traduce prioridades del comprador en inteligencia de distrito y después en señales inmobiliarias seleccionadas.",
+      bridgeSteps: ["Brief", "Lens", "Señal"],
+      noteEyebrow: "NOTA PRIVADA DE ADQUISICIÓN",
+      noteStatus: "borrador 72h",
+      noteTitle: "Relocalización con luz mediterránea, filtrada por calma familiar.",
+      noteLens: "Lens",
+      noteLensText: "Diagonal Mar con benchmark de calma en Sarrià.",
+      noteSignal: "Señal",
+      noteSignalText: "terraza, bajo riesgo de reforma, diligencia de comunidad.",
+      buildBrief: "Construir este brief",
+      viewDossier: "Ver dossier",
+      methodEyebrow: "MÉTODO DE ASESORÍA",
+      methodTitle: "Cinco pasos calmados desde intención hasta acción.",
+      method: [
+        ["01", "Brief", "Intención / presupuesto / restricciones."],
+        ["02", "Lens", "Ritmo de distrito / luz / riesgo."],
+        ["03", "Señal", "Encaje / compensación / prioridad."],
+        ["04", "Dossier", "3-5 opciones, listas para enviar."],
+        ["05", "Acción", "Llamada / visita / diligencia."],
+      ],
+      handoff: "ENTREGA DE ASESORÍA",
+      handoffText: "Intención, lente y shortlist preparados para una solicitud privada.",
+      actionEyebrow: "SIGUIENTE ACCIÓN PRIVADA",
+      actionTitle: "Convierte un brief privado en una ruta de visita.",
+      actionCopy: "El sistema convierte intención, lógica de distrito y señales de propiedad en una solicitud preparada para asesoría.",
+      actionPath: ["Intención", "Lente", "Señal", "Dossier", "Acción"],
+      actionCards: [
+        ["01", "Intención seleccionada", "La prioridad del comprador se convierte en el marco de búsqueda."],
+        ["02", "Lente formada", "La lógica de distrito reduce el campo con claridad."],
+        ["03", "Shortlist preparada", "Las propiedades seleccionadas forman un dossier privado."],
+        ["04", "Ruta de visita preparada", "La solicitud queda lista para copiar o comentar."],
+      ],
+      contact: "Reservar llamada de asesoría",
+      heroAlt: "Vista elevada de arquitectura residencial refinada en Barcelona para asesoría inmobiliaria privada",
+    }
+  : {
+      eyebrow: "PRIVATE PROPERTY INTELLIGENCE",
+      title: "Barcelona Private Property Advisory.",
+      intro: "A private acquisition surface for buyers who need district intelligence, property signal and a shortlist worth discussing.",
+      start: "Start private search",
+      dossier: "Open dossier",
+      metrics: [
+        ["72h", "curated shortlist"],
+        ["3-5", "advisor-ready options"],
+        ["Lens", "district fit first"],
+        ["Action", "viewing path"],
+      ],
+      journey: ["Buyer intent", "District lens", "Property signal", "Private shortlist", "Advisory action"],
+      direction: "No portal. No grid-first browsing. A private surface for making a high-value decision with clarity.",
+      pathEyebrow: "ACQUISITION PATH",
+      thresholdHandoff: "A private threshold becomes a buyer brief, then a district lens, then a property signal worth discussing.",
+      lensBridgeEyebrow: "INTENT -> LENS",
+      lensBridgeTitle: "Intent defines the lens before properties compete for attention.",
+      lensBridgeCopy: "The next field translates buyer priority into district intelligence, then into selected property signals.",
+      bridgeSteps: ["Brief", "Lens", "Signal"],
+      noteEyebrow: "PRIVATE ACQUISITION NOTE",
+      noteStatus: "72h draft",
+      noteTitle: "Sea-light relocation, filtered for family calm.",
+      noteLens: "Lens",
+      noteLensText: "Diagonal Mar with Sarria calm benchmark.",
+      noteSignal: "Signal",
+      noteSignalText: "terrace, low renovation risk, HOA diligence.",
+      buildBrief: "Build this brief",
+      viewDossier: "View dossier",
+      methodEyebrow: "ADVISORY METHOD",
+      methodTitle: "Five calm steps from intent to action.",
+      method: [
+        ["01", "Brief", "Intent / budget / constraints."],
+        ["02", "Lens", "District rhythm / light / risk."],
+        ["03", "Signal", "Fit / trade-off / priority."],
+        ["04", "Dossier", "3-5 options, ready to send."],
+        ["05", "Action", "Call / viewing / diligence."],
+      ],
+      handoff: "ADVISORY HANDOFF",
+      handoffText: "Intent, lens and shortlist prepared for a private request.",
+      actionEyebrow: "NEXT PRIVATE ACTION",
+      actionTitle: "Turn a private brief into a viewing path.",
+      actionCopy: "The system carries buyer intent, district logic and selected property signals into a copy-ready advisory request.",
+      actionPath: ["Intent", "Lens", "Signal", "Dossier", "Action"],
+      actionCards: [
+        ["01", "Intent selected", "Buyer priority becomes the search frame."],
+        ["02", "Lens formed", "District logic narrows the field."],
+        ["03", "Shortlist ready", "Selected properties become a private dossier."],
+        ["04", "Viewing path prepared", "The request is ready to copy or discuss."],
+      ],
+      contact: "Book advisory call",
+      heroAlt: "Elevated view of refined Barcelona residential architecture for private property advisory",
+    };
+---
+
+<section id="advisory" data-bcn-section="threshold" class="bcn-section relative min-h-[calc(100vh-5.5rem)] scroll-mt-24 overflow-hidden pb-10">
+  <div class="grid min-h-[calc(100vh-8rem)] min-w-0 gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-stretch">
+    <div class="relative z-10 flex min-w-0 flex-col justify-end py-12 lg:py-20">
+      <div class="bcn-hero-primary min-w-0 max-w-[760px]">
+        <div class="bcn-signal-kicker mb-8 text-[11px] tracking-[0.22em] text-[var(--bcn-muted)]">
+          <span>{copy.eyebrow}</span>
+          <span>BCN</span>
+        </div>
+
+        <h1 class="bcn-advisory-line text-[48px] leading-[0.94] tracking-tight text-[var(--bcn-graphite)] sm:text-[78px] xl:text-[94px]">
+          {copy.title}
+        </h1>
+
+        <p class="bcn-hero-copy mt-7 max-w-[620px] text-[18px] leading-[1.55] tracking-tight text-[var(--bcn-graphite-soft)] sm:text-[23px]">
+          {copy.intro}
+        </p>
+
+        <div class="mt-9 flex flex-wrap gap-2">
+          <a
+            href={`${prefix}/search`}
+            data-open-inquiry
+            data-inquiry-source="hero"
+            data-inquiry-next-action={copy.start}
+            class="rounded-full border border-[var(--bcn-line-strong)] bg-[var(--bcn-surface)] px-5 py-2.5 text-[12px] text-[var(--bcn-graphite)] shadow-[var(--bcn-shadow-soft)] hover:border-[var(--bcn-graphite)]"
+          >
+            {copy.start}
+          </a>
+          <button data-open-shortlist type="button" class="rounded-full border border-[var(--bcn-line)] px-5 py-2.5 text-[12px] text-[var(--bcn-graphite-soft)] hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)]">
+            {copy.dossier}
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-14 grid max-w-[740px] border-y border-[rgba(23,23,22,0.1)] bg-white/24 sm:grid-cols-4">
+        {copy.metrics.map(([k, v]) => (
+          <div class="border-b border-[var(--bcn-line)] py-4 sm:border-b-0 sm:border-r sm:px-4 sm:first:pl-0 sm:last:border-r-0">
+            <div class="text-[22px] leading-none tracking-tight text-[var(--bcn-graphite)]">{k}</div>
+            <div class="mt-2 text-[11px] uppercase tracking-[0.14em] text-[var(--bcn-muted)]">{v}</div>
+          </div>
+        ))}
+      </div>
+
+      <div class="bcn-hero-journey-note mt-7 max-w-[760px] border-l border-[var(--bcn-line)] pl-4">
+        <div class="text-[11px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{copy.direction}</div>
+        <div class="mt-4 flex flex-wrap items-center gap-2">
+          {copy.journey.map((step, index) => (
+            <>
+              <span class="border border-[var(--bcn-line)] bg-[rgba(255,255,252,0.46)] px-3 py-1.5 text-[11px] uppercase tracking-[0.13em] text-[var(--bcn-graphite-soft)]">
+                {step}
+              </span>
+              {index < copy.journey.length - 1 && <span class="hidden h-px w-5 bg-[var(--bcn-line)] sm:block"></span>}
+            </>
+          ))}
+        </div>
+        <div class="mt-4 max-w-[620px] text-[13px] leading-[1.65] text-[var(--bcn-graphite-soft)]">
+          {copy.thresholdHandoff}
+        </div>
+      </div>
+    </div>
+
+    <div class="relative min-h-[640px] overflow-hidden bg-[var(--bcn-limestone)] shadow-[0_44px_120px_rgba(28,28,24,0.13)] lg:min-h-[calc(100vh-7rem)]">
+      <img
+        src={bcnMedia.hero.main.src}
+        alt={copy.heroAlt}
+        class="absolute inset-0 h-full w-full object-cover"
+        loading="eager"
+        decoding="async"
+        width={bcnMedia.hero.main.width}
+        height={bcnMedia.hero.main.height}
+      />
+      <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(23,23,22,0.12),rgba(246,246,242,0.03)_38%,rgba(246,246,242,0.2)_100%)]"></div>
+      <div class="absolute inset-x-10 top-10 h-px bg-white/70"></div>
+      <div class="absolute bottom-10 left-10 top-10 w-px bg-white/60"></div>
+
+      <div class="absolute bottom-8 left-8 w-[min(82vw,440px)] border border-white/65 bg-[rgba(255,255,252,0.9)] p-6 shadow-[0_24px_80px_rgba(23,23,22,0.14)] backdrop-blur-sm">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--bcn-line)] pb-3">
+          <div class="min-w-0 max-w-[220px] text-[11px] tracking-[0.2em] text-[var(--bcn-muted)]">{copy.noteEyebrow}</div>
+          <div class="shrink-0 border border-[var(--bcn-line)] px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-[var(--bcn-sea-deep)]">{copy.noteStatus}</div>
+        </div>
+        <div class="mt-5 text-[28px] leading-[1.02] tracking-tight text-[var(--bcn-graphite)]">
+          {copy.noteTitle}
+        </div>
+        <div class="mt-5 grid gap-3 border-y border-[var(--bcn-line)] py-4 text-[12px] leading-[1.55] text-[var(--bcn-graphite-soft)]">
+          <div><span class="text-[var(--bcn-muted)]">{copy.noteLens}:</span> {copy.noteLensText}</div>
+          <div><span class="text-[var(--bcn-muted)]">{copy.noteSignal}:</span> {copy.noteSignalText}</div>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <a
+            href={`${prefix}/search?mode=sea&tags=family,quiet`}
+            data-open-inquiry
+            data-inquiry-source="hero"
+            data-inquiry-intent={lang === "es" ? "Luz mediterránea / calma familiar" : "Sea light / family calm"}
+            data-inquiry-district={lang === "es" ? "Diagonal Mar con benchmark Sarrià" : "Diagonal Mar with Sarria benchmark"}
+            data-inquiry-next-action={copy.buildBrief}
+            class="rounded-full border border-[var(--bcn-line-strong)] px-3 py-1.5 text-[12px] text-[var(--bcn-graphite)] hover:border-[var(--bcn-graphite)]"
+          >
+            {copy.buildBrief}
+          </a>
+          <button data-open-shortlist type="button" class="rounded-full border border-[var(--bcn-line)] px-3 py-1.5 text-[12px] text-[var(--bcn-muted)] hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)]">
+            {copy.viewDossier}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-bcn-section="intent" class="bcn-home-bridge mt-16 scroll-mt-24 border-y border-[var(--bcn-line)] py-8 sm:mt-20">
+  <div class="grid gap-6 lg:grid-cols-[0.58fr_1.42fr] lg:items-center">
+    <div>
+      <div class="text-[11px] uppercase tracking-[0.2em] text-[var(--bcn-muted)]">{copy.lensBridgeEyebrow}</div>
+      <h2 class="mt-4 max-w-[560px] text-[30px] leading-[1.04] tracking-tight text-[var(--bcn-graphite)] sm:text-[42px]">
+        {copy.lensBridgeTitle}
+      </h2>
+    </div>
+    <div class="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
+      <p class="max-w-[720px] text-[14px] leading-[1.75] text-[var(--bcn-graphite-soft)]">
+        {copy.lensBridgeCopy}
+      </p>
+      <div class="bcn-home-path flex flex-wrap items-center gap-2" aria-label={copy.pathEyebrow}>
+        {copy.bridgeSteps.map((step, index) => (
+          <>
+            <span class="border border-[var(--bcn-line)] bg-[rgba(255,255,252,0.58)] px-3 py-2 text-[10px] uppercase tracking-[0.16em] text-[var(--bcn-muted)]">
+              {String(index + 1).padStart(2, "0")} / {step}
+            </span>
+            {index < copy.bridgeSteps.length - 1 && <span class="hidden h-px w-8 bg-[var(--bcn-line-strong)] sm:block"></span>}
+          </>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<div data-bcn-section="lens" class="bcn-home-lens-frame">
+  <BarcelonaLensSystem client:load lang={lang} />
+</div>
+
+<section id="method" data-bcn-section="method" class="bcn-home-method bcn-section--threshold mt-32 scroll-mt-24 py-16">
+  <div class="grid gap-9 lg:grid-cols-[0.62fr_1.38fr]">
+  <div class="bcn-home-method__intro">
+    <div class="text-[12px] tracking-[0.18em] text-[var(--bcn-muted)]">{copy.methodEyebrow}</div>
+    <h2 class="mt-4 max-w-[500px] text-[34px] leading-[1.02] tracking-tight text-[var(--bcn-graphite)] sm:text-[48px]">
+      {copy.methodTitle}
+    </h2>
+  </div>
+
+  <div class="bcn-home-method__list grid gap-2">
+    {copy.method.map(([n, title, text]) => (
+      <div class="bcn-home-method__row grid gap-3 py-5 sm:grid-cols-[80px_180px_1fr]">
+        <div class="text-[11px] tracking-[0.18em] text-[var(--bcn-muted)]">{n}</div>
+        <div class="text-[18px] tracking-tight text-[var(--bcn-graphite)]">{title}</div>
+        <div class="text-[13px] leading-[1.75] text-[var(--bcn-muted)]">{text}</div>
+      </div>
+    ))}
+  </div>
+  </div>
+</section>
+
+<section id="action" data-bcn-section="action" class="bcn-final-handoff bcn-editorial-surface mt-32 scroll-mt-24 overflow-hidden bg-[var(--bcn-surface)] ring-1 ring-[var(--bcn-line)]">
+  <div class="grid min-h-[620px] lg:grid-cols-[0.92fr_1.08fr]">
+    <div class="bcn-final-handoff__media relative min-h-[430px] overflow-hidden bg-[linear-gradient(135deg,var(--bcn-limestone),var(--bcn-porcelain))]">
+      <img
+        src={bcnLensMedia.materials.handoff.src}
+        alt={bcnLensMedia.materials.handoff.alt}
+        class="absolute inset-0 h-full w-full object-cover"
+        loading="lazy"
+        decoding="async"
+        width={bcnLensMedia.materials.handoff.width}
+        height={bcnLensMedia.materials.handoff.height}
+      />
+      <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(23,23,22,0.14),rgba(246,246,242,0.02)_48%,rgba(23,23,22,0.08))]"></div>
+      <div class="absolute inset-x-8 top-8 h-px bg-white/62" aria-hidden="true"></div>
+      <div class="absolute bottom-8 left-8 top-8 w-px bg-white/54" aria-hidden="true"></div>
+      <div class="bcn-final-handoff__media-note absolute bottom-6 left-6 right-6 border border-white/55 bg-[rgba(255,255,252,0.8)] p-5 shadow-[var(--bcn-shadow-soft)] backdrop-blur-sm sm:bottom-8 sm:left-8 sm:right-8">
+        <div class="text-[11px] tracking-[0.18em] text-[var(--bcn-muted)]">{copy.handoff}</div>
+        <div class="mt-3 text-[24px] leading-[1.05] tracking-tight text-[var(--bcn-graphite)]">{copy.handoffText}</div>
+        <div class="mt-5 flex flex-wrap items-center gap-2" aria-label={copy.actionEyebrow}>
+          {copy.actionPath.map((step, index) => (
+            <>
+              <span class="text-[10px] uppercase tracking-[0.14em] text-[var(--bcn-graphite-soft)]">{step}</span>
+              {index < copy.actionPath.length - 1 && <span class="h-px w-5 bg-[var(--bcn-line-strong)]" aria-hidden="true"></span>}
+            </>
+          ))}
+        </div>
+      </div>
+    </div>
+    <div class="bcn-final-handoff__content relative flex flex-col justify-center p-8 sm:p-14">
+      <div class="absolute right-10 top-10 hidden h-28 w-28 border-r border-t border-[var(--bcn-line)] lg:block" aria-hidden="true"></div>
+      <div class="text-[12px] tracking-[0.18em] text-[var(--bcn-muted)]">{copy.actionEyebrow}</div>
+      <h2 class="mt-5 max-w-[680px] text-[42px] leading-[0.98] tracking-tight text-[var(--bcn-graphite)] sm:text-[66px]">
+        {copy.actionTitle}
+      </h2>
+      <p class="mt-6 max-w-[610px] text-[15px] leading-[1.75] text-[var(--bcn-graphite-soft)]">
+        {copy.actionCopy}
+      </p>
+      <div class="bcn-final-handoff__steps mt-9 grid border-y border-[var(--bcn-line)]">
+        {copy.actionCards.map(([n, title, text]) => (
+          <div class="bcn-final-handoff__step grid gap-3 border-b border-[var(--bcn-line)] py-4 last:border-b-0 sm:grid-cols-[58px_170px_1fr] sm:items-start">
+            <div class="text-[11px] tracking-[0.18em] text-[var(--bcn-muted)]">{n}</div>
+            <div class="text-[16px] leading-[1.12] tracking-tight text-[var(--bcn-graphite)]">{title}</div>
+            <div class="text-[13px] leading-[1.55] text-[var(--bcn-graphite-soft)]">{text}</div>
+          </div>
+        ))}
+      </div>
+      <div class="bcn-final-handoff__actions mt-8 flex flex-wrap gap-2">
+        <a
+          href={`${prefix}/search`}
+          data-open-inquiry
+          data-inquiry-source="contact"
+          data-inquiry-next-action={copy.start}
+          data-inquiry-advisor-note={copy.actionCopy}
+          class="rounded-full border border-[var(--bcn-line-strong)] bg-white/56 px-5 py-2.5 text-[12px] text-[var(--bcn-graphite)] shadow-[var(--bcn-shadow-soft)] hover:border-[var(--bcn-graphite)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--bcn-sea-deep)]"
+        >
+          {copy.start}
+        </a>
+        <button
+          data-open-shortlist
+          type="button"
+          class="rounded-full border border-[var(--bcn-line)] px-5 py-2.5 text-[12px] text-[var(--bcn-muted)] hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--bcn-sea-deep)]"
+        >
+          {copy.dossier}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,42 +1,195 @@
-﻿import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { bcnMedia } from "../../data/bcnMedia";
 import type { Listing } from "../../data/listings";
 import { useShortlist } from "../../hooks/useShortlist";
+import { getListingAdvisoryCopy, type AdvisoryLang } from "../../lib/getListingAdvisoryCopy";
+import { openAdvisoryInquiry } from "./AdvisoryInquiryPanel";
 
 type Lang = "en" | "es";
+type DossierStatus = "empty" | "building" | "ready";
 
 type WindowWithShortlist = Window & {
   __scOpenShortlist?: () => void;
+  __scPendingShortlistOpen?: boolean;
 };
 
 const ui = (lang: Lang) => {
   const en = {
-    button: "Shortlist",
+    button: "Dossier",
     close: "Close",
     copied: "Copied",
-    copy: "Copy link",
+    copySummary: "Copy dossier summary",
+    copyLink: "Copy dossier link",
+    copyPrompt: "Copy dossier summary:",
+    copyLinkPrompt: "Copy dossier link:",
     clear: "Clear",
-    none: "Nothing saved yet",
-    saved: "saved",
-    imported: "Shortlist imported from link.",
-    open: "Open",
+    none: "No selected options yet",
+    saved: "selected",
+    imported: "Private shortlist imported from link.",
+    open: "Open property",
     remove: "Remove",
+    title: "Private Shortlist Dossier",
+    subtitle: "Advisor-ready selection",
+    intro: "Selected properties for review, trade-off comparison and viewing path.",
+    request: "Request viewing path",
+    handoffEyebrow: "Advisory handoff",
+    handoffTitle: "Ready to turn this shortlist into a viewing path?",
+    handoffText: "Your selected properties, priorities and trade-offs can be converted into a copy-ready advisory brief.",
+    handoffCta: "Prepare viewing path request",
+    summaryOnly: "Copy dossier summary exports selected properties only.",
+    inquiryBrief: "Copy inquiry brief adds buyer notes, timing and contact.",
+    explore: "Explore recommendations",
+    count: "Selected",
+    highestReadiness: "Highest readiness",
+    topPriority: "Top priority",
+    districts: "Districts",
+    next: "Next",
+    status: "Dossier status",
+    statusEmpty: "Empty dossier",
+    statusBuilding: "Building shortlist",
+    statusReady: "Advisor-ready",
+    comparison: "Trade-off comparison",
+    property: "Property",
+    bestFor: "Best for",
+    signal: "Signal",
+    tradeoff: "Trade-off",
+    risk: "Risk note",
+    readiness: "Readiness",
+    priority: "Priority",
+    district: "District",
+    area: "Area",
+    bedrooms: "Bedrooms",
+    nextAction: "Next action",
+    emptyTitle: "Your private dossier is empty.",
+    emptyCopy: "Select properties from the advisory board to build a focused shortlist.",
+    summaryTitle: "Private Shortlist Dossier",
   };
+
   const es = {
-    button: "Selección",
+    button: "Dossier",
     close: "Cerrar",
     copied: "Copiado",
-    copy: "Copiar enlace",
+    copySummary: "Copiar resumen del dossier",
+    copyLink: "Copiar enlace del dossier",
+    copyPrompt: "Copiar resumen del dossier:",
+    copyLinkPrompt: "Copiar enlace del dossier:",
     clear: "Limpiar",
-    none: "Aún no hay guardados",
-    saved: "guardados",
-    imported: "Selección importada desde el enlace.",
-    open: "Abrir",
+    none: "Aún no hay opciones",
+    saved: "seleccionadas",
+    imported: "Shortlist privada importada desde el enlace.",
+    open: "Abrir propiedad",
     remove: "Quitar",
+    title: "Dossier privado de selección",
+    subtitle: "Selección preparada para asesoría",
+    intro: "Propiedades seleccionadas para revisar, comparar y solicitar visita.",
+    request: "Solicitar ruta de visita",
+    handoffEyebrow: "Handoff de asesoría",
+    handoffTitle: "¿Listo para convertir esta shortlist en una ruta de visita?",
+    handoffText: "Tus propiedades seleccionadas, prioridades y compensaciones pueden convertirse en un brief preparado para asesoría.",
+    handoffCta: "Preparar solicitud de ruta de visita",
+    summaryOnly: "Copiar resumen del dossier exporta solo las propiedades seleccionadas.",
+    inquiryBrief: "Copiar brief de solicitud añade notas, timing y contacto.",
+    explore: "Explorar recomendaciones",
+    count: "Seleccionadas",
+    highestReadiness: "Mayor preparación",
+    topPriority: "Prioridad principal",
+    districts: "Distritos",
+    next: "Siguiente",
+    status: "Estado del dossier",
+    statusEmpty: "Dossier vacío",
+    statusBuilding: "Construyendo shortlist",
+    statusReady: "Preparado para asesoría",
+    comparison: "Comparación de compensaciones",
+    property: "Propiedad",
+    bestFor: "Ideal para",
+    signal: "Señal",
+    tradeoff: "Compensación",
+    risk: "Nota de riesgo",
+    readiness: "Preparación",
+    priority: "Prioridad",
+    district: "Distrito",
+    area: "Superficie",
+    bedrooms: "Dormitorios",
+    nextAction: "Siguiente acción",
+    emptyTitle: "Tu dossier privado está vacío.",
+    emptyCopy: "Selecciona propiedades desde el panel de asesoría para crear una lista enfocada.",
+    summaryTitle: "Dossier privado de selección",
   };
+
   return lang === "es" ? es : en;
 };
+
+const readinessRank: Record<string, number> = {
+  High: 3,
+  Medium: 2,
+  Selective: 1,
+};
+
+const formatEUR = (n: number) => `EUR ${Intl.NumberFormat("en-US").format(Math.round(n))}`;
+
+function titleFor(x: Listing, lang: Lang) {
+  return lang === "es" ? x.title_es ?? x.title : x.title;
+}
+
+function districtFor(x: Listing) {
+  return x.districtLabel || x.district || "Barcelona";
+}
+
+function statusFor(count: number): DossierStatus {
+  if (count === 0) return "empty";
+  if (count < 3) return "building";
+  return "ready";
+}
+
+function statusLabel(status: DossierStatus, L: ReturnType<typeof ui>) {
+  if (status === "ready") return L.statusReady;
+  if (status === "building") return L.statusBuilding;
+  return L.statusEmpty;
+}
+
+function highestReadiness(items: Listing[], lang: AdvisoryLang) {
+  const best = [...items].sort(
+    (a, b) => (readinessRank[b.viewingReadiness] ?? 0) - (readinessRank[a.viewingReadiness] ?? 0)
+  )[0];
+  return best ? getListingAdvisoryCopy(best, lang).viewingReadinessLabel : "-";
+}
+
+function topPriority(items: Listing[]) {
+  const best = [...items].sort((a, b) => a.shortlistPriority - b.shortlistPriority)[0];
+  return best ? `#${best.shortlistPriority}` : "-";
+}
+
+function topNextAction(items: Listing[], fallback: string, lang: AdvisoryLang) {
+  const best = [...items].sort((a, b) => a.shortlistPriority - b.shortlistPriority)[0];
+  return best ? getListingAdvisoryCopy(best, lang).nextAction : fallback;
+}
+
+function districtSpread(items: Listing[]) {
+  const districts = Array.from(new Set(items.map(districtFor).filter(Boolean)));
+  return districts.length ? districts.join(", ") : "-";
+}
+
+function buildDossierSummary(items: Listing[], lang: Lang) {
+  const L = ui(lang);
+  const lines = [L.summaryTitle, ""];
+
+  items.forEach((x, index) => {
+    const copy = getListingAdvisoryCopy(x, lang);
+    lines.push(`${index + 1}. ${titleFor(x, lang)}`);
+    lines.push(`${L.district}: ${districtFor(x)}`);
+    lines.push(`${L.bestFor}: ${copy.bestFor || "-"}`);
+    lines.push(`${L.signal}: ${copy.signal || "-"}`);
+    lines.push(`${L.tradeoff}: ${copy.tradeOff || "-"}`);
+    lines.push(`${L.risk}: ${copy.riskNote || "-"}`);
+    lines.push(`${L.readiness}: ${copy.viewingReadinessLabel || "-"}`);
+    lines.push(`${L.nextAction}: ${copy.nextAction || L.request}`);
+    lines.push("");
+  });
+
+  return lines.join("\n").trim();
+}
 
 export default function ShortlistWidget({
   listings,
@@ -53,6 +206,7 @@ export default function ShortlistWidget({
   const { ids, count, remove, clear } = useShortlist();
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
   const [imported, setImported] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -60,6 +214,15 @@ export default function ShortlistWidget({
     () => ids.map((id) => listings.find((x) => x.id === id)).filter(Boolean) as Listing[],
     [ids, listings]
   );
+
+  const status = statusFor(items.length);
+  const summaryStats = [
+    { label: L.count, value: `${items.length}` },
+    { label: L.highestReadiness, value: highestReadiness(items, lang) },
+    { label: L.topPriority, value: topPriority(items) },
+    { label: L.districts, value: districtSpread(items) },
+    { label: L.next, value: topNextAction(items, L.request, lang) },
+  ];
 
   useEffect(() => {
     setMounted(true);
@@ -81,16 +244,22 @@ export default function ShortlistWidget({
 
   useEffect(() => {
     const openDrawer = () => setOpen(true);
+    const w = window as WindowWithShortlist;
 
     window.addEventListener("sc:shortlist_ui_open", openDrawer);
-    (window as WindowWithShortlist).__scOpenShortlist = openDrawer;
+    w.__scOpenShortlist = openDrawer;
+
+    if (w.__scPendingShortlistOpen) {
+      w.__scPendingShortlistOpen = false;
+      window.setTimeout(openDrawer, 0);
+    }
 
     return () => {
       window.removeEventListener("sc:shortlist_ui_open", openDrawer);
 
-      const w = window as WindowWithShortlist;
-      if (w.__scOpenShortlist === openDrawer) {
-        delete w.__scOpenShortlist;
+      const current = window as WindowWithShortlist;
+      if (current.__scOpenShortlist === openDrawer) {
+        delete current.__scOpenShortlist;
       }
     };
   }, []);
@@ -113,6 +282,20 @@ export default function ShortlistWidget({
     }
   }, []);
 
+  const copyDossierSummary = async () => {
+    if (!items.length) return;
+
+    const text = buildDossierSummary(items, lang);
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      window.prompt(L.copyPrompt, text);
+    }
+  };
+
   const copyShareLink = async () => {
     if (!ids.length) return;
 
@@ -125,11 +308,35 @@ export default function ShortlistWidget({
 
     try {
       await navigator.clipboard.writeText(text);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1600);
+      setCopiedLink(true);
+      window.setTimeout(() => setCopiedLink(false), 1600);
     } catch {
-      window.prompt("Copy link:", text);
+      window.prompt(L.copyLinkPrompt, text);
     }
+  };
+
+  const openDossierInquiry = (listing?: Listing) => {
+    const copy = listing ? getListingAdvisoryCopy(listing, lang) : undefined;
+    const selected = listing ? [listing, ...items.filter((item) => item.id !== listing.id)] : items;
+    const ordered = [...selected].sort((a, b) => a.shortlistPriority - b.shortlistPriority);
+    const top = ordered[0];
+
+    openAdvisoryInquiry({
+      source: "dossier",
+      districtLabel: listing ? districtFor(listing) : districtSpread(items),
+      propertyTitle: listing ? titleFor(listing, lang) : undefined,
+      propertyId: listing?.id,
+      nextAction: copy?.nextAction || topNextAction(items, L.request, lang),
+      selectedListings: selected,
+      advisorNote: copy?.advisorReason || copy?.acquisitionNote,
+      dossierMeta: {
+        selectedCount: selected.length,
+        districtSpread: districtSpread(selected),
+        topPriorityTitle: top ? titleFor(top, lang) : undefined,
+        highestReadiness: highestReadiness(selected, lang),
+        selectedTitles: selected.map((item) => titleFor(item, lang)),
+      },
+    });
   };
 
   const drawerUI = (
@@ -137,7 +344,7 @@ export default function ShortlistWidget({
       {open && (
         <>
           <motion.div
-            className="fixed inset-x-0 top-14 bottom-0 z-[80] bg-black/20 backdrop-blur-sm"
+            className="fixed inset-x-0 top-14 bottom-0 z-[80] bg-[rgba(23,23,22,0.24)] backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -145,95 +352,264 @@ export default function ShortlistWidget({
           />
 
           <motion.aside
-            className="fixed right-0 top-14 z-[90] h-[calc(100vh-3.5rem)] w-[min(92vw,420px)] border-l border-black/10 bg-white"
+            className="bcn-dossier-drawer fixed right-0 top-14 z-[90] h-[calc(100vh-3.5rem)] w-[min(94vw,640px)] overflow-y-auto border-l border-[var(--bcn-line-strong)] bg-[var(--bcn-surface)] shadow-[var(--bcn-shadow-soft)]"
             initial={{ x: 24, opacity: 0, filter: "blur(8px)" }}
             animate={{ x: 0, opacity: 1, filter: "blur(0px)" }}
             exit={{ x: 24, opacity: 0, filter: "blur(8px)" }}
-            transition={{ duration: 0.45, ease: [0.2, 0.8, 0.2, 1] }}
+            transition={{ duration: 0.36, ease: [0.2, 0.8, 0.2, 1] }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="shortlist-dossier-title"
           >
-            <div className="flex h-14 items-center justify-between border-b border-black/10 px-4">
-              <div className="text-[13px] font-medium tracking-tight">{L.button}</div>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="rounded-full border border-black/10 px-3 py-1.5 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
-              >
-                {L.close}
-              </button>
-            </div>
+            <div className="bg-[var(--bcn-graphite)] px-5 py-5 text-[var(--bcn-porcelain)]">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="text-[11px] tracking-[0.2em] text-white/52">{L.subtitle}</div>
+                  <div id="shortlist-dossier-title" className="mt-2 text-[24px] leading-[1.02] tracking-tight">
+                    {L.title}
+                  </div>
+                  <p className="mt-3 max-w-[440px] text-[12px] leading-[1.65] text-white/62">{L.intro}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="rounded-full border border-white/18 px-3 py-1.5 text-[12px] text-white/72 outline-none hover:border-white/34 hover:text-white focus-visible:ring-2 focus-visible:ring-white/35"
+                >
+                  {L.close}
+                </button>
+              </div>
 
-            <div className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="text-[12px] text-black/60">
+              <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-white/14 pt-4">
+                <div className="border border-white/14 px-3 py-2 text-[11px] uppercase tracking-[0.14em] text-white/72">
+                  {L.status}: {statusLabel(status, L)}
+                </div>
+                <div className="border border-white/14 px-3 py-2 text-[11px] uppercase tracking-[0.14em] text-white/52">
                   {count ? `${count} ${L.saved}` : L.none}
                 </div>
+              </div>
+            </div>
 
-                <div className="flex gap-2">
+            <div className="p-4 sm:p-5">
+              <div className="bcn-dossier-document grid overflow-hidden border border-[var(--bcn-line)] bg-[var(--bcn-porcelain)] sm:grid-cols-[1fr_152px]">
+                <div className="p-5">
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {summaryStats.map((stat) => (
+                      <div key={stat.label} className="border border-[var(--bcn-line)] bg-white/60 px-3 py-2">
+                        <div className="text-[10px] uppercase tracking-[0.15em] text-[var(--bcn-muted)]">{stat.label}</div>
+                        <div className="mt-1 text-[12px] leading-[1.35] text-[var(--bcn-graphite)]">{stat.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <img
+                  src={bcnMedia.dossier.acquisitionMemoDetail.src}
+                  alt={bcnMedia.dossier.acquisitionMemoDetail.alt}
+                  className="hidden h-full min-h-[174px] w-full object-cover opacity-90 sm:block"
+                  loading="lazy"
+                  decoding="async"
+                  width={bcnMedia.dossier.acquisitionMemoDetail.width}
+                  height={bcnMedia.dossier.acquisitionMemoDetail.height}
+                />
+              </div>
+
+              {items.length > 0 && (
+                <section className="bcn-dossier-handoff mt-4 border border-[var(--bcn-line-strong)] bg-white p-4">
+                  <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
+                    <div>
+                      <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--bcn-muted)]">{L.handoffEyebrow}</div>
+                      <div className="mt-2 text-[18px] leading-[1.15] tracking-tight text-[var(--bcn-graphite)]">
+                        {L.handoffTitle}
+                      </div>
+                      <p className="mt-2 max-w-[440px] text-[12px] leading-[1.65] text-[var(--bcn-graphite-soft)]">
+                        {L.handoffText}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => openDossierInquiry()}
+                      className="rounded-full border border-[var(--bcn-graphite)] bg-[var(--bcn-graphite)] px-4 py-2 text-[12px] text-[var(--bcn-porcelain)] outline-none hover:bg-black focus-visible:ring-2 focus-visible:ring-black/20"
+                    >
+                      {L.handoffCta}
+                    </button>
+                  </div>
+                  <div className="mt-4 grid gap-2 border-t border-[var(--bcn-line)] pt-3 text-[11px] leading-[1.5] text-[var(--bcn-muted)] sm:grid-cols-2">
+                    <div>{L.summaryOnly}</div>
+                    <div>{L.inquiryBrief}</div>
+                  </div>
+                </section>
+              )}
+
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={copyDossierSummary}
+                    disabled={!items.length}
+                    className="rounded-full border border-[var(--bcn-line)] px-3 py-1.5 text-[12px] text-[var(--bcn-muted)] outline-none hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20 disabled:opacity-40"
+                  >
+                    {copied ? L.copied : L.copySummary}
+                  </button>
                   <button
                     type="button"
                     onClick={copyShareLink}
-                    disabled={!count}
-                    className="rounded-full border border-black/10 px-3 py-1.5 text-[12px] text-black/70 disabled:opacity-40"
+                    disabled={!ids.length}
+                    className="rounded-full border border-[var(--bcn-line)] px-3 py-1.5 text-[12px] text-[var(--bcn-muted)] outline-none hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20 disabled:opacity-40"
                   >
-                    {copied ? L.copied : L.copy}
+                    {copiedLink ? L.copied : L.copyLink}
                   </button>
-                  <button
-                    type="button"
-                    onClick={clear}
-                    disabled={!count}
-                    className="rounded-full border border-black/10 px-3 py-1.5 text-[12px] text-black/70 disabled:opacity-40"
+                  <a
+                    href={lang === "es" ? "/es/search" : "/search"}
+                    className="rounded-full border border-[var(--bcn-line)] px-3 py-1.5 text-[12px] text-[var(--bcn-muted)] outline-none hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20"
                   >
-                    {L.clear}
-                  </button>
+                    {L.explore}
+                  </a>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={clear}
+                  disabled={!count}
+                  className="rounded-full border border-[var(--bcn-line)] px-3 py-1.5 text-[12px] text-[var(--bcn-muted)] outline-none hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20 disabled:opacity-40"
+                >
+                  {L.clear}
+                </button>
               </div>
 
               {imported && (
-                <div className="mt-3 rounded-2xl border border-black/10 bg-white px-3 py-2 text-[12px] text-black/60">
+                <div className="mt-3 border border-[var(--bcn-line)] bg-white px-3 py-2 text-[12px] text-[var(--bcn-muted)]">
                   {L.imported}
                 </div>
               )}
 
+              {!items.length && (
+                <div className="mt-5 border border-[var(--bcn-line)] bg-white p-5">
+                  <div className="text-[24px] leading-[1.05] tracking-tight text-[var(--bcn-graphite)]">{L.emptyTitle}</div>
+                  <p className="mt-3 text-[13px] leading-[1.75] text-[var(--bcn-muted)]">{L.emptyCopy}</p>
+                  <a
+                    href={lang === "es" ? "/es/search" : "/search"}
+                    className="mt-4 inline-flex rounded-full border border-[var(--bcn-line-strong)] px-3 py-1.5 text-[12px] text-[var(--bcn-graphite)] outline-none hover:border-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20"
+                  >
+                    {L.explore}
+                  </a>
+                </div>
+              )}
+
               <div className="mt-4 grid gap-3">
-                {items.map((x) => (
-                  <div key={x.id} className="overflow-hidden rounded-2xl border border-black/10 bg-white">
-                    <div className="grid grid-cols-[96px_1fr]">
-                      <div className="aspect-[4/5] bg-black/5">
+                {items.map((x, index) => {
+                  const copy = getListingAdvisoryCopy(x, lang);
+
+                  return (
+                  <article
+                    key={x.id}
+                    className="bcn-dossier-entry overflow-hidden border border-[var(--bcn-line)] bg-white shadow-[0_18px_52px_rgba(28,28,24,0.05)]"
+                  >
+                    <div className="grid sm:grid-cols-[144px_1fr]">
+                      <a
+                        href={`${prefix}/p/${x.id}`}
+                        className="block bg-[linear-gradient(135deg,var(--bcn-limestone),var(--bcn-porcelain))] outline-none focus-visible:ring-2 focus-visible:ring-black/20"
+                        aria-label={`${L.open}: ${titleFor(x, lang)}`}
+                      >
                         <img
                           src={x.images.hero}
-                          alt=""
-                          className="h-full w-full object-cover"
+                          alt={titleFor(x, lang)}
+                          className="h-48 w-full object-cover sm:h-full"
                           loading="lazy"
+                          decoding="async"
                         />
-                      </div>
-                      <div className="p-3">
-                        <div className="text-[13px] font-medium">
-                          {lang === "es" ? (x.title_es ?? x.title) : x.title}
-                        </div>
-                        <div className="mt-1 text-[12px] text-black/60">
-                          {x.district} · {x.sqm} m² · €{Intl.NumberFormat("en-US").format(x.price)}
+                      </a>
+                      <div className="p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <div className="text-[10px] tracking-[0.18em] text-[var(--bcn-muted)]">
+                              {String(index + 1).padStart(2, "0")} / {x.code}
+                            </div>
+                            <a
+                              href={`${prefix}/p/${x.id}`}
+                              className="mt-1 block text-[17px] font-medium leading-[1.12] text-[var(--bcn-graphite)] outline-none hover:underline focus-visible:ring-2 focus-visible:ring-black/20"
+                            >
+                              {titleFor(x, lang)}
+                            </a>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => remove(x.id)}
+                            className="rounded-full border border-[var(--bcn-line)] px-2.5 py-1 text-[11px] text-[var(--bcn-muted)] outline-none hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20"
+                            aria-label={`${L.remove}: ${titleFor(x, lang)}`}
+                          >
+                            {L.remove}
+                          </button>
                         </div>
 
-                        <div className="mt-3 flex items-center gap-2">
+                        <div className="mt-2 text-[12px] text-[var(--bcn-muted)]">
+                          {districtFor(x)} / {x.sqm} m2 / {x.beds} bd / {formatEUR(x.price)}
+                        </div>
+
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <span className="border border-[var(--bcn-line)] px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-[var(--bcn-sea-deep)]">
+                            {L.priority} #{x.shortlistPriority}
+                          </span>
+                          <span className="border border-[var(--bcn-line)] px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-[var(--bcn-sea-deep)]">
+                            {L.readiness}: {copy.viewingReadinessLabel}
+                          </span>
+                        </div>
+
+                        <div className="mt-3 grid gap-2 border-t border-[var(--bcn-line)] pt-3 text-[12px] leading-[1.55] text-[var(--bcn-graphite-soft)]">
+                          <div>
+                            <span className="text-[var(--bcn-muted)]">{L.bestFor}:</span> {copy.bestFor}
+                          </div>
+                          <div>
+                            <span className="text-[var(--bcn-muted)]">{L.signal}:</span> {copy.signal}
+                          </div>
+                          <div>
+                            <span className="text-[var(--bcn-muted)]">{L.tradeoff}:</span> {copy.tradeOff}
+                          </div>
+                          <div>
+                            <span className="text-[var(--bcn-muted)]">{L.risk}:</span> {copy.riskNote}
+                          </div>
+                        </div>
+
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
                           <a
                             href={`${prefix}/p/${x.id}`}
-                            className="rounded-full border border-black/15 px-3 py-1.5 text-[12px] hover:border-black/25"
+                            className="rounded-full border border-[var(--bcn-line-strong)] px-3 py-1.5 text-[12px] text-[var(--bcn-graphite)] outline-none hover:border-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20"
                           >
                             {L.open}
                           </a>
                           <button
                             type="button"
-                            onClick={() => remove(x.id)}
-                            className="rounded-full border border-black/10 px-3 py-1.5 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
+                            onClick={() => openDossierInquiry(x)}
+                            className="rounded-full border border-[var(--bcn-line)] px-3 py-1.5 text-[12px] text-[var(--bcn-muted)] outline-none hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20"
                           >
-                            {L.remove}
+                            {copy.nextAction || L.request}
                           </button>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  </article>
+                )})}
               </div>
+
+              {items.length > 1 && (
+                <section className="bcn-dossier-comparison mt-4 border border-[var(--bcn-line)] bg-[var(--bcn-porcelain)] p-4">
+                  <div className="text-[11px] tracking-[0.18em] text-[var(--bcn-muted)]">{L.comparison}</div>
+                  <div className="mt-3 grid gap-3">
+                    {items.map((x) => {
+                      const copy = getListingAdvisoryCopy(x, lang);
+
+                      return (
+                      <div key={`compare-${x.id}`} className="border border-[var(--bcn-line)] bg-white p-3">
+                        <div className="text-[13px] font-medium leading-[1.25] text-[var(--bcn-graphite)]">{titleFor(x, lang)}</div>
+                        <div className="mt-3 grid gap-2 text-[12px] leading-[1.55] text-[var(--bcn-graphite-soft)] sm:grid-cols-2">
+                          <div><span className="text-[var(--bcn-muted)]">{L.bestFor}:</span> {copy.bestFor}</div>
+                          <div><span className="text-[var(--bcn-muted)]">{L.signal}:</span> {copy.signal}</div>
+                          <div><span className="text-[var(--bcn-muted)]">{L.tradeoff}:</span> {copy.tradeOff}</div>
+                          <div><span className="text-[var(--bcn-muted)]">{L.readiness}:</span> {copy.viewingReadinessLabel}</div>
+                        </div>
+                      </div>
+                    )})}
+                  </div>
+                </section>
+              )}
             </div>
           </motion.aside>
         </>
@@ -247,10 +623,10 @@ export default function ShortlistWidget({
         type="button"
         onClick={() => setOpen(true)}
         className={[
-          "rounded-full border border-black/15 px-3 py-1.5 text-[12px] text-black/70 hover:border-black/25 hover:text-black",
+          "rounded-full border border-[var(--bcn-line)] bg-white/26 px-3 py-1.5 text-[12px] text-[var(--bcn-graphite-soft)] outline-none hover:border-[var(--bcn-line-strong)] hover:bg-white/46 hover:text-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20",
           className,
         ].join(" ")}
-        aria-label="Open shortlist"
+        aria-label={L.title}
       >
         {L.button}
         {count ? ` · ${count}` : ""}

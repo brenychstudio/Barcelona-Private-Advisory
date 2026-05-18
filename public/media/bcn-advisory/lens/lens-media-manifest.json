@@ -1,0 +1,142 @@
+[
+  {
+    "source": "lens-1.png",
+    "output": "/media/bcn-advisory/lens/base/lens-spatial-base.webp",
+    "description": "Barcelona Lens spatial base",
+    "width": 1672,
+    "height": 941
+  },
+  {
+    "source": "lens-19.png",
+    "output": "/media/bcn-advisory/lens/base/lens-spatial-base-alt.webp",
+    "description": "Barcelona Lens alternate aerial base",
+    "width": 1122,
+    "height": 1402
+  },
+  {
+    "source": "lens-3.png",
+    "output": "/media/bcn-advisory/lens/districts/sarria.webp",
+    "description": "Sarria residential district atmosphere",
+    "width": 1448,
+    "height": 1086
+  },
+  {
+    "source": "lens-16.png",
+    "output": "/media/bcn-advisory/lens/districts/gracia.webp",
+    "description": "Gracia walkable district character",
+    "width": 1122,
+    "height": 1402
+  },
+  {
+    "source": "lens-6.png",
+    "output": "/media/bcn-advisory/lens/districts/eixample.webp",
+    "description": "Eixample architectural order",
+    "width": 1536,
+    "height": 1024
+  },
+  {
+    "source": "lens-8.png",
+    "output": "/media/bcn-advisory/lens/districts/poblenou.webp",
+    "description": "Poblenou contemporary coastal district",
+    "width": 1448,
+    "height": 1086
+  },
+  {
+    "source": "lens-9.png",
+    "output": "/media/bcn-advisory/lens/districts/diagonal-mar.webp",
+    "description": "Diagonal Mar sea-light district",
+    "width": 1448,
+    "height": 1086
+  },
+  {
+    "source": "lens-10.png",
+    "output": "/media/bcn-advisory/lens/districts/pedralbes.webp",
+    "description": "Pedralbes private residential scale",
+    "width": 1448,
+    "height": 1086
+  },
+  {
+    "source": "lens-11.png",
+    "output": "/media/bcn-advisory/lens/properties/family-calm.webp",
+    "description": "Family calm property match",
+    "width": 1536,
+    "height": 1024
+  },
+  {
+    "source": "lens-18.png",
+    "output": "/media/bcn-advisory/lens/properties/sea-light.webp",
+    "description": "Sea-light property match",
+    "width": 1536,
+    "height": 1024
+  },
+  {
+    "source": "lens-14.png",
+    "output": "/media/bcn-advisory/lens/properties/investment-logic.webp",
+    "description": "Investment logic classic interior property match",
+    "width": 1122,
+    "height": 1402
+  },
+  {
+    "source": "lens-20.png",
+    "output": "/media/bcn-advisory/lens/properties/design-renovation.webp",
+    "description": "Design renovation property match",
+    "width": 1122,
+    "height": 1402
+  },
+  {
+    "source": "lens-15.png",
+    "output": "/media/bcn-advisory/lens/properties/privacy.webp",
+    "description": "Privacy property match",
+    "width": 1122,
+    "height": 1402
+  },
+  {
+    "source": "lens-13.png",
+    "output": "/media/bcn-advisory/lens/properties/walkable-daily-life.webp",
+    "description": "Walkable daily life property match",
+    "width": 1122,
+    "height": 1402
+  },
+  {
+    "source": "lens-12.png",
+    "output": "/media/bcn-advisory/lens/signals/sea-light-plane.webp",
+    "description": "Sea-light signal plane",
+    "width": 1122,
+    "height": 1402
+  },
+  {
+    "source": "lens-22.png",
+    "output": "/media/bcn-advisory/lens/signals/walkable-daily-life-plane.webp",
+    "description": "Walkable daily life signal plane",
+    "width": 1122,
+    "height": 1402
+  },
+  {
+    "source": "lens-21.png",
+    "output": "/media/bcn-advisory/lens/signals/privacy-threshold.webp",
+    "description": "Privacy threshold signal plane",
+    "width": 1122,
+    "height": 1402
+  },
+  {
+    "source": "lens-24.png",
+    "output": "/media/bcn-advisory/lens/materials/porcelain-material-plane.webp",
+    "description": "Porcelain material plane",
+    "width": 1122,
+    "height": 1402
+  },
+  {
+    "source": "lens-23.png",
+    "output": "/media/bcn-advisory/lens/materials/limestone-light-plane.webp",
+    "description": "Limestone light plane",
+    "width": 1122,
+    "height": 1402
+  },
+  {
+    "source": "lens-17.png",
+    "output": "/media/bcn-advisory/lens/materials/advisory-handoff.webp",
+    "description": "Advisory handoff visual",
+    "width": 1122,
+    "height": 1402
+  }
+]

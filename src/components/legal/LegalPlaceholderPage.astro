@@ -1,0 +1,124 @@
+---
+type Lang = "en" | "es";
+
+type Section = {
+  title: string;
+  body: string[];
+};
+
+type Props = {
+  lang: Lang;
+  title: string;
+  eyebrow: string;
+  intro: string;
+  sections: Section[];
+  lastUpdatedLabel: string;
+  backHref: string;
+  backLabel: string;
+};
+
+const {
+  lang,
+  title,
+  eyebrow,
+  intro,
+  sections,
+  lastUpdatedLabel,
+  backHref,
+  backLabel,
+} = Astro.props;
+
+const isEs = lang === "es";
+
+const note = isEs
+  ? "Esta página es un placeholder de prototipo de portfolio. No constituye asesoramiento legal final y debe sustituirse por contenido verificado de empresa/legal antes de cualquier despliegue en producción."
+  : "This page is a portfolio-prototype placeholder. It is not final legal advice and must be replaced with verified company/legal content before any production deployment.";
+
+const links = isEs
+  ? [
+      { href: "/es/", label: "Volver al inicio" },
+      { href: "/es/search", label: "Abrir búsqueda privada" },
+      { href: "/es/contact", label: "Contacto / handoff de asesoría" },
+    ]
+  : [
+      { href: "/", label: "Back to home" },
+      { href: "/search", label: "Open private search" },
+      { href: "/contact", label: "Contact / Advisory handoff" },
+    ];
+
+const trustItems = isEs
+  ? ["Sin datos legales inventados", "Sin envío automático", "Preparado para sustitución en producción"]
+  : ["No invented legal details", "No automatic submission", "Prepared for production replacement"];
+---
+
+<article class="bcn-section mx-auto max-w-[1120px]">
+  <section class="bcn-section--threshold grid gap-10 border-b border-[var(--bcn-line)] pb-14 lg:grid-cols-[0.76fr_1.24fr] lg:items-end">
+    <div>
+      <a href={backHref} class="text-[12px] text-[var(--bcn-muted)] hover:text-[var(--bcn-graphite)]">{backLabel}</a>
+      <div class="bcn-signal-kicker mt-8 text-[12px] uppercase tracking-[0.2em] text-[var(--bcn-muted)]">{eyebrow}</div>
+      <h1 class="bcn-advisory-line mt-5 max-w-[720px] text-[42px] leading-[0.98] tracking-tight text-[var(--bcn-graphite)] sm:text-[64px]">
+        {title}
+      </h1>
+    </div>
+
+    <div class="border-l border-[var(--bcn-line)] pl-0 lg:pl-8">
+      <p class="max-w-[650px] text-[15px] leading-[1.85] text-[var(--bcn-graphite-soft)]">{intro}</p>
+      <div class="bcn-memo-surface mt-6 border-y border-[var(--bcn-line)] bg-white/34 px-5 py-4 pl-6 text-[13px] leading-[1.75] text-[var(--bcn-graphite-soft)]">
+        {note}
+      </div>
+    </div>
+  </section>
+
+  <section class="grid gap-6 border-b border-[var(--bcn-line)] py-8 md:grid-cols-3">
+    {trustItems.map((item) => (
+      <div class="border-l border-[var(--bcn-line)] pl-4">
+        <div class="text-[11px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{lastUpdatedLabel}</div>
+        <div class="mt-2 text-[14px] leading-[1.45] text-[var(--bcn-graphite)]">{item}</div>
+      </div>
+    ))}
+  </section>
+
+  <section class="grid gap-10 py-12 lg:grid-cols-[0.72fr_1.28fr]">
+    <aside class="lg:sticky lg:top-24 lg:self-start">
+      <div class="bcn-editorial-surface border border-[var(--bcn-line)] bg-[var(--bcn-panel)] p-5">
+        <div class="text-[11px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">
+          {isEs ? "Rutas relacionadas" : "Related paths"}
+        </div>
+        <nav class="mt-5 grid gap-3 text-[13px] text-[var(--bcn-graphite-soft)]" aria-label={isEs ? "Rutas legales relacionadas" : "Related legal paths"}>
+          {links.map((item) => (
+            <a href={item.href} class="hover:text-[var(--bcn-graphite)]">{item.label}</a>
+          ))}
+        </nav>
+      </div>
+    </aside>
+
+    <div class="border-t border-[var(--bcn-line)]">
+      {sections.map((section, index) => (
+        <section class="grid gap-5 border-b border-[var(--bcn-line)] py-7 sm:grid-cols-[92px_1fr]">
+          <div class="text-[11px] tracking-[0.18em] text-[var(--bcn-muted)]">{String(index + 1).padStart(2, "0")}</div>
+          <div>
+            <h2 class="text-[20px] leading-[1.12] tracking-tight text-[var(--bcn-graphite)]">{section.title}</h2>
+            <div class="mt-4 grid gap-4">
+              {section.body.map((text) => (
+                <p class="text-[13px] leading-[1.85] text-[var(--bcn-graphite-soft)]">{text}</p>
+              ))}
+            </div>
+          </div>
+        </section>
+      ))}
+    </div>
+  </section>
+
+  <section class="border-t border-[var(--bcn-line)] pt-8">
+    <div class="flex flex-wrap gap-2">
+      {links.map((item) => (
+        <a
+          href={item.href}
+          class="rounded-full border border-[var(--bcn-line)] px-4 py-2 text-[12px] text-[var(--bcn-graphite-soft)] hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--bcn-sea-deep)]"
+        >
+          {item.label}
+        </a>
+      ))}
+    </div>
+  </section>
+</article>

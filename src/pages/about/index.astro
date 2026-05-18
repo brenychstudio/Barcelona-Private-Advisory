@@ -1,140 +1,208 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { bcnMedia } from "../../data/bcnMedia";
+import { bcnLensMedia } from "../../data/bcnLensMedia";
+
+const methodSteps = [
+  ["01", "Brief", "Buyer intent, timing, budget and lifestyle constraints become the first layer of selection."],
+  ["02", "Lens", "District rhythm, walkability, light, noise and value logic shape the viewing path."],
+  ["03", "Signal", "Each property needs a reason to belong: fit, readiness, trade-off and acquisition logic."],
+  ["04", "Dossier", "Selected options become an advisor-ready comparison, not a loose saved list."],
+  ["05", "Action", "The shortlist turns into a viewing path, advisor call or copy-ready buyer brief."],
+];
+
+const modules = [
+  ["Buyer Intent Surface", "Turns a broad search into a clear buyer brief before inventory takes over."],
+  ["Barcelona Lens Field", "Connects district character, rhythm and buyer fit so location is not treated as a simple filter."],
+  ["Product Object Surface", "Frames each property as an advisor-selected recommendation with signal and readiness."],
+  ["Property Detail Chamber", "Expands the listing into a private acquisition file with memo, risk and next action."],
+  ["Cinematic Inspect Gallery", "Makes image review part of the decision process, not a generic photo modal."],
+  ["Private Shortlist Dossier", "Collects selected properties into a comparison document with priority and trade-offs."],
+  ["Advisory Inquiry Flow", "Prepares a local, copy-ready request brief from property, lens and dossier context."],
+];
+
+const failures = [
+  "Too many interchangeable options with no decision hierarchy.",
+  "District context reduced to a name instead of daily-life logic.",
+  "Trade-offs hidden until late in the process.",
+  "No clear viewing priority or readiness signal.",
+  "Weak connection between buyer intent and the properties shown.",
+];
+
+const values = [
+  "Fewer but better options.",
+  "Stronger buyer confidence before viewings.",
+  "Clearer district fit and acquisition logic.",
+  "Advisor-ready shortlist instead of passive saved items.",
+  "Higher premium perception through calm, explainable selection.",
+];
+
+const faqs = [
+  ["Is this a catalog?", "No. It is a front-end advisory interface concept that can sit above real inventory and reduce browsing noise."],
+  ["Can this support real inventory?", "Yes. In a deployment, the local data layer can be connected to a CMS, feed or CRM without changing the advisory model."],
+  ["Why district-first?", "High-ticket property decisions are shaped by routine, light, noise, access and resale logic. District fit needs to be visible early."],
+  ["What makes it premium?", "The product sells clarity: fewer choices, stronger reasoning, editorial media and a private decision path."],
+  ["What happens after the shortlist?", "The dossier becomes a viewing path or advisory request brief, ready for a buyer advisor or boutique agency team."],
+  ["Can it become a client-facing platform?", "Yes. This is a production-ready front-end direction that can be connected to live content, analytics and contact handoff."],
+];
 ---
 
 <BaseLayout
-  title="About — Barcelona Private Advisory"
-  description="Barcelona-first private property advisory demo — curated shortlist, due diligence lens, negotiation support, and neighborhood-fit selection."
+  title="Advisory Method - Barcelona Private Advisory"
+  description="A district-first private property advisory method for Barcelona buyers: buyer brief, district lens, property signal, shortlist dossier and viewing path."
 >
-  <section class="space-y-4">
-    <div class="text-[12px] tracking-[0.18em] text-black/42">ABOUT</div>
-
-    <h1 class="max-w-[760px] text-[30px] leading-[1.03] tracking-tight sm:text-[38px]">
-      Private advisory,
-      <br />
-      not catalog.
-    </h1>
-
-    <p class="max-w-[760px] text-[13px] leading-[1.9] text-black/58">
-      This demo is not designed as a broad inventory portal. It presents a more selective product direction
-      for Spain Costas: shortlist-first browsing, district-fit logic, due diligence signals, and calmer next-step support.
-    </p>
-  </section>
-
-  <section class="mt-16 space-y-10">
-    <div class="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
-      <div class="space-y-4">
-        <div class="text-[12px] tracking-[0.18em] text-black/42">PRODUCT DIRECTION</div>
-
-        <h2 class="max-w-[620px] text-[28px] leading-[1.05] tracking-tight sm:text-[34px]">
-          A premium real-estate experience shaped by selection, not by volume.
-        </h2>
-
-        <p class="max-w-[620px] text-[13px] leading-[1.9] text-black/56">
-          The advisory layer is the real differentiator: fewer options, clearer ranking logic,
-          more visible trade-offs, and a stronger sense of neighborhood fit from the first screen.
-        </p>
-      </div>
-
-      <div class="space-y-0 border-t border-black/10">
-        {[
-          ["Curated shortlist", "Inventory is ranked by fit, not by raw quantity. Lens + lifestyle logic sit above catalog browsing."],
-          ["Due diligence lens", "Acquisition costs, restrictions, HOA signals, liquidity notes, and weak signals can be surfaced earlier."],
-          ["Negotiation support", "The product can frame next-step logic, viewing support, offer strategy, and calmer buyer progression."],
-          ["Barcelona Lens", "District-first browsing shifts the experience toward local fit: walkability, rhythm, noise, family logic, and daily texture."],
-        ].map(([title, text]) => (
-          <div class="grid gap-2 border-b border-black/10 py-4 last:border-b-0 sm:grid-cols-[180px_1fr]">
-            <div class="text-[13px] font-medium">{title}</div>
-            <div class="text-[12px] leading-[1.8] text-black/56">{text}</div>
-          </div>
-        ))}
-      </div>
+  <section class="bcn-section grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+    <div class="space-y-5">
+      <div class="bcn-signal-kicker text-[12px] uppercase tracking-[0.2em] text-black/42">Advisory method</div>
+      <h1 class="bcn-advisory-line max-w-[760px] text-[42px] leading-[0.98] tracking-tight text-black/90 sm:text-[64px]">
+        Private advisory, not catalog.
+      </h1>
+      <p class="max-w-[680px] text-[14px] leading-[1.85] text-black/58">
+        A district-first advisory method for buyers who need clarity, fit and a shortlist worth discussing.
+        The interface reduces listing noise and turns browsing into a structured decision path.
+      </p>
     </div>
 
-    <div class="grid gap-0 border-y border-black/10 md:grid-cols-4">
-      {[
-        ["01", "Define", "Budget, districts, beds, lifestyle, and risk profile."],
-        ["02", "Curate", "Rank by fit + lens. Shortlist first, not endless browsing."],
-        ["03", "De-risk", "Surface fees, flags, restrictions, and negotiation prep."],
-        ["04", "Close", "Support viewings, next steps, offer logic, and clarity."],
-      ].map(([n, title, text]) => (
-        <div class="border-b border-black/10 py-5 md:border-b-0 md:border-r md:px-5 md:last:border-r-0">
-          <div class="text-[11px] tracking-[0.18em] text-black/38">{n}</div>
-          <div class="mt-3 text-[17px] tracking-tight">{title}</div>
-          <div class="mt-2 max-w-[240px] text-[12px] leading-[1.75] text-black/56">{text}</div>
+    <figure class="overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
+      <img
+        src={bcnMedia.lens.districtLensDesk.src}
+        alt="Private advisory desk with district lens material for Barcelona property selection"
+        width={bcnMedia.lens.districtLensDesk.width}
+        height={bcnMedia.lens.districtLensDesk.height}
+        class="aspect-[16/10] w-full object-cover"
+        loading="eager"
+        decoding="async"
+      />
+    </figure>
+  </section>
+
+  <section class="bcn-section--threshold mt-28 grid gap-10 border-y border-black/10 py-14 lg:grid-cols-[0.7fr_1.3fr]">
+    <div>
+      <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Why catalog browsing fails</div>
+      <h2 class="mt-4 max-w-[520px] text-[32px] leading-[1.02] tracking-tight">
+        More options rarely create better decisions.
+      </h2>
+    </div>
+    <div class="grid gap-0 border-t border-black/10">
+      {failures.map((item) => (
+        <div class="grid gap-3 border-b border-black/10 py-4 last:border-b-0 sm:grid-cols-[72px_1fr]">
+          <div class="text-[11px] tracking-[0.16em] text-black/36">ISSUE</div>
+          <p class="text-[13px] leading-[1.7] text-black/62">{item}</p>
         </div>
       ))}
     </div>
+  </section>
 
-    <div class="grid gap-6 border-t border-black/10 pt-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-start">
-      <div class="space-y-3">
-        <div class="text-[12px] tracking-[0.18em] text-black/42">ADVISORY, NOT CATALOG</div>
-        <div class="max-w-[460px] text-[28px] leading-[1.05] tracking-tight">
-          The value is not more listings.
-          <br />
-          The value is better calibration.
+  <section class="mt-24 space-y-8">
+    <div class="max-w-[760px] space-y-4">
+      <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">The advisory method</div>
+      <h2 class="text-[34px] leading-[1.02] tracking-tight sm:text-[46px]">
+        Buyer brief to viewing path.
+      </h2>
+    </div>
+
+    <div class="grid gap-0 border-y border-black/10 lg:grid-cols-5">
+      {methodSteps.map(([n, title, text]) => (
+        <div class="border-b border-black/10 py-6 lg:border-b-0 lg:border-r lg:px-5 lg:last:border-r-0">
+          <div class="text-[11px] tracking-[0.18em] text-black/36">{n}</div>
+          <div class="mt-4 text-[18px] tracking-tight text-black/84">{title}</div>
+          <p class="mt-3 max-w-[260px] text-[12px] leading-[1.75] text-black/56">{text}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="mt-24 grid gap-10 lg:grid-cols-[0.74fr_1.26fr]">
+    <div class="space-y-4">
+      <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">System modules</div>
+      <h2 class="max-w-[520px] text-[32px] leading-[1.03] tracking-tight">
+        Client-facing outcomes, not internal technology.
+      </h2>
+      <p class="max-w-[500px] text-[13px] leading-[1.85] text-black/56">
+        Each module supports a business moment: clarify intent, make district logic visible,
+        explain property fit, prepare the shortlist and convert interest into a viewing request.
+      </p>
+    </div>
+
+    <div class="grid gap-3 md:grid-cols-2">
+      {modules.map(([title, text]) => (
+        <div class="border border-black/10 bg-[rgb(var(--paper))] p-5">
+          <h3 class="text-[15px] tracking-tight text-black/84">{title}</h3>
+          <p class="mt-3 text-[12px] leading-[1.75] text-black/56">{text}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="bcn-editorial-surface mt-28 overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
+    <div class="grid gap-0 lg:grid-cols-[0.9fr_1.1fr]">
+      <figure class="min-h-[320px]">
+        <img
+          src={bcnLensMedia.materials.handoff.src}
+          alt={bcnLensMedia.materials.handoff.alt}
+          width={bcnLensMedia.materials.handoff.width}
+          height={bcnLensMedia.materials.handoff.height}
+          class="h-full w-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <div class="p-6 sm:p-8 lg:p-10">
+        <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Business value</div>
+        <h2 class="mt-4 max-w-[560px] text-[34px] leading-[1.02] tracking-tight">
+          The product sells decision clarity.
+        </h2>
+        <div class="mt-8 grid gap-0 border-t border-black/10">
+          {values.map((item) => (
+            <div class="border-b border-black/10 py-4 text-[13px] leading-[1.7] text-black/62">{item}</div>
+          ))}
         </div>
       </div>
-
-      <div class="max-w-[780px] text-[13px] leading-[1.9] text-black/56">
-        This approach reduces decision fatigue and makes selection feel more premium.
-        Instead of a wide, interchangeable catalog, the buyer sees a narrower, explainable shortlist
-        shaped by district fit, acquisition profile, and next-step readiness.
-      </div>
     </div>
   </section>
 
-  <section class="mt-20 space-y-8">
-    <div class="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-      <div class="space-y-4">
-        <div class="text-[12px] tracking-[0.18em] text-black/42">FAQ</div>
+  <section class="mt-24 grid gap-10 lg:grid-cols-[0.74fr_1.26fr]">
+    <div class="space-y-4">
+      <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">FAQ</div>
+      <h2 class="max-w-[520px] text-[32px] leading-[1.03] tracking-tight">
+        Buyer and agency questions.
+      </h2>
+    </div>
 
-        <h2 class="max-w-[520px] text-[28px] leading-[1.05] tracking-tight sm:text-[34px]">
-          Questions a client would actually ask.
-        </h2>
-
-        <p class="max-w-[520px] text-[13px] leading-[1.85] text-black/56">
-          This section is intentionally written as client-facing reassurance, not product jargon.
-        </p>
-      </div>
-
-      <div class="space-y-0 border-t border-black/10">
-        {[
-          ["Can clients update listings themselves?", "Yes — with a CMS layer such as Google Sheets, Airtable, or a CRM/feed adapter. The demo currently uses local data for speed and control."],
-          ["Is this Barcelona-only?", "The product direction is intentionally Barcelona-first. Other geographies can be added later, but the premium advantage comes from local fit, not generic expansion."],
-          ["What makes this premium?", "Controlled motion, editorial rhythm, shortlist + share, district logic, bilingual UX, and a calmer decision path rather than a loud portal experience."],
-          ["What happens after the demo?", "Connect to live inventory or CRM, enable multilingual content editing, turn on analytics/SEO for production, and adapt the advisory tone to the final brand."],
-        ].map(([q, a]) => (
-          <div class="grid gap-2 border-b border-black/10 py-4 last:border-b-0 sm:grid-cols-[220px_1fr]">
-            <div class="text-[13px] font-medium">{q}</div>
-            <div class="text-[12px] leading-[1.8] text-black/56">{a}</div>
-          </div>
-        ))}
-      </div>
+    <div class="border-t border-black/10">
+      {faqs.map(([q, a]) => (
+        <div class="grid gap-3 border-b border-black/10 py-5 sm:grid-cols-[240px_1fr]">
+          <h3 class="text-[13px] font-medium leading-[1.45] text-black/84">{q}</h3>
+          <p class="text-[12px] leading-[1.8] text-black/56">{a}</p>
+        </div>
+      ))}
     </div>
   </section>
 
-  <section class="mt-16 border-t border-black/10 pt-8">
+  <section class="mt-20 border-t border-black/10 pt-8">
     <div class="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
       <div class="space-y-3">
-        <div class="text-[12px] tracking-[0.18em] text-black/42">NEXT STEP</div>
-        <div class="max-w-[620px] text-[24px] leading-[1.08] tracking-tight">
-          Turn the demo into a real client-facing advisory site.
-        </div>
+        <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Next step</div>
+        <h2 class="max-w-[620px] text-[28px] leading-[1.08] tracking-tight">
+          Start with a private brief.
+        </h2>
       </div>
 
       <div class="flex flex-wrap gap-2">
-        <a
-          href="/search"
-          class="rounded-full border border-black/15 px-4 py-2 text-[12px] hover:border-black/25"
+        <button
+          type="button"
+          data-open-inquiry
+          data-inquiry-source="hero"
+          data-inquiry-next-action="Start private search"
+          class="rounded-full border border-black/20 bg-white px-4 py-2 text-[12px] hover:border-black/35 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
         >
-          Start a search
-        </a>
+          Start private search
+        </button>
         <a
-          href="/contact"
-          class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
+          href="/#advisory"
+          class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
         >
-          Contact
+          Open district lens
         </a>
       </div>
     </div>

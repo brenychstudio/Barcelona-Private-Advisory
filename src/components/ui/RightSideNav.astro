@@ -1,0 +1,152 @@
+---
+const path = Astro.url.pathname;
+const isEs = path.startsWith("/es");
+const home = isEs ? "/es" : "/";
+const search = isEs ? "/es/search" : "/search";
+const contact = isEs ? "/es/contact" : "/contact";
+const isHome = path === "/" || path === "/es" || path === "/es/";
+
+const sectionHref = (id: string) => (isHome ? `#${id}` : `${home}#${id}`);
+
+const items = isEs
+  ? [
+      { id: "advisory", href: sectionHref("advisory"), label: "Umbral" },
+      { id: "brief", href: sectionHref("brief"), label: "Intención" },
+      { id: "lens", href: sectionHref("lens"), label: "Lente" },
+      { id: "properties", href: sectionHref("properties"), label: "Señal" },
+      { id: "dossier", href: sectionHref("dossier"), label: "Dossier" },
+      { id: "action", href: sectionHref("action"), label: "Acción" },
+    ]
+  : [
+      { id: "advisory", href: sectionHref("advisory"), label: "Threshold" },
+      { id: "brief", href: sectionHref("brief"), label: "Intent" },
+      { id: "lens", href: sectionHref("lens"), label: "Lens" },
+      { id: "properties", href: sectionHref("properties"), label: "Signal" },
+      { id: "dossier", href: sectionHref("dossier"), label: "Dossier" },
+      { id: "action", href: sectionHref("action"), label: "Action" },
+    ];
+
+const labels = isEs
+  ? { index: "Índice privado", home: "Inicio", search: "Búsqueda", dossier: "Dossier", contact: "Contacto" }
+  : { index: "Private index", home: "Home", search: "Search", dossier: "Dossier", contact: "Contact" };
+---
+
+<aside
+  data-side-rail
+  aria-label="Private advisory index"
+  class={isHome ? "fixed right-5 top-1/2 z-40 hidden -translate-y-1/2 opacity-0 transition duration-500 hover:opacity-80 xl:block" : "hidden"}
+>
+  <div class="group flex items-center gap-3">
+    <div class="pointer-events-none hidden min-w-[104px] text-right opacity-0 transition duration-300 group-hover:opacity-100 2xl:block">
+      <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{labels.index}</div>
+    </div>
+
+    <div class="border-r border-[rgba(23,23,22,0.08)] pr-2">
+      <nav class="grid gap-2.5">
+        {items.map((item) => (
+          <a
+            href={item.href}
+            data-section-id={item.id}
+            class="bcn-side-item group/item relative flex h-5 w-5 items-center justify-center"
+            aria-label={item.label}
+          >
+            <span class="bcn-side-label pointer-events-none absolute right-7 top-1/2 hidden -translate-y-1/2 whitespace-nowrap border border-[var(--bcn-line)] bg-[rgba(255,255,252,0.86)] px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-[var(--bcn-muted)] opacity-0 shadow-[0_12px_40px_rgba(28,28,24,0.06)] backdrop-blur-sm transition group-hover/item:opacity-100 2xl:block">
+              {item.label}
+            </span>
+            <span class="bcn-side-ring absolute h-5 w-5 rounded-full border border-transparent transition"></span>
+            <span class="bcn-side-dot h-1.5 w-1.5 rounded-full bg-[rgba(114,112,103,0.48)] transition group-hover/item:bg-[var(--bcn-sea-deep)]"></span>
+          </a>
+        ))}
+      </nav>
+
+      <div class="mt-4 grid gap-2.5 border-t border-[var(--bcn-line)] pt-4">
+        <a href={home} class="bcn-side-action group/item relative flex h-5 w-5 items-center justify-center" aria-label={labels.home}>
+          <span class="pointer-events-none absolute right-7 top-1/2 hidden -translate-y-1/2 whitespace-nowrap border border-[var(--bcn-line)] bg-[rgba(255,255,252,0.86)] px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-[var(--bcn-muted)] opacity-0 shadow-[0_12px_40px_rgba(28,28,24,0.06)] backdrop-blur-sm transition group-hover/item:opacity-100 2xl:block">{labels.home}</span>
+          <span class="h-1.5 w-1.5 rounded-full bg-[rgba(23,23,22,0.42)] transition group-hover/item:bg-[var(--bcn-graphite)]"></span>
+        </a>
+        <a href={search} class="bcn-side-action group/item relative flex h-5 w-5 items-center justify-center" aria-label={labels.search}>
+          <span class="pointer-events-none absolute right-7 top-1/2 hidden -translate-y-1/2 whitespace-nowrap border border-[var(--bcn-line)] bg-[rgba(255,255,252,0.86)] px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-[var(--bcn-muted)] opacity-0 shadow-[0_12px_40px_rgba(28,28,24,0.06)] backdrop-blur-sm transition group-hover/item:opacity-100 2xl:block">{labels.search}</span>
+          <span class="h-1.5 w-1.5 rounded-full bg-[rgba(23,23,22,0.42)] transition group-hover/item:bg-[var(--bcn-graphite)]"></span>
+        </a>
+        <button data-open-shortlist type="button" class="bcn-side-action group/item relative flex h-5 w-5 items-center justify-center" aria-label={labels.dossier}>
+          <span class="pointer-events-none absolute right-7 top-1/2 hidden -translate-y-1/2 whitespace-nowrap border border-[var(--bcn-line)] bg-[rgba(255,255,252,0.86)] px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-[var(--bcn-muted)] opacity-0 shadow-[0_12px_40px_rgba(28,28,24,0.06)] backdrop-blur-sm transition group-hover/item:opacity-100 2xl:block">{labels.dossier}</span>
+          <span class="h-1.5 w-1.5 rounded-full bg-[var(--bcn-sea-glass)] transition group-hover/item:bg-[var(--bcn-sea-deep)]"></span>
+        </button>
+        <a href={contact} class="bcn-side-action group/item relative flex h-5 w-5 items-center justify-center" aria-label={labels.contact}>
+          <span class="pointer-events-none absolute right-7 top-1/2 hidden -translate-y-1/2 whitespace-nowrap border border-[var(--bcn-line)] bg-[rgba(255,255,252,0.86)] px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-[var(--bcn-muted)] opacity-0 shadow-[0_12px_40px_rgba(28,28,24,0.06)] backdrop-blur-sm transition group-hover/item:opacity-100 2xl:block">{labels.contact}</span>
+          <span class="h-1.5 w-1.5 rounded-full bg-[rgba(23,23,22,0.42)] transition group-hover/item:bg-[var(--bcn-graphite)]"></span>
+        </a>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<style>
+  [data-side-rail][data-visible="true"] {
+    opacity: 0.38;
+  }
+
+  [data-side-rail] .bcn-side-label,
+  [data-side-rail] .group > .pointer-events-none {
+    display: none;
+  }
+
+  .bcn-side-item[data-active="true"] .bcn-side-ring {
+    border-color: rgba(100, 124, 120, 0.52);
+  }
+
+  .bcn-side-item[data-active="true"] .bcn-side-dot {
+    background: var(--bcn-sea-deep);
+  }
+
+  .bcn-side-item[data-active="true"] .bcn-side-label {
+    color: var(--bcn-graphite);
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    const init = () => {
+      const rail = document.querySelector("[data-side-rail]");
+      if (!rail) return;
+
+      const links = Array.from(rail.querySelectorAll("[data-section-id]"));
+      const sections = links
+        .map((link) => {
+          const id = link.getAttribute("data-section-id");
+          const section = id ? document.getElementById(id) : null;
+          return section ? { id, section, link } : null;
+        })
+        .filter(Boolean);
+
+      const update = () => {
+        rail.setAttribute("data-visible", window.scrollY > 220 ? "true" : "false");
+
+        if (!sections.length) return;
+
+        let active = sections[0].id;
+        const threshold = window.innerHeight * 0.42;
+
+        for (const item of sections) {
+          const rect = item.section.getBoundingClientRect();
+          if (rect.top <= threshold) active = item.id;
+        }
+
+        for (const item of sections) {
+          item.link.setAttribute("data-active", item.id === active ? "true" : "false");
+        }
+      };
+
+      update();
+      window.addEventListener("scroll", update, { passive: true });
+      window.addEventListener("resize", update);
+      document.addEventListener("astro:after-swap", update);
+    };
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init, { once: true });
+    } else {
+      init();
+    }
+  })();
+</script>

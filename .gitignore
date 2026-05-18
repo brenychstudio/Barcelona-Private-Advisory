@@ -12,6 +12,12 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# local Codex QA / preview artifacts
+.codex-*
+
+# raw source image drops; runtime uses optimized webp assets
+public/media/bcn-advisory/**/_source/
+
 
 # environment variables
 .env

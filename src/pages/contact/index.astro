@@ -1,314 +1,141 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { bcnMedia } from "../../data/bcnMedia";
+import { bcnLensMedia } from "../../data/bcnLensMedia";
+
+const briefRows = [
+  ["Buyer intent", "Family calm, sea light, investment logic, privacy or another clear buyer priority."],
+  ["Preferred districts", "The district lens that should frame daily life, access, light and long-term value."],
+  ["Budget / timing", "Commercial range, decision timing and how urgent the viewing path should be."],
+  ["Selected properties", "Shortlisted homes or one specific property that should anchor the request."],
+  ["Trade-offs / constraints", "Noise, renovation tolerance, school routes, liquidity, fees or privacy concerns."],
+  ["Viewing priority", "Which options should be inspected first and what would make the viewing worthwhile."],
+];
+
+const methodSteps = [
+  ["01", "Prepare brief", "Open the Request Viewing Path panel and add timing, budget, constraints and questions."],
+  ["02", "Review shortlist fit", "Use saved properties, district context and advisory signals to keep the request focused."],
+  ["03", "Share with advisor", "Copy the brief when ready. Nothing is sent automatically in this portfolio build."],
+];
 ---
 
 <BaseLayout
-  title="Contact — Barcelona Private Advisory"
-  description="Private intake for Barcelona Private Advisory — request a shortlist, advisory call, or next-step guidance."
+  title="Advisory Handoff - Barcelona Private Advisory"
+  description="Prepare a private viewing path request from buyer intent, district fit, shortlist context and timing."
 >
-  <section class="space-y-4">
-    <div class="text-[12px] tracking-[0.18em] text-black/42">PRIVATE INTAKE</div>
-
-    <div class="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
-      <div class="space-y-4">
-        <h1 class="max-w-[720px] text-[30px] leading-[1.03] tracking-tight sm:text-[38px]">
-          Start a private search,
-          <br />
-          not a generic inquiry.
-        </h1>
-
-        <p class="max-w-[700px] text-[13px] leading-[1.9] text-black/58">
-          This intake is designed as a buyer brief, not a broad contact form. Share your timing,
-          district preferences, budget range, and constraints — then turn it into a curated email or WhatsApp draft.
-        </p>
-      </div>
-
-      <div class="max-w-[760px] border-l border-black/10 pl-5 text-[12px] leading-[1.85] text-black/48 lg:ml-auto">
-        In production, this section would connect to Formspree, CRM, or a private inbox workflow.
-        In the demo, it is structured as a premium advisory intake with copy / email / WhatsApp actions.
-      </div>
+  <section class="bcn-section grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+    <div class="space-y-5">
+      <div class="bcn-signal-kicker text-[12px] uppercase tracking-[0.2em] text-black/42">Advisory handoff</div>
+      <h1 class="bcn-advisory-line max-w-[780px] text-[42px] leading-[0.98] tracking-tight text-black/90 sm:text-[64px]">
+        Prepare a private viewing path.
+      </h1>
+      <p class="max-w-[700px] text-[14px] leading-[1.85] text-black/58">
+        Build a buyer brief from intent, district fit, shortlist context and timing, then copy it when you are ready
+        to hand it off. This page supports the same request flow used across the Lens, property detail and dossier.
+      </p>
     </div>
+
+    <figure class="overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
+      <img
+        src={bcnLensMedia.materials.handoff.src}
+        alt={bcnLensMedia.materials.handoff.alt}
+        width={bcnLensMedia.materials.handoff.width}
+        height={bcnLensMedia.materials.handoff.height}
+        class="aspect-[16/10] w-full object-cover"
+        loading="eager"
+        decoding="async"
+      />
+    </figure>
   </section>
 
-  <section class="mt-16 grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-    <div class="space-y-10">
-      <div class="space-y-0 border-t border-black/10">
-        {[
-          ["Direct line", "+34 600 000 000", "Demo placeholder · priority channel for high-intent inquiries."],
-          ["Email", "advisory@example.com", "Used for briefs, follow-ups, and shortlist delivery."],
-          ["WhatsApp", "Open WhatsApp", "Fastest route for a first brief or a shortlist follow-up."],
-          ["Office", "Barcelona — Eixample (demo)", "Mon–Fri · 10:00–18:00 · meetings by appointment."],
-        ].map(([label, value, note], i) => (
-          <div class="grid gap-2 border-b border-black/10 py-4 last:border-b-0 sm:grid-cols-[150px_1fr]">
-            <div class="text-[12px] tracking-[0.18em] text-black/42">{label}</div>
-
-            <div class="space-y-2">
-              {i === 2 ? (
-                <a
-                  href="https://wa.me/34600000000"
-                  target="_blank"
-                  rel="noreferrer"
-                  class="inline-flex rounded-full border border-black/15 px-3 py-1.5 text-[12px] hover:border-black/25"
-                >
-                  {value}
-                </a>
-              ) : i === 1 ? (
-                <a
-                  href="mailto:advisory@example.com"
-                  class="text-[15px] tracking-tight hover:text-black/70"
-                >
-                  {value}
-                </a>
-              ) : i === 3 ? (
-                <div class="space-y-2">
-                  <div class="text-[15px] tracking-tight">{value}</div>
-                  <a
-                    href="https://maps.google.com/?q=Barcelona+Eixample"
-                    target="_blank"
-                    rel="noreferrer"
-                    class="inline-flex rounded-full border border-black/10 px-3 py-1.5 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
-                  >
-                    Open in Google Maps
-                  </a>
-                </div>
-              ) : (
-                <a
-                  href="tel:+34600000000"
-                  class="text-[15px] tracking-tight hover:text-black/70"
-                >
-                  {value}
-                </a>
-              )}
-
-              <div class="max-w-[460px] text-[12px] leading-[1.8] text-black/56">{note}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div class="space-y-0 border-t border-black/10">
-        {[
-          ["Response window", "Within one working day for qualified briefs."],
-          ["Best for", "Buying, relocation, investment, shortlisting, advisory calls."],
-          ["Output", "Email draft, WhatsApp draft, or a shortlist-ready brief."],
-        ].map(([label, value]) => (
-          <div class="grid gap-2 border-b border-black/10 py-4 last:border-b-0 sm:grid-cols-[150px_1fr]">
-            <div class="text-[12px] tracking-[0.18em] text-black/42">{label}</div>
-            <div class="text-[12px] leading-[1.8] text-black/56">{value}</div>
-          </div>
-        ))}
-      </div>
+  <section class="bcn-section--threshold mt-28 grid gap-10 border-y border-black/10 py-14 lg:grid-cols-[0.7fr_1.3fr]">
+    <div>
+      <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Brief content</div>
+      <h2 class="mt-4 max-w-[520px] text-[32px] leading-[1.02] tracking-tight">
+        What a useful request should include.
+      </h2>
     </div>
 
-    <div class="rounded-[30px] border border-black/10 bg-white p-5 sm:p-6">
-      <div class="space-y-2">
-        <div class="text-[12px] tracking-[0.18em] text-black/42">REQUEST BRIEF</div>
-        <div class="max-w-[520px] text-[24px] leading-[1.08] tracking-tight">
-          Build a clearer request before sending it.
-        </div>
-      </div>
-
-      <form id="private-intake-form" class="mt-6 space-y-4">
-        <div class="grid gap-3 sm:grid-cols-2">
-          <select
-            name="requestType"
-            class="h-11 rounded-full border border-black/10 bg-white px-4 text-[12px] text-black/70"
-          >
-            <option value="Buying">Buying</option>
-            <option value="Investment">Investment</option>
-            <option value="Relocation">Relocation</option>
-            <option value="Advisory call">Advisory call</option>
-            <option value="Selling">Selling</option>
-          </select>
-
-          <input
-            name="name"
-            type="text"
-            placeholder="Name"
-            class="h-11 rounded-full border border-black/10 bg-white px-4 text-[12px] text-black/70 placeholder:text-black/32"
-          />
-        </div>
-
-        <div class="grid gap-3 sm:grid-cols-2">
-          <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            class="h-11 rounded-full border border-black/10 bg-white px-4 text-[12px] text-black/70 placeholder:text-black/32"
-          />
-          <input
-            name="districts"
-            type="text"
-            placeholder="Preferred districts (e.g. Eixample, Gràcia)"
-            class="h-11 rounded-full border border-black/10 bg-white px-4 text-[12px] text-black/70 placeholder:text-black/32"
-          />
-        </div>
-
-        <div class="grid gap-3 sm:grid-cols-3">
-          <select
-            name="budget"
-            class="h-11 rounded-full border border-black/10 bg-white px-4 text-[12px] text-black/70"
-          >
-            <option value="Open budget">Open budget</option>
-            <option value="Up to €500k">Up to €500k</option>
-            <option value="€500k–€900k">€500k–€900k</option>
-            <option value="€900k–€1.5M">€900k–€1.5M</option>
-            <option value="€1.5M+">€1.5M+</option>
-          </select>
-
-          <select
-            name="timing"
-            class="h-11 rounded-full border border-black/10 bg-white px-4 text-[12px] text-black/70"
-          >
-            <option value="Flexible timing">Flexible timing</option>
-            <option value="Within 30 days">Within 30 days</option>
-            <option value="1–3 months">1–3 months</option>
-            <option value="3–6 months">3–6 months</option>
-            <option value="Exploratory">Exploratory</option>
-          </select>
-
-          <select
-            name="propertyType"
-            class="h-11 rounded-full border border-black/10 bg-white px-4 text-[12px] text-black/70"
-          >
-            <option value="Any property type">Any property type</option>
-            <option value="Apartment">Apartment</option>
-            <option value="Penthouse">Penthouse</option>
-            <option value="Family home">Family home</option>
-            <option value="Investment unit">Investment unit</option>
-          </select>
-        </div>
-
-        <textarea
-          name="notes"
-          placeholder="Notes (light preference, quiet street, renovation tolerance, family needs, investment angle, etc.)"
-          class="min-h-[160px] w-full rounded-[24px] border border-black/10 bg-white px-4 py-3 text-[12px] leading-[1.8] text-black/70 placeholder:text-black/32"
-        ></textarea>
-
-        <div class="border-t border-black/10 pt-4">
-          <div class="text-[12px] leading-[1.75] text-black/50">
-            Demo actions below generate a formatted brief — useful for testing the intake flow before connecting a real backend.
-          </div>
-
-          <div class="mt-4 flex flex-wrap gap-2">
-            <button
-              id="copy-brief-btn"
-              type="button"
-              class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/75 hover:border-black/20 hover:text-black"
-            >
-              Copy brief
-            </button>
-
-            <button
-              id="email-draft-btn"
-              type="button"
-              class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/75 hover:border-black/20 hover:text-black"
-            >
-              Email draft
-            </button>
-
-            <button
-              id="whatsapp-draft-btn"
-              type="button"
-              class="rounded-full border border-black/20 px-4 py-2 text-[12px] hover:border-black/30"
-            >
-              WhatsApp draft
-            </button>
-          </div>
-
-          <div id="intake-status" class="mt-3 text-[12px] text-black/50"></div>
-        </div>
-      </form>
-    </div>
-  </section>
-
-  <section class="mt-16 border-t border-black/10 pt-8">
-    <div class="grid gap-0 md:grid-cols-3">
-      {[
-        ["01", "Receive brief", "The intake is formatted into a more useful request than a generic contact message."],
-        ["02", "Review fit", "District logic, timing, and budget are assessed before any shortlist is proposed."],
-        ["03", "Reply with next step", "In production: shortlist, viewing path, or an advisory call depending on the brief."],
-      ].map(([n, title, text]) => (
-        <div class="border-b border-black/10 py-5 md:border-b-0 md:border-r md:px-5 md:last:border-r-0">
-          <div class="text-[11px] tracking-[0.18em] text-black/38">{n}</div>
-          <div class="mt-3 text-[17px] tracking-tight">{title}</div>
-          <div class="mt-2 max-w-[280px] text-[12px] leading-[1.8] text-black/56">{text}</div>
+    <div class="grid gap-0 border-t border-black/10">
+      {briefRows.map(([label, text]) => (
+        <div class="grid gap-3 border-b border-black/10 py-4 last:border-b-0 sm:grid-cols-[190px_1fr]">
+          <div class="text-[12px] tracking-[0.16em] text-black/42">{label}</div>
+          <p class="text-[13px] leading-[1.7] text-black/62">{text}</p>
         </div>
       ))}
     </div>
   </section>
 
-  <script is:inline>
-    const form = document.getElementById("private-intake-form");
-    const status = document.getElementById("intake-status");
+  <section class="bcn-editorial-surface mt-28 overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
+    <div class="grid gap-0 lg:grid-cols-[0.95fr_1.05fr]">
+      <figure class="min-h-[320px]">
+        <img
+          src={bcnMedia.dossier.acquisitionMemoDetail.src}
+          alt={bcnMedia.dossier.acquisitionMemoDetail.alt}
+          width={bcnMedia.dossier.acquisitionMemoDetail.width}
+          height={bcnMedia.dossier.acquisitionMemoDetail.height}
+          class="h-full w-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
 
-    const copyBtn = document.getElementById("copy-brief-btn");
-    const emailBtn = document.getElementById("email-draft-btn");
-    const waBtn = document.getElementById("whatsapp-draft-btn");
+      <div class="p-6 sm:p-8 lg:p-10">
+        <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Request brief surface</div>
+        <h2 class="mt-4 max-w-[560px] text-[34px] leading-[1.02] tracking-tight">
+          Use the Request Viewing Path panel for the richest context.
+        </h2>
+        <p class="mt-5 max-w-[620px] text-[13px] leading-[1.85] text-black/58">
+          The panel prepares a local, copy-ready advisory request. It can include property context, dossier count,
+          district lens, next action, buyer notes and preferred timing.
+        </p>
+        <div class="mt-6 border-t border-black/10 pt-5 text-[12px] leading-[1.75] text-black/54">
+          No message is sent automatically. No placeholder contact data is used. A production deployment can connect this handoff
+          to a real CRM, email workflow, calendar or WhatsApp contact.
+        </div>
 
-    const phoneDigits = "34600000000";
-    const emailTo = "advisory@example.com";
+        <div class="mt-7 flex flex-wrap gap-2">
+          <button
+            type="button"
+            data-open-inquiry
+            data-inquiry-source="contact"
+            data-inquiry-next-action="Prepare viewing path"
+            class="rounded-full border border-black/20 bg-white px-4 py-2 text-[12px] hover:border-black/35 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
+          >
+            Open Request Viewing Path
+          </button>
+          <a
+            href="/search"
+            class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
+          >
+            Open Private Search
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    const getValue = (name) => {
-      const field = form?.elements?.namedItem(name);
-      return field && "value" in field ? field.value.trim() : "";
-    };
+  <section class="mt-24 space-y-8">
+    <div class="max-w-[680px] space-y-3">
+      <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Handoff method</div>
+      <h2 class="text-[32px] leading-[1.03] tracking-tight">From search context to advisor-ready brief.</h2>
+    </div>
 
-    const buildBrief = () => {
-      const requestType = getValue("requestType") || "Buying";
-      const name = getValue("name") || "—";
-      const email = getValue("email") || "—";
-      const districts = getValue("districts") || "Open";
-      const budget = getValue("budget") || "Open budget";
-      const timing = getValue("timing") || "Flexible timing";
-      const propertyType = getValue("propertyType") || "Any property type";
-      const notes = getValue("notes") || "—";
+    <div class="grid gap-0 border-y border-black/10 md:grid-cols-3">
+      {methodSteps.map(([n, title, text]) => (
+        <div class="border-b border-black/10 py-6 md:border-b-0 md:border-r md:px-6 md:last:border-r-0">
+          <div class="text-[11px] tracking-[0.18em] text-black/36">{n}</div>
+          <div class="mt-4 text-[18px] tracking-tight text-black/84">{title}</div>
+          <p class="mt-3 max-w-[300px] text-[12px] leading-[1.75] text-black/56">{text}</p>
+        </div>
+      ))}
+    </div>
+  </section>
 
-      return [
-        "Barcelona Private Advisory — Client Brief",
-        "",
-        `Request type: ${requestType}`,
-        `Name: ${name}`,
-        `Email: ${email}`,
-        `Preferred districts: ${districts}`,
-        `Budget: ${budget}`,
-        `Timing: ${timing}`,
-        `Property type: ${propertyType}`,
-        `Notes: ${notes}`,
-      ].join("\n");
-    };
-
-    const setStatus = (message) => {
-      if (status) status.textContent = message;
-      window.setTimeout(() => {
-        if (status && status.textContent === message) status.textContent = "";
-      }, 2200);
-    };
-
-    copyBtn?.addEventListener("click", async () => {
-      const brief = buildBrief();
-
-      try {
-        await navigator.clipboard.writeText(brief);
-        setStatus("Brief copied.");
-      } catch {
-        window.prompt("Copy brief:", brief);
-      }
-    });
-
-    emailBtn?.addEventListener("click", () => {
-      const brief = buildBrief();
-      const subject = encodeURIComponent("Barcelona Private Advisory — Client Brief");
-      const body = encodeURIComponent(brief);
-      window.location.href = `mailto:${emailTo}?subject=${subject}&body=${body}`;
-      setStatus("Opening email draft…");
-    });
-
-    waBtn?.addEventListener("click", () => {
-      const brief = buildBrief();
-      const text = encodeURIComponent(brief);
-      window.open(`https://wa.me/${phoneDigits}?text=${text}`, "_blank", "noopener,noreferrer");
-      setStatus("Opening WhatsApp draft…");
-    });
-  </script>
+  <section class="mt-20 border-t border-black/10 pt-8">
+    <div class="max-w-[820px] text-[13px] leading-[1.85] text-black/56">
+      Local privacy note: this portfolio build prepares copy locally in the browser. It does not submit forms,
+      store contact details, send messages or use placeholder advisory contact targets.
+    </div>
+  </section>
 </BaseLayout>

@@ -1,0 +1,223 @@
+---
+const path = Astro.url.pathname;
+const lang = path.startsWith("/es") ? "es" : "en";
+const isEs = lang === "es";
+const prefix = isEs ? "/es" : "";
+const homeHref = isEs ? "/es/" : "/";
+
+const copy = isEs
+  ? {
+      system: "Sistema de inteligencia inmobiliaria privada",
+      description:
+        "Una interfaz de asesoría privada para viviendas en Barcelona, lógica de distrito y shortlists curadas para compradores.",
+      cta: "Iniciar búsqueda privada",
+      explore: "Explorar",
+      advisory: "Asesoría",
+      districts: "Distritos de Barcelona",
+      focus: "Enfoque inmobiliario",
+      legal: "Legal / Confianza",
+      deskLabel: "Mesa de asesoría demo",
+      deskCity: "Barcelona, España",
+      deskMode: "Solo mediante brief privado",
+      notice:
+        "Prototipo de portfolio. Los datos, imágenes y contactos son demostrativos. Este build no envía mensajes automáticamente.",
+      production:
+        "Una implementación de producción puede conectar datos verificados de agencia, páginas legales, cookies, CRM, calendario y gestión real de solicitudes.",
+      credit: "Concepto de interfaz y sistema front-end por Brenych Studio.",
+    }
+  : {
+      system: "Private Property Intelligence System",
+      description:
+        "A private advisory interface for Barcelona city residences, district intelligence and curated buyer shortlists.",
+      cta: "Start private search",
+      explore: "Explore",
+      advisory: "Advisory",
+      districts: "Barcelona districts",
+      focus: "Property focus",
+      legal: "Legal / Trust",
+      deskLabel: "Demo advisory desk",
+      deskCity: "Barcelona, Spain",
+      deskMode: "By private brief only",
+      notice:
+        "Portfolio prototype. Property data, media and contact details are demo-only. No message is sent automatically from this build.",
+      production:
+        "Production deployment can connect verified agency details, legal pages, cookie consent, CRM, calendar and real inquiry handling.",
+      credit: "Interface concept and front-end system by Brenych Studio.",
+    };
+
+const exploreLinks = isEs
+  ? [
+      { label: "Inicio", href: "/es/" },
+      { label: "Búsqueda privada", href: "/es/search" },
+      { label: "Lente Barcelona", href: "/es/#lens" },
+      { label: "Dossier privado", action: "shortlist" },
+      { label: "Método de asesoría", href: "/es/#method" },
+      { label: "Handoff de contacto", href: "/es/contact" },
+    ]
+  : [
+      { label: "Home", href: "/" },
+      { label: "Private Search", href: "/search" },
+      { label: "Barcelona Lens", href: "/#lens" },
+      { label: "Private Dossier", action: "shortlist" },
+      { label: "Advisory Method", href: "/#method" },
+      { label: "Contact Handoff", href: "/contact" },
+    ];
+
+const advisoryServices = isEs
+  ? [
+      "Brief privado del comprador",
+      "Revisión de ajuste de distrito",
+      "Shortlist curada",
+      "Preparación de ruta de visita",
+      "Búsqueda para relocalización",
+      "Shortlist de inversión",
+    ]
+  : [
+      "Private buyer brief",
+      "District fit review",
+      "Curated shortlist",
+      "Viewing path preparation",
+      "Relocation search",
+      "Investment shortlist",
+    ];
+
+const districts = ["Eixample", "Gràcia", "Sarrià", "Poblenou", "Diagonal Mar", "Pedralbes"];
+
+const propertyFocus = isEs
+  ? [
+      "Apartamentos urbanos",
+      "Áticos",
+      "Viviendas con carácter patrimonial",
+      "Viviendas familiares",
+      "Residencias con luz mediterránea",
+      "Activos para reforma de diseño",
+    ]
+  : [
+      "City apartments",
+      "Penthouses",
+      "Heritage residences",
+      "Family-ready homes",
+      "Sea-light residences",
+      "Design renovation assets",
+    ];
+
+const legalLinks = isEs
+  ? [
+      { label: "Aviso legal", href: "/es/legal" },
+      { label: "Política de privacidad", href: "/es/privacy" },
+      { label: "Política de cookies", href: "/es/cookies" },
+      { label: "Condiciones de uso", href: "/es/terms" },
+      { label: "Accesibilidad", href: "/es/accessibility" },
+      { label: "Aviso de demo de portfolio", href: "/es/demo-notice" },
+    ]
+  : [
+      { label: "Legal Notice", href: "/legal" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Cookie Policy", href: "/cookies" },
+      { label: "Terms of Use", href: "/terms" },
+      { label: "Accessibility", href: "/accessibility" },
+      { label: "Portfolio Demo Notice", href: "/demo-notice" },
+    ];
+---
+
+<footer class="bcn-footer-shell bcn-section--threshold mt-28 border-t border-[rgba(23,23,22,0.18)] bg-[linear-gradient(180deg,rgba(251,250,247,0.74),rgba(246,246,242,0.96))] pt-12 text-[var(--bcn-graphite)]">
+  <div class="grid gap-8 border-b border-[var(--bcn-line)] pb-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
+    <div>
+      <a href={homeHref} class="text-[24px] leading-none tracking-tight text-[var(--bcn-graphite)]">
+        Barcelona Private Advisory
+      </a>
+      <p class="mt-2 text-[12px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{copy.system}</p>
+      <p class="mt-5 max-w-[620px] text-[15px] leading-[1.7] text-[var(--bcn-graphite-soft)]">
+        {copy.description}
+      </p>
+    </div>
+
+    <div class="flex flex-col gap-4 border-t border-[var(--bcn-line)] pt-6 lg:items-end lg:border-t-0 lg:pt-0">
+      <a
+        href={`${prefix}/search`}
+        data-open-inquiry
+        data-inquiry-source="search"
+        data-inquiry-next-action={copy.cta}
+        class="inline-flex w-fit rounded-full border border-[var(--bcn-line-strong)] bg-white/54 px-5 py-2.5 text-[12px] text-[var(--bcn-graphite)] shadow-[0_18px_54px_rgba(28,28,24,0.05)] hover:border-[var(--bcn-graphite)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--bcn-sea-deep)]"
+      >
+        {copy.cta}
+      </a>
+      <p class="max-w-[520px] text-left text-[12px] leading-[1.7] text-[var(--bcn-muted)] lg:text-right">
+        {copy.production}
+      </p>
+    </div>
+  </div>
+
+  <div class="grid gap-10 border-b border-[var(--bcn-line)] py-10 md:grid-cols-2 xl:grid-cols-[1fr_1fr_1fr_1fr_1.05fr]">
+    <nav aria-label={copy.explore}>
+      <h2 class="text-[11px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{copy.explore}</h2>
+      <ul class="mt-4 grid gap-3 text-[13px] text-[var(--bcn-graphite-soft)]">
+        {exploreLinks.map((item) => (
+          <li>
+            {"href" in item ? (
+              <a href={item.href} class="hover:text-[var(--bcn-graphite)]">{item.label}</a>
+            ) : (
+              <button type="button" data-open-shortlist class="text-left hover:text-[var(--bcn-graphite)]">
+                {item.label}
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <section aria-labelledby="footer-advisory">
+      <h2 id="footer-advisory" class="text-[11px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{copy.advisory}</h2>
+      <ul class="mt-4 grid gap-3 text-[13px] text-[var(--bcn-graphite-soft)]">
+        {advisoryServices.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </section>
+
+    <section aria-labelledby="footer-districts">
+      <h2 id="footer-districts" class="text-[11px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{copy.districts}</h2>
+      <ul class="mt-4 grid gap-3 text-[13px] text-[var(--bcn-graphite-soft)]">
+        {districts.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </section>
+
+    <section aria-labelledby="footer-focus">
+      <h2 id="footer-focus" class="text-[11px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{copy.focus}</h2>
+      <ul class="mt-4 grid gap-3 text-[13px] text-[var(--bcn-graphite-soft)]">
+        {propertyFocus.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </section>
+
+    <div class="grid gap-8">
+      <nav aria-label={copy.legal}>
+        <h2 class="text-[11px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{copy.legal}</h2>
+        <ul class="mt-4 grid gap-3 text-[13px] text-[var(--bcn-graphite-soft)]">
+          {legalLinks.map((item) => (
+            <li><a href={item.href} class="hover:text-[var(--bcn-graphite)]">{item.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <section class="border-t border-[var(--bcn-line)] pt-6" aria-label={copy.deskLabel}>
+        <h2 class="text-[11px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{copy.deskLabel}</h2>
+        <div class="mt-4 grid gap-2 text-[13px] leading-[1.55] text-[var(--bcn-graphite-soft)]">
+          <p class="text-[var(--bcn-graphite)]">advisory@barcelonaprivateadvisory.example</p>
+          <p>{copy.deskCity}</p>
+          <p>{copy.deskMode}</p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="grid gap-4 py-6 text-[12px] leading-[1.65] text-[var(--bcn-muted)] lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+    <p>
+      &copy; 2026 Barcelona Private Advisory. <a href="https://www.brenychstudio.com" target="_blank" rel="noreferrer" class="text-[var(--bcn-graphite-soft)] hover:text-[var(--bcn-graphite)]">{copy.credit}</a>
+    </p>
+    <p class="lg:text-right">{copy.notice}</p>
+  </div>
+</footer>

@@ -1,6 +1,6 @@
 ---
 import ShortlistWidget from "../islands/ShortlistWidget";
-import SearchIntake from "../islands/SearchIntake";
+import AdvisoryInquiryPanel from "../islands/AdvisoryInquiryPanel";
 import { listings } from "../../data/listings";
 
 const path = Astro.url.pathname;
@@ -10,93 +10,198 @@ const lang = isEs ? "es" : "en";
 const base = isEs ? (path.replace(/^\/es/, "") || "/") : path;
 const enHref = base;
 const esHref = base === "/" ? "/es" : `/es${base}`;
+const routePath = (isEs ? path.replace(/^\/es(?=\/|$)/, "") || "/" : path).replace(/\/$/, "") || "/";
+const legalRoutes = new Set(["/legal", "/privacy", "/cookies", "/terms", "/accessibility", "/demo-notice"]);
+const routeState =
+  routePath === "/"
+    ? "home"
+    : routePath.startsWith("/search")
+      ? "search"
+      : routePath.startsWith("/about")
+        ? "method"
+        : routePath.startsWith("/contact")
+          ? "handoff"
+          : routePath.startsWith("/p/")
+            ? "property"
+            : legalRoutes.has(routePath)
+              ? "legal"
+              : "default";
+const activeJourney = "";
 
 const nav =
   lang === "es"
     ? [
-        { href: "/es", label: "Inicio" },
-        { href: "/es/search", label: "Buscar" },
-        { href: "/es/about", label: "Sobre" },
-        { href: "/es/contact", label: "Contacto" },
+        { href: "/es", label: "Inicio", state: "home" },
+        { href: "/es/search", label: "Búsqueda privada", state: "search" },
+        { href: "/es/about", label: "Método", state: "method" },
+        { href: "/es/contact", label: "Contacto", state: "handoff" },
       ]
     : [
-        { href: "/", label: "Home" },
-        { href: "/search", label: "Search" },
-        { href: "/about", label: "About" },
-        { href: "/contact", label: "Contact" },
+        { href: "/", label: "Home", state: "home" },
+        { href: "/search", label: "Private search", state: "search" },
+        { href: "/about", label: "About", state: "method" },
+        { href: "/contact", label: "Contact", state: "handoff" },
       ];
 
-const searchHref = lang === "es" ? "/es/search" : "/search";
+const journey =
+  lang === "es"
+    ? [
+        { id: "threshold", label: "Umbral" },
+        { id: "intent", label: "Intención" },
+        { id: "lens", label: "Lente" },
+        { id: "signal", label: "Señal" },
+        { id: "dossier", label: "Dossier" },
+        { id: "action", label: "Acción" },
+        { id: "trust", label: "Confianza" },
+      ]
+    : [
+        { id: "threshold", label: "Threshold" },
+        { id: "intent", label: "Intent" },
+        { id: "lens", label: "Lens" },
+        { id: "signal", label: "Signal" },
+        { id: "dossier", label: "Dossier" },
+        { id: "action", label: "Action" },
+        { id: "trust", label: "Trust" },
+      ];
 
-const districts = Array.from(new Set(listings.map((x) => x.district).filter(Boolean))).sort((a, b) =>
-  a.localeCompare(b)
-);
+const journeyFocusMap = {
+  home: ["threshold", "intent", "lens", "signal", "dossier", "action", "trust"],
+  search: ["intent", "signal", "dossier"],
+  method: ["intent", "lens", "signal"],
+  handoff: ["dossier", "action", "trust"],
+  property: ["signal", "dossier", "action"],
+  legal: ["trust"],
+  default: [],
+};
+
+const journeyFocus = journeyFocusMap[routeState] ?? journeyFocusMap.default;
+const visibleJourney = routeState === "home" ? journey : journey.filter((item) => journeyFocus.includes(item.id));
+const showJourneyStrip = false;
+const journeyStripLabel =
+  routeState === "home"
+    ? (lang === "es" ? "Ruta de adquisición" : "Acquisition journey")
+    : (lang === "es" ? "Señal actual" : "Current signal");
+
+const stateLabel =
+  lang === "es"
+    ? {
+        home: "Calma advisory privada",
+        search: "Modo intención comprador",
+        method: "Inteligencia mediterránea",
+        handoff: "Acción advisory",
+        property: "Camara inmueble",
+        legal: "Capa de confianza",
+        default: "Asesoría privada",
+      }[routeState]
+    : {
+        home: "Private advisory calm",
+        search: "Buyer intent mode",
+        method: "Mediterranean intelligence",
+        handoff: "Advisory action",
+        property: "Property chamber",
+        legal: "Trust layer",
+        default: "Private advisory",
+      }[routeState];
+
+const searchHref = lang === "es" ? "/es/search" : "/search";
 ---
 
-<header class="sticky top-0 z-50 border-b border-black/10 bg-[rgb(var(--bg))]/80 backdrop-blur">
-  <div class="mx-auto flex h-14 w-full max-w-[1200px] items-center justify-between px-4">
+<header data-advisory-header data-bcn-header-state={routeState} class="sticky top-0 z-50 border-b border-[rgba(23,23,22,0.08)] bg-[rgba(246,246,242,0.78)] backdrop-blur-xl">
+  <div class="mx-auto flex min-h-16 w-full max-w-[1760px] min-w-0 items-center justify-between gap-3 px-4 py-3 sm:px-6 2xl:px-10">
     <a
       href={lang === "es" ? "/es" : "/"}
-      class="max-w-[128px] text-[12px] font-medium leading-[1.15] tracking-tight sm:max-w-none sm:text-[13px]"
+      class="group min-w-0 max-w-[172px] text-[12px] font-medium leading-[1.15] tracking-tight text-[var(--bcn-graphite)] sm:max-w-none sm:text-[13px]"
     >
-      Barcelona Private Advisory
+      <span class="block truncate">Barcelona Private Advisory</span>
+      <span class="mt-1 hidden text-[9px] uppercase tracking-[0.18em] text-[var(--bcn-muted)] lg:block">
+        Quiet capital / Mediterranean intelligence
+      </span>
     </a>
 
     <!-- Desktop -->
-    <nav class="hidden items-center gap-3 text-[12px] text-black/70 md:flex">
+    <nav class="hidden items-center gap-4 text-[12px] text-[var(--bcn-muted)] md:flex">
+      <div class="hidden items-center gap-2 border-r border-[var(--bcn-line)] pr-4 xl:flex">
+        <span class="h-1.5 w-1.5 rounded-full bg-[var(--bcn-sea-deep)]"></span>
+        <span
+          data-header-state-label
+          data-default-label={stateLabel}
+          data-inspection-label={lang === "es" ? "Secuencia de inspeccion" : "Inspection sequence"}
+          class="text-[10px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]"
+        >
+          {stateLabel}
+        </span>
+      </div>
+
       {nav.map((x) => (
-        <a href={x.href} class="hover:text-black">{x.label}</a>
+        <a
+          href={x.href}
+          aria-current={x.state === routeState ? "page" : undefined}
+          class={"hover:text-[var(--bcn-graphite)] " + (x.state === routeState ? "text-[var(--bcn-graphite)]" : "")}
+        >
+          {x.label}
+        </a>
       ))}
 
-      <div class="mx-1 h-4 w-px bg-black/10"></div>
+      <div class="mx-1 h-5 w-px bg-[var(--bcn-line)]"></div>
 
       <a
         href={enHref}
-        class={"rounded-full border px-3 py-1.5 text-[12px] " + (lang === "en" ? "border-black/25 text-black" : "border-black/10 text-black/60 hover:border-black/20 hover:text-black")}
+        class={"min-h-10 rounded-full border px-3 py-1.5 text-[12px] " + (lang === "en" ? "border-[var(--bcn-line-strong)] bg-white/50 text-[var(--bcn-graphite)]" : "border-[var(--bcn-line)] text-[var(--bcn-muted)] hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)]")}
       >
         EN
       </a>
       <a
         href={esHref}
-        class={"rounded-full border px-3 py-1.5 text-[12px] " + (lang === "es" ? "border-black/25 text-black" : "border-black/10 text-black/60 hover:border-black/20 hover:text-black")}
+        class={"min-h-10 rounded-full border px-3 py-1.5 text-[12px] " + (lang === "es" ? "border-[var(--bcn-line-strong)] bg-white/50 text-[var(--bcn-graphite)]" : "border-[var(--bcn-line)] text-[var(--bcn-muted)] hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)]")}
       >
         ES
       </a>
 
       <ShortlistWidget client:load listings={listings} lang={lang} className="hidden md:inline-flex" />
-      <SearchIntake client:load districts={districts} lang={lang} />
+      <a
+        href={searchHref}
+        data-open-inquiry
+        data-inquiry-source="hero"
+        data-inquiry-next-action={lang === "es" ? "Iniciar búsqueda privada" : "Start private search"}
+        class="min-h-10 rounded-full border border-[var(--bcn-line-strong)] bg-white/44 px-4 py-2 text-[12px] text-[var(--bcn-graphite)] shadow-[0_10px_34px_rgba(28,28,24,0.04)] hover:border-[var(--bcn-graphite)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--bcn-sea-deep)]"
+      >
+        {lang === "es" ? "Iniciar búsqueda privada" : "Start private search"}
+      </a>
+      <AdvisoryInquiryPanel client:load listings={listings} lang={lang} />
     </nav>
 
     <!-- Mobile -->
-    <div class="flex items-center gap-2 md:hidden">
+    <div class="bcn-mobile-nav-cluster fixed right-3 top-4 flex shrink-0 items-center gap-1 md:hidden">
       <a
         href={enHref}
-        class={"rounded-full border px-3 py-1.5 text-[12px] " + (lang === "en" ? "border-black/25 text-black" : "border-black/10 text-black/60")}
+        class={"flex min-h-10 items-center rounded-full border px-2 py-1.5 text-[12px] " + (lang === "en" ? "border-black/25 text-black" : "border-black/10 text-black/60")}
       >
         EN
       </a>
       <a
         href={esHref}
-        class={"rounded-full border px-3 py-1.5 text-[12px] " + (lang === "es" ? "border-black/25 text-black" : "border-black/10 text-black/60")}
+        class={"flex min-h-10 items-center rounded-full border px-2 py-1.5 text-[12px] " + (lang === "es" ? "border-black/25 text-black" : "border-black/10 text-black/60")}
       >
         ES
       </a>
 
       <details id="mobile-nav" class="relative">
-        <summary class="list-none rounded-full border border-black/15 px-3 py-1.5 text-[12px] text-black/75">
-          {lang === "es" ? "Menú" : "Menu"}
+        <summary class="flex min-h-10 items-center rounded-full border border-black/15 px-2.5 py-1.5 text-[12px] text-black/75">
+          Menu
         </summary>
 
-        <div class="absolute right-0 top-[calc(100%+12px)] z-[90] w-[min(92vw,360px)] overflow-hidden rounded-2xl border border-black/10 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.08)]">
+        <div class="absolute right-0 top-[calc(100%+12px)] z-[90] w-[min(calc(100vw-2rem),360px)] overflow-hidden rounded-2xl border border-black/10 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.08)]">
           <div class="border-b border-black/10 px-4 py-3 text-[11px] tracking-[0.18em] text-black/45">
-            {lang === "es" ? "NAVEGACIÓN" : "NAVIGATION"}
+            {lang === "es" ? "NAVEGACION" : "NAVIGATION"}
+            <div class="mt-1 text-[12px] normal-case tracking-normal text-black/70">{stateLabel}</div>
           </div>
 
           <div class="grid gap-1 p-2">
             {nav.map((x) => (
               <a
                 href={x.href}
-                class="rounded-xl px-3 py-2 text-[13px] text-black/75 hover:bg-black/[0.03] hover:text-black"
+                aria-current={x.state === routeState ? "page" : undefined}
+                class={"flex min-h-10 items-center rounded-xl px-3 py-2 text-[13px] hover:bg-black/[0.03] hover:text-black " + (x.state === routeState ? "text-black" : "text-black/75")}
               >
                 {x.label}
               </a>
@@ -110,16 +215,19 @@ const districts = Array.from(new Set(listings.map((x) => x.district).filter(Bool
               <button
                 id="mobile-open-shortlist"
                 type="button"
-                class="rounded-full border border-black/10 px-4 py-2 text-center text-[12px] text-black/75 hover:border-black/20 hover:text-black"
+                class="min-h-10 rounded-full border border-black/10 px-4 py-2 text-center text-[12px] text-black/75 hover:border-black/20 hover:text-black"
               >
-                {lang === "es" ? "Abrir selección" : "Open shortlist"}
+                {lang === "es" ? "Abrir dossier" : "Open dossier"}
               </button>
 
               <a
                 href={searchHref}
-                class="rounded-full border border-black/25 bg-white px-4 py-2 text-center text-[12px] text-black hover:border-black/35"
+                data-open-inquiry
+                data-inquiry-source="hero"
+                data-inquiry-next-action={lang === "es" ? "Iniciar búsqueda privada" : "Start private search"}
+                class="min-h-10 rounded-full border border-black/25 bg-white px-4 py-2 text-center text-[12px] text-black hover:border-black/35"
               >
-                {lang === "es" ? "Iniciar búsqueda" : "Start a search"}
+                {lang === "es" ? "Iniciar búsqueda privada" : "Start private search"}
               </a>
             </div>
           </div>
@@ -128,14 +236,109 @@ const districts = Array.from(new Set(listings.map((x) => x.district).filter(Bool
     </div>
   </div>
 
+  {showJourneyStrip && (
+  <div data-header-journey={routeState} class="hidden border-t border-[rgba(23,23,22,0.06)] lg:block">
+    <div class="mx-auto flex w-full max-w-[1760px] items-center gap-3 px-6 py-2 2xl:px-10">
+      <div
+        data-header-journey-label
+        data-default-label={journeyStripLabel}
+        data-inspection-label={lang === "es" ? "Campo de inspeccion" : "Inspection field"}
+        class="text-[9px] uppercase tracking-[0.2em] text-[var(--bcn-muted)]"
+      >
+        {journeyStripLabel}
+      </div>
+      <div class="h-px flex-1 bg-[var(--bcn-line)]"></div>
+      <div class="flex items-center gap-2">
+        {visibleJourney.map((item) => (
+          <span
+            class={"rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.13em] " + (item.id === activeJourney ? "border-[var(--bcn-line-strong)] bg-white/62 text-[var(--bcn-graphite)]" : "border-transparent text-[var(--bcn-muted)]")}
+          >
+            {item.label}
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+  )}
+
   <script is:inline>
+    (() => {
+      const header = document.querySelector("[data-advisory-header]");
+      if (!header || header.__bcnInspectionHeaderBound) return;
+
+      header.__bcnInspectionHeaderBound = true;
+      const stateLabel = header.querySelector("[data-header-state-label]");
+      const journeyLabel = header.querySelector("[data-header-journey-label]");
+
+      const setLabel = (node, mode) => {
+        if (!node) return;
+        const next = mode === "open" ? node.dataset.inspectionLabel : node.dataset.defaultLabel;
+        if (next) node.textContent = next;
+      };
+
+      window.addEventListener("bcn:inspection", (event) => {
+        const active = Boolean(event.detail && event.detail.active);
+        if (active) {
+          header.setAttribute("data-bcn-inspection-mode", "open");
+          setLabel(stateLabel, "open");
+          setLabel(journeyLabel, "open");
+          return;
+        }
+
+        header.removeAttribute("data-bcn-inspection-mode");
+        setLabel(stateLabel, "default");
+        setLabel(journeyLabel, "default");
+      });
+    })();
+
+    if (!window.__bcnInquiryDelegatedBound) {
+      window.__bcnInquiryDelegatedBound = true;
+
+      const readInquiryContext = (target) => ({
+        source: target.dataset.inquirySource || "hero",
+        intentLabel: target.dataset.inquiryIntent,
+        districtLabel: target.dataset.inquiryDistrict,
+        propertyTitle: target.dataset.inquiryPropertyTitle,
+        propertyId: target.dataset.inquiryPropertyId,
+        nextAction: target.dataset.inquiryNextAction,
+        advisorNote: target.dataset.inquiryAdvisorNote,
+      });
+
+      document.addEventListener(
+        "click",
+        (event) => {
+          if (event.__bcnInquiryHandled) return;
+
+          const target =
+            event.target instanceof Element ? event.target.closest("[data-open-inquiry]") : null;
+
+          if (!target) return;
+
+          event.preventDefault();
+          event.__bcnInquiryHandled = true;
+
+          const detail = readInquiryContext(target);
+          const openFn = window.__bcnOpenInquiry;
+
+          if (typeof openFn === "function") {
+            openFn(detail);
+            return;
+          }
+
+          window.__bcnPendingInquiry = detail;
+          window.dispatchEvent(new CustomEvent("bcn:inquiry_open", { detail }));
+        },
+        true,
+      );
+    }
+
     if (!window.__scShortlistDelegatedBound) {
       window.__scShortlistDelegatedBound = true;
 
       document.addEventListener("click", (event) => {
         const target =
           event.target instanceof Element
-            ? event.target.closest("#mobile-open-shortlist, #desktop-open-shortlist")
+            ? event.target.closest("#mobile-open-shortlist, #desktop-open-shortlist, [data-open-shortlist]")
             : null;
 
         if (!target) return;
@@ -151,6 +354,7 @@ const districts = Array.from(new Set(listings.map((x) => x.district).filter(Bool
           return;
         }
 
+        window.__scPendingShortlistOpen = true;
         window.setTimeout(() => {
           window.dispatchEvent(new CustomEvent("sc:shortlist_ui_open"));
         }, 70);
@@ -158,5 +362,6 @@ const districts = Array.from(new Set(listings.map((x) => x.district).filter(Bool
     }
   </script>
 </header>
+
 
 
