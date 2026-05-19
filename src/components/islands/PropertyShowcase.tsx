@@ -634,6 +634,11 @@ export default function PropertyShowcase({
     setLbOpen(true);
   };
 
+  const requestViewingFromGallery = () => {
+    setLbOpen(false);
+    window.setTimeout(() => requestViewing("gallery"), prefersReducedMotion ? 0 : 180);
+  };
+
   const renderChamberPanel = () => {
     switch (activeChamber) {
       case "overview":
@@ -1051,7 +1056,7 @@ export default function PropertyShowcase({
           savedLabel: L.saved,
           isSaved: saved,
         }}
-        onRequestAction={() => requestViewing("gallery")}
+        onRequestAction={requestViewingFromGallery}
         onSaveAction={saveToShortlist}
         onImageError={markImageFailed}
       />

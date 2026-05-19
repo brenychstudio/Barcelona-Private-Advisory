@@ -286,13 +286,13 @@ export default function AdvisoryInquiryPanel({
       ]
     : [
         { label: L.source, value: L.sourceLabels[context.source] || L.sourceLabels.hero },
-        { label: L.intent, value: context.intentLabel || L.notSpecified },
-        { label: L.district, value: districtLabel || L.notSpecified },
-        { label: L.property, value: propertyTitle || L.notSelected },
-        { label: L.dossier, value: dossierLabel },
+        context.intentLabel ? { label: L.intent, value: context.intentLabel } : null,
+        districtLabel ? { label: L.district, value: districtLabel } : null,
+        propertyTitle ? { label: L.property, value: propertyTitle } : null,
+        selectedListings.length ? { label: L.dossier, value: dossierLabel } : null,
         { label: L.next, value: nextAction },
         { label: L.timingLabel, value: timing || L.notSpecified },
-      ];
+      ].filter((row): row is { label: string; value: string } => Boolean(row));
 
   useEffect(() => {
     setMounted(true);
@@ -423,14 +423,18 @@ export default function AdvisoryInquiryPanel({
       return lines.join("\n").trim();
     }
 
+    const contextLines = [
+      `${L.source}: ${L.sourceLabels[context.source] || L.sourceLabels.hero}`,
+      context.intentLabel ? `${L.intent}: ${context.intentLabel}` : null,
+      districtLabel ? `${L.district}: ${districtLabel}` : null,
+      propertyTitle ? `${L.property}: ${propertyTitle}` : null,
+      selectedListings.length ? `${L.dossier}: ${dossierLabel}` : null,
+    ].filter((line): line is string => Boolean(line));
+
     const lines = [
       L.heading,
       "",
-      `${L.intent}: ${context.intentLabel || L.notSpecified}`,
-      `${L.source}: ${L.sourceLabels[context.source] || L.sourceLabels.hero}`,
-      `${L.district}: ${districtLabel || L.notSpecified}`,
-      `${L.property}: ${propertyTitle || L.notSelected}`,
-      `${L.dossier}: ${dossierLabel}`,
+      ...contextLines,
       `${L.next}: ${nextAction}`,
       "",
     ];

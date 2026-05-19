@@ -4,37 +4,37 @@ import { bcnMedia } from "../../data/bcnMedia";
 import { bcnLensMedia } from "../../data/bcnLensMedia";
 
 const methodSteps = [
-  ["01", "Brief", "Buyer intent, timing, budget and lifestyle constraints become the first layer of selection."],
-  ["02", "Lens", "District rhythm, walkability, light, noise and value logic shape the viewing path."],
-  ["03", "Signal", "Each property needs a reason to belong: fit, readiness, trade-off and acquisition logic."],
-  ["04", "Dossier", "Selected options become an advisor-ready comparison, not a loose saved list."],
-  ["05", "Action", "The shortlist turns into a viewing path, advisor call or copy-ready buyer brief."],
+  ["01", "Brief", "Buyer constraints become the frame.", "Operating brief"],
+  ["02", "Lens", "District logic narrows the field.", "Location fit"],
+  ["03", "Signal", "Properties are ranked by fit.", "Reason to inspect"],
+  ["04", "Dossier", "Selected options become a private file.", "Comparison logic"],
+  ["05", "Action", "The viewing path is prepared.", "Copy-ready request"],
 ];
 
 const modules = [
-  ["Buyer Intent Surface", "Turns a broad search into a clear buyer brief before inventory takes over."],
-  ["Barcelona Lens Field", "Connects district character, rhythm and buyer fit so location is not treated as a simple filter."],
-  ["Product Object Surface", "Frames each property as an advisor-selected recommendation with signal and readiness."],
-  ["Property Detail Chamber", "Expands the listing into a private acquisition file with memo, risk and next action."],
-  ["Cinematic Inspect Gallery", "Makes image review part of the decision process, not a generic photo modal."],
-  ["Private Shortlist Dossier", "Collects selected properties into a comparison document with priority and trade-offs."],
-  ["Advisory Inquiry Flow", "Prepares a local, copy-ready request brief from property, lens and dossier context."],
+  ["Buyer Intent Surface", "Turns browsing into a buyer brief.", "Keeps inventory from taking over before the buyer priority is clear."],
+  ["Barcelona Lens Field", "Makes district fit visible.", "Connects rhythm, access, light and value logic to the shortlist."],
+  ["Product Object Surface", "Frames each listing as a recommendation.", "Shows why the property belongs before the user opens the detail."],
+  ["Property Detail Chamber", "Expands the object into an acquisition file.", "Keeps memo, risk, readiness and next action in one decision surface."],
+  ["Cinematic Inspect Gallery", "Turns images into inspection context.", "Keeps photo review inside the advisory flow instead of a generic modal."],
+  ["Private Shortlist Dossier", "Builds a compact comparison file.", "Turns saved homes into priority, district spread and trade-off logic."],
+  ["Advisory Inquiry Flow", "Creates a copy-ready request brief.", "Converts search, property and dossier context into an advisor handoff."],
 ];
 
 const failures = [
-  "Too many interchangeable options with no decision hierarchy.",
-  "District context reduced to a name instead of daily-life logic.",
-  "Trade-offs hidden until late in the process.",
-  "No clear viewing priority or readiness signal.",
-  "Weak connection between buyer intent and the properties shown.",
+  ["Too many options", "Interchangeable listings create volume without decision hierarchy."],
+  ["Weak district context", "Location is reduced to a label instead of daily-life and value logic."],
+  ["Hidden trade-offs", "Noise, renovation, liquidity or privacy issues appear too late."],
+  ["No viewing priority", "The buyer cannot see which homes deserve inspection first."],
+  ["Weak buyer-property connection", "Intent and shortlist logic stay disconnected from the objects shown."],
 ];
 
 const values = [
-  "Fewer but better options.",
-  "Stronger buyer confidence before viewings.",
-  "Clearer district fit and acquisition logic.",
-  "Advisor-ready shortlist instead of passive saved items.",
-  "Higher premium perception through calm, explainable selection.",
+  ["Primary effect", "Fewer but better options.", "The interface reduces inventory noise before buyer attention is spent."],
+  ["Buyer confidence", "Stronger buyer confidence before viewings.", "Every recommendation carries a visible reason to inspect."],
+  ["District fit", "Clearer district fit and acquisition logic.", "Location becomes a decision frame, not a passive filter."],
+  ["Advisor output", "Advisor-ready shortlist instead of passive saved items.", "Saved homes become a private file with priority and trade-offs."],
+  ["Premium perception", "Higher premium perception through calm, explainable selection.", "The product feels curated because the logic stays visible."],
 ];
 
 const faqs = [
@@ -51,19 +51,19 @@ const faqs = [
   title="Advisory Method - Barcelona Private Advisory"
   description="A district-first private property advisory method for Barcelona buyers: buyer brief, district lens, property signal, shortlist dossier and viewing path."
 >
-  <section class="bcn-section grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+  <section class="bcn-about-hero bcn-section grid gap-8 lg:grid-cols-[0.86fr_1.14fr] lg:items-end">
     <div class="space-y-5">
       <div class="bcn-signal-kicker text-[12px] uppercase tracking-[0.2em] text-black/42">Advisory method</div>
       <h1 class="bcn-advisory-line max-w-[760px] text-[42px] leading-[0.98] tracking-tight text-black/90 sm:text-[64px]">
         Private advisory, not catalog.
       </h1>
       <p class="max-w-[680px] text-[14px] leading-[1.85] text-black/58">
-        A district-first advisory method for buyers who need clarity, fit and a shortlist worth discussing.
-        The interface reduces listing noise and turns browsing into a structured decision path.
+        A district-first acquisition interface that turns buyer intent into a shortlist, not endless browsing.
+        It makes the logic behind selection visible before the first viewing is booked.
       </p>
     </div>
 
-    <figure class="overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
+    <figure class="bcn-about-hero__media overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
       <img
         src={bcnMedia.lens.districtLensDesk.src}
         alt="Private advisory desk with district lens material for Barcelona property selection"
@@ -74,67 +74,101 @@ const faqs = [
         decoding="async"
       />
     </figure>
+
+    <div class="bcn-about-system-readout lg:col-span-2">
+      <div class="grid gap-4 border border-black/10 bg-[rgb(var(--paper))] p-4 sm:grid-cols-[0.55fr_1fr] sm:items-center">
+        <div>
+          <div class="text-[10px] uppercase tracking-[0.2em] text-black/36">Private Property Intelligence System</div>
+          <p class="mt-2 max-w-[420px] text-[13px] leading-[1.65] text-black/58">
+            One method spine connects intent, district fit, property signal, shortlist logic and advisory action.
+          </p>
+        </div>
+        <div class="bcn-about-system-readout__spine grid gap-2 text-[12px] uppercase tracking-[0.16em] text-black/54 sm:grid-cols-5">
+          <span>Brief</span>
+          <span>Lens</span>
+          <span>Signal</span>
+          <span>Dossier</span>
+          <span>Action</span>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <section class="bcn-section--threshold mt-28 grid gap-10 border-y border-black/10 py-14 lg:grid-cols-[0.7fr_1.3fr]">
+  <section class="bcn-section--threshold mt-28 grid gap-10 border-y border-black/10 py-14 lg:grid-cols-[0.72fr_1.28fr]">
     <div>
       <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Why catalog browsing fails</div>
       <h2 class="mt-4 max-w-[520px] text-[32px] leading-[1.02] tracking-tight">
         More options rarely create better decisions.
       </h2>
+      <p class="mt-4 max-w-[440px] text-[13px] leading-[1.8] text-black/52">
+        The problem is not inventory. The problem is weak decision structure before the buyer starts comparing.
+      </p>
     </div>
-    <div class="grid gap-0 border-t border-black/10">
-      {failures.map((item) => (
-        <div class="grid gap-3 border-b border-black/10 py-4 last:border-b-0 sm:grid-cols-[72px_1fr]">
-          <div class="text-[11px] tracking-[0.16em] text-black/36">ISSUE</div>
-          <p class="text-[13px] leading-[1.7] text-black/62">{item}</p>
-        </div>
+    <div class="bcn-problem-field bcn-problem-field--diagnostic">
+      {failures.map(([title, text], index) => (
+        <article class={`bcn-problem-field__item ${index === 0 ? "bcn-problem-field__item--primary" : ""}`}>
+          <div class="bcn-problem-field__index">Issue {String(index + 1).padStart(2, "0")}</div>
+          <div class="bcn-problem-field__copy">
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </div>
+        </article>
       ))}
     </div>
   </section>
 
-  <section class="mt-24 space-y-8">
-    <div class="max-w-[760px] space-y-4">
-      <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">The advisory method</div>
-      <h2 class="text-[34px] leading-[1.02] tracking-tight sm:text-[46px]">
-        Buyer brief to viewing path.
-      </h2>
+  <section class="bcn-method-field mt-24">
+    <div class="grid gap-8 lg:grid-cols-[0.56fr_1fr] lg:items-end">
+      <div class="space-y-4">
+        <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">The advisory method</div>
+        <h2 class="max-w-[620px] text-[34px] leading-[1.02] tracking-tight sm:text-[46px]">
+          Buyer brief to viewing path.
+        </h2>
+      </div>
+      <p class="max-w-[680px] text-[13px] leading-[1.85] text-black/56 lg:justify-self-end">
+        The system does not ask the buyer to browse harder. It narrows the field, explains the signal and turns a shortlist into an advisor-ready output.
+      </p>
     </div>
 
-    <div class="grid gap-0 border-y border-black/10 lg:grid-cols-5">
-      {methodSteps.map(([n, title, text]) => (
-        <div class="border-b border-black/10 py-6 lg:border-b-0 lg:border-r lg:px-5 lg:last:border-r-0">
-          <div class="text-[11px] tracking-[0.18em] text-black/36">{n}</div>
-          <div class="mt-4 text-[18px] tracking-tight text-black/84">{title}</div>
-          <p class="mt-3 max-w-[260px] text-[12px] leading-[1.75] text-black/56">{text}</p>
-        </div>
+    <div class="bcn-method-spine mt-8 border border-black/10 bg-[rgb(var(--paper))]">
+      {methodSteps.map(([n, title, role, output]) => (
+        <article class="bcn-method-spine__step grid gap-4 border-b border-black/10 p-4 last:border-b-0 md:grid-cols-[64px_0.55fr_0.9fr_0.55fr] md:items-center">
+          <div class="text-[11px] tracking-[0.2em] text-black/34">{n}</div>
+          <h3 class="text-[24px] leading-[1] tracking-tight text-black/88">{title}</h3>
+          <p class="text-[13px] leading-[1.65] text-black/58">{role}</p>
+          <div class="text-[10px] uppercase tracking-[0.16em] text-black/42">{output}</div>
+        </article>
       ))}
     </div>
   </section>
 
-  <section class="mt-24 grid gap-10 lg:grid-cols-[0.74fr_1.26fr]">
+  <section class="bcn-operating-layers mt-24 grid gap-10 lg:grid-cols-[0.72fr_1.28fr]">
     <div class="space-y-4">
-      <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">System modules</div>
+      <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Operating layers</div>
       <h2 class="max-w-[520px] text-[32px] leading-[1.03] tracking-tight">
         Client-facing outcomes, not internal technology.
       </h2>
       <p class="max-w-[500px] text-[13px] leading-[1.85] text-black/56">
-        Each module supports a business moment: clarify intent, make district logic visible,
+        Each layer supports one business moment: clarify intent, make district logic visible,
         explain property fit, prepare the shortlist and convert interest into a viewing request.
       </p>
     </div>
 
-    <div class="grid gap-3 md:grid-cols-2">
-      {modules.map(([title, text]) => (
-        <div class="border border-black/10 bg-[rgb(var(--paper))] p-5">
-          <h3 class="text-[15px] tracking-tight text-black/84">{title}</h3>
-          <p class="mt-3 text-[12px] leading-[1.75] text-black/56">{text}</p>
-        </div>
+    <div class="bcn-operating-layers__stack border-y border-black/10">
+      {modules.map(([title, outcome, why], index) => (
+        <article class="bcn-operating-layer grid gap-3 border-b border-black/10 py-5 last:border-b-0 md:grid-cols-[42px_0.75fr_1fr]">
+          <div class="text-[10px] uppercase tracking-[0.18em] text-black/32">{String(index + 1).padStart(2, "0")}</div>
+          <div>
+            <h3 class="text-[16px] leading-[1.25] tracking-tight text-black/84">{title}</h3>
+            <p class="mt-2 text-[13px] leading-[1.55] text-black/70">{outcome}</p>
+          </div>
+          <p class="text-[12px] leading-[1.7] text-black/54">{why}</p>
+        </article>
       ))}
     </div>
   </section>
 
-  <section class="bcn-editorial-surface mt-28 overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
+  <section class="bcn-editorial-surface bcn-value-proof mt-28 overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
     <div class="grid gap-0 lg:grid-cols-[0.9fr_1.1fr]">
       <figure class="min-h-[320px]">
         <img
@@ -152,9 +186,16 @@ const faqs = [
         <h2 class="mt-4 max-w-[560px] text-[34px] leading-[1.02] tracking-tight">
           The product sells decision clarity.
         </h2>
-        <div class="mt-8 grid gap-0 border-t border-black/10">
-          {values.map((item) => (
-            <div class="border-b border-black/10 py-4 text-[13px] leading-[1.7] text-black/62">{item}</div>
+        <div class="bcn-value-proof__ledger mt-8">
+          {values.map(([label, title, text], index) => (
+            <article class={`bcn-value-proof__item ${index === 0 ? "bcn-value-proof__item--primary" : ""}`}>
+              <div class="bcn-value-proof__meta">
+                <span>{label}</span>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+              </div>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </article>
           ))}
         </div>
       </div>
@@ -169,17 +210,17 @@ const faqs = [
       </h2>
     </div>
 
-    <div class="border-t border-black/10">
+    <div class="bcn-quiet-faq border-t border-black/10">
       {faqs.map(([q, a]) => (
         <div class="grid gap-3 border-b border-black/10 py-5 sm:grid-cols-[240px_1fr]">
-          <h3 class="text-[13px] font-medium leading-[1.45] text-black/84">{q}</h3>
-          <p class="text-[12px] leading-[1.8] text-black/56">{a}</p>
+          <h3 class="text-[13px] font-medium leading-[1.45] text-black/78">{q}</h3>
+          <p class="text-[12px] leading-[1.8] text-black/52">{a}</p>
         </div>
       ))}
     </div>
   </section>
 
-  <section class="mt-20 border-t border-black/10 pt-8">
+  <section class="bcn-about-final-cta mt-20 border-t border-black/10 pt-8">
     <div class="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
       <div class="space-y-3">
         <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Next step</div>

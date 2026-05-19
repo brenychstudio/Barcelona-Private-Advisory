@@ -4,12 +4,18 @@ import { bcnMedia } from "../../../data/bcnMedia";
 import { bcnLensMedia } from "../../../data/bcnLensMedia";
 
 const briefRows = [
-  ["Intención del comprador", "Calma familiar, luz mediterránea, lógica de inversión, privacidad u otra prioridad clara."],
-  ["Distritos preferidos", "La lente de distrito que debe ordenar vida diaria, acceso, luz y valor a largo plazo."],
-  ["Presupuesto / timing", "Rango comercial, momento de decisión y urgencia de la ruta de visita."],
-  ["Propiedades seleccionadas", "Viviendas guardadas o una propiedad concreta que debe anclar la solicitud."],
-  ["Compensaciones / límites", "Ruido, tolerancia a reforma, colegios, liquidez, cuotas o privacidad."],
-  ["Prioridad de visita", "Qué opciones conviene inspeccionar primero y qué haría útil la visita."],
+  ["01", "Intención del comprador", "Nombra la prioridad antes de que el inventario domine."],
+  ["02", "Distritos preferidos", "Mantiene la solicitud anclada en vida diaria y lógica de valor."],
+  ["03", "Presupuesto / timing", "Enmarca el rango comercial y la urgencia de la ruta de visita."],
+  ["04", "Propiedades seleccionadas", "Lleva shortlist o contexto de propiedad al handoff."],
+  ["05", "Compensaciones / límites", "Expone tolerancia a riesgo, cuotas, reforma o privacidad."],
+  ["06", "Prioridad de visita", "Aclara qué opciones conviene inspeccionar primero."],
+];
+
+const requestRows = [
+  ["Fuente", "Búsqueda / Propiedad / Dossier"],
+  ["Contexto", "Lente de distrito, propiedades seleccionadas, notas del comprador."],
+  ["Resultado", "Solicitud de ruta de visita lista para copiar."],
 ];
 
 const methodSteps = [
@@ -30,8 +36,7 @@ const methodSteps = [
         Prepara una ruta de visita privada.
       </h1>
       <p class="max-w-[700px] text-[14px] leading-[1.85] text-black/58">
-        Construye un brief del comprador desde intención, ajuste de distrito, shortlist y timing, y cópialo cuando
-        esté listo para compartir. Esta página apoya el mismo flujo usado en Lens, detalle de propiedad y dossier.
+        Construye un brief desde intención, ajuste de distrito, shortlist y timing — y cópialo cuando esté listo.
       </p>
     </div>
 
@@ -50,24 +55,27 @@ const methodSteps = [
 
   <section class="bcn-section--threshold mt-28 grid gap-10 border-y border-black/10 py-14 lg:grid-cols-[0.7fr_1.3fr]">
     <div>
-      <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Contenido del brief</div>
+      <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Anatomía de solicitud</div>
       <h2 class="mt-4 max-w-[520px] text-[32px] leading-[1.02] tracking-tight">
         Qué debe incluir una solicitud útil.
       </h2>
     </div>
 
-    <div class="grid gap-0 border-t border-black/10">
-      {briefRows.map(([label, text]) => (
-        <div class="grid gap-3 border-b border-black/10 py-4 last:border-b-0 sm:grid-cols-[190px_1fr]">
-          <div class="text-[12px] tracking-[0.16em] text-black/42">{label}</div>
-          <p class="text-[13px] leading-[1.7] text-black/62">{text}</p>
-        </div>
+    <div class="bcn-request-anatomy">
+      {briefRows.map(([n, label, text]) => (
+        <article class="bcn-request-anatomy__item">
+          <div class="bcn-request-anatomy__number">{n}</div>
+          <div>
+            <h3>{label}</h3>
+            <p>{text}</p>
+          </div>
+        </article>
       ))}
     </div>
   </section>
 
-  <section class="bcn-editorial-surface mt-28 overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
-    <div class="grid gap-0 lg:grid-cols-[0.95fr_1.05fr]">
+  <section class="bcn-editorial-surface bcn-contact-handoff mt-28 overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
+    <div class="grid gap-0 lg:grid-cols-[0.88fr_1.12fr]">
       <figure class="min-h-[320px]">
         <img
           src={bcnMedia.dossier.acquisitionMemoDetail.src}
@@ -83,33 +91,51 @@ const methodSteps = [
       <div class="p-6 sm:p-8 lg:p-10">
         <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Superficie de solicitud</div>
         <h2 class="mt-4 max-w-[560px] text-[34px] leading-[1.02] tracking-tight">
-          Usa Solicitar ruta de visita para conservar el contexto más rico.
+          El output final antes del primer mensaje.
         </h2>
         <p class="mt-5 max-w-[620px] text-[13px] leading-[1.85] text-black/58">
-          El panel prepara localmente una solicitud lista para copiar. Puede incluir propiedad, dossier, lente de distrito,
-          siguiente acción, notas del comprador y timing preferido.
+          El panel Solicitar ruta de visita convierte búsqueda, propiedad y dossier en un brief local que el comprador puede revisar antes de copiar.
         </p>
-        <div class="mt-6 border-t border-black/10 pt-5 text-[12px] leading-[1.75] text-black/54">
+
+        <div class="bcn-request-brief-readout bcn-request-surface mt-7">
+          <div class="bcn-request-surface__header">
+            <div>
+              <div class="bcn-request-surface__eyebrow">Brief privado de solicitud</div>
+              <h3>Preparado localmente desde el contexto asesor actual.</h3>
+            </div>
+            <div class="bcn-request-surface__status">Listo para copiar</div>
+          </div>
+
+          <div class="bcn-request-surface__rows">
+            {requestRows.map(([label, value]) => (
+              <div class="bcn-request-surface__row">
+                <div>{label}</div>
+                <p>{value}</p>
+              </div>
+            ))}
+          </div>
+
+          <div class="bcn-request-surface__actions">
+            <button
+              type="button"
+              data-open-inquiry
+              data-inquiry-source="contact"
+              data-inquiry-next-action="Preparar ruta de visita"
+              class="rounded-full border border-black/20 bg-white px-4 py-2 text-[12px] hover:border-black/35 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
+            >
+              Abrir solicitud de ruta de visita
+            </button>
+            <a
+              href="/es/search"
+              class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
+            >
+              Abrir búsqueda privada
+            </a>
+          </div>
+        </div>
+        <div class="mt-6 text-[12px] leading-[1.75] text-black/54">
           No se envía ningún mensaje automáticamente. No se usan datos de contacto ficticios. Una versión de producción
           puede conectarse a CRM, email real, calendario o WhatsApp.
-        </div>
-
-        <div class="mt-7 flex flex-wrap gap-2">
-          <button
-            type="button"
-            data-open-inquiry
-            data-inquiry-source="contact"
-            data-inquiry-next-action="Preparar ruta de visita"
-            class="rounded-full border border-black/20 bg-white px-4 py-2 text-[12px] hover:border-black/35 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
-          >
-            Abrir Solicitar ruta de visita
-          </button>
-          <a
-            href="/es/search"
-            class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
-          >
-            Abrir búsqueda privada
-          </a>
         </div>
       </div>
     </div>
@@ -121,13 +147,13 @@ const methodSteps = [
       <h2 class="text-[32px] leading-[1.03] tracking-tight">Del contexto de búsqueda al brief preparado para asesoría.</h2>
     </div>
 
-    <div class="grid gap-0 border-y border-black/10 md:grid-cols-3">
+    <div class="bcn-handoff-method grid gap-0 border-y border-black/10 md:grid-cols-3">
       {methodSteps.map(([n, title, text]) => (
-        <div class="border-b border-black/10 py-6 md:border-b-0 md:border-r md:px-6 md:last:border-r-0">
+        <article class="bcn-handoff-method__step border-b border-black/10 py-6 md:border-b-0 md:border-r md:px-6 md:last:border-r-0">
           <div class="text-[11px] tracking-[0.18em] text-black/36">{n}</div>
           <div class="mt-4 text-[18px] tracking-tight text-black/84">{title}</div>
           <p class="mt-3 max-w-[300px] text-[12px] leading-[1.75] text-black/56">{text}</p>
-        </div>
+        </article>
       ))}
     </div>
   </section>

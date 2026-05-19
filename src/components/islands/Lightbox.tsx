@@ -505,35 +505,37 @@ export default function Lightbox({
                     exit={shouldReduceMotion ? { opacity: 0 } : { x: 8, opacity: 0 }}
                     transition={{ duration: shouldReduceMotion ? 0.12 : 0.24, ease: [0.2, 0.8, 0.2, 1] }}
                   >
-                    <div className="bcn-inspection-panel__scroll min-h-0 flex-1 overflow-y-auto pr-1">
-                        <div className="text-[11px] uppercase tracking-[0.18em] text-black/42">{L.view}</div>
-                        <h2 id="property-inspection-title" className="mt-3 text-[28px] leading-[1.02] tracking-tight text-black">
-                          {context?.title ?? L.view}
-                        </h2>
-                        {context?.meta && <div className="mt-3 text-[12px] leading-[1.6] text-black/55">{context.meta}</div>}
+                    <div className="bcn-inspection-panel__scroll bcn-inspection-rail min-h-0 flex-1 overflow-y-auto pr-1">
+                      <div className="bcn-inspection-rail__eyebrow">{L.view}</div>
+                      <h2 id="property-inspection-title" className="bcn-inspection-rail__title mt-3 text-[28px] leading-[1.02] tracking-tight text-black">
+                        {context?.title ?? L.view}
+                      </h2>
+                      {context?.meta && <div className="bcn-inspection-rail__meta mt-3 text-[12px] leading-[1.6]">{context.meta}</div>}
 
-                        <div className="bcn-inspection-current mt-5 border-y border-black/10 py-3 text-[11px] uppercase tracking-[0.16em] text-black/42">
-                          {L.frame} / {String(index + 1).padStart(2, "0")} / {context?.signal ?? alt}
+                      <div className="bcn-inspection-frame-strip mt-5">
+                        <span>{L.frame}</span>
+                        <strong>{String(index + 1).padStart(2, "0")}</strong>
+                        <em>{context?.signal ?? alt}</em>
+                      </div>
+
+                      {context?.advisorNote && (
+                        <div className="bcn-inspection-advisor-note mt-6">
+                          <div className="bcn-inspection-advisor-note__label">{L.advisorNote}</div>
+                          <p>{context.advisorNote}</p>
                         </div>
+                      )}
 
-                        {context?.advisorNote && (
-                          <div className="bcn-inspection-memo mt-6 border-y border-black/10 py-4">
-                            <div className="text-[10px] uppercase tracking-[0.18em] text-black/38">{L.advisorNote}</div>
-                            <p className="mt-3 text-[14px] leading-[1.65] text-black/70">{context.advisorNote}</p>
+                      <div className="bcn-inspection-readout-group mt-5">
+                        {advisorRows.map((row) => (
+                          <div key={row.label} className="bcn-inspection-readout-row">
+                            <div className="bcn-inspection-readout-row__label">{row.label}</div>
+                            <div className="bcn-inspection-readout-row__value">{row.value}</div>
                           </div>
-                        )}
-
-                        <div className="mt-5 grid gap-3">
-                          {advisorRows.map((row) => (
-                            <div key={row.label} className="bcn-inspection-readout border border-black/10 bg-[rgb(var(--paper))] p-3">
-                              <div className="text-[10px] uppercase tracking-[0.16em] text-black/38">{row.label}</div>
-                              <div className="mt-2 text-[12px] leading-[1.55] text-black/65">{row.value}</div>
-                            </div>
-                          ))}
-                        </div>
+                        ))}
+                      </div>
                     </div>
 
-                    <div className="mt-4 flex flex-none flex-wrap gap-2">
+                    <div className="bcn-inspection-actions mt-4 flex flex-none flex-wrap gap-2">
                       <button
                         type="button"
                         onClick={onRequestAction}

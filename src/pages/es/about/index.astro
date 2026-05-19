@@ -4,46 +4,46 @@ import { bcnMedia } from "../../../data/bcnMedia";
 import { bcnLensMedia } from "../../../data/bcnLensMedia";
 
 const methodSteps = [
-  ["01", "Brief", "Intención del comprador, timing, presupuesto y restricciones de estilo de vida como primera capa de selección."],
-  ["02", "Lente", "Ritmo de distrito, caminabilidad, luz, ruido y lógica de valor definen la ruta de visita."],
-  ["03", "Señal", "Cada propiedad necesita una razón para entrar: ajuste, preparación, compensación y lógica de adquisición."],
-  ["04", "Dossier", "Las opciones seleccionadas se convierten en una comparación preparada para asesoría."],
-  ["05", "Acción", "La shortlist se transforma en ruta de visita, llamada privada o brief listo para copiar."],
+  ["01", "Brief", "Los límites del comprador se convierten en el marco.", "Brief operativo"],
+  ["02", "Lente", "La lógica de distrito reduce el campo.", "Ajuste de ubicación"],
+  ["03", "Señal", "Las propiedades se ordenan por ajuste.", "Razón para visitar"],
+  ["04", "Dossier", "Las opciones seleccionadas forman un archivo privado.", "Lógica comparativa"],
+  ["05", "Acción", "La ruta de visita queda preparada.", "Solicitud lista para copiar"],
 ];
 
 const modules = [
-  ["Buyer Intent Surface", "Convierte una búsqueda amplia en un brief claro antes de que el inventario domine la experiencia."],
-  ["Barcelona Lens Field", "Conecta carácter de distrito, ritmo y ajuste del comprador para que la ubicación no sea solo un filtro."],
-  ["Product Object Surface", "Presenta cada propiedad como recomendación seleccionada por asesor, con señal y preparación."],
-  ["Property Detail Chamber", "Convierte el detalle en un archivo privado de adquisición con memo, riesgo y siguiente acción."],
-  ["Cinematic Inspect Gallery", "Hace que la revisión de imágenes apoye la decisión, no que sea un modal genérico."],
-  ["Private Shortlist Dossier", "Reúne propiedades seleccionadas en un documento de comparación con prioridad y compensaciones."],
-  ["Advisory Inquiry Flow", "Prepara localmente un brief de solicitud a partir de propiedad, lente y dossier."],
+  ["Buyer Intent Surface", "Convierte browsing en brief del comprador.", "Evita que el inventario domine antes de aclarar la prioridad."],
+  ["Barcelona Lens Field", "Hace visible el ajuste de distrito.", "Conecta ritmo, acceso, luz y lógica de valor con la shortlist."],
+  ["Product Object Surface", "Presenta cada listing como recomendación.", "Muestra por qué la propiedad pertenece antes de abrir el detalle."],
+  ["Property Detail Chamber", "Expande el objeto en archivo de adquisición.", "Mantiene memo, riesgo, preparación y acción siguiente en una sola superficie."],
+  ["Cinematic Inspect Gallery", "Convierte imágenes en contexto de inspección.", "Mantiene la revisión visual dentro del flujo asesor, no en un modal genérico."],
+  ["Private Shortlist Dossier", "Construye un archivo compacto de comparación.", "Transforma guardados en prioridad, distritos y lógica de compensaciones."],
+  ["Advisory Inquiry Flow", "Crea un brief de solicitud listo para copiar.", "Convierte búsqueda, propiedad y dossier en handoff para asesoría."],
 ];
 
 const failures = [
-  "Demasiadas opciones intercambiables sin jerarquía de decisión.",
-  "Contexto de distrito reducido a un nombre en vez de lógica de vida diaria.",
-  "Compensaciones ocultas hasta demasiado tarde.",
-  "Sin prioridad clara de visita ni señal de preparación.",
-  "Conexión débil entre intención del comprador y propiedades mostradas.",
+  ["Demasiadas opciones", "Listings intercambiables crean volumen sin jerarquía de decisión."],
+  ["Contexto de distrito débil", "La ubicación queda como etiqueta, no como lógica de vida diaria y valor."],
+  ["Compensaciones ocultas", "Ruido, reforma, liquidez o privacidad aparecen demasiado tarde."],
+  ["Sin prioridad de visita", "El comprador no ve qué viviendas conviene inspeccionar primero."],
+  ["Conexión débil comprador-propiedad", "La intención y la shortlist quedan separadas de los objetos mostrados."],
 ];
 
 const values = [
-  "Menos opciones, pero mejores.",
-  "Más confianza del comprador antes de visitar.",
-  "Ajuste de distrito y lógica de adquisición más claros.",
-  "Shortlist preparada para asesoría, no lista pasiva de guardados.",
-  "Mayor percepción premium mediante selección calma y explicable.",
+  ["Efecto principal", "Menos opciones, pero mejores.", "La interfaz reduce ruido de inventario antes de gastar la atención del comprador."],
+  ["Confianza del comprador", "Más confianza del comprador antes de visitar.", "Cada recomendación lleva una razón visible para inspeccionar."],
+  ["Ajuste de distrito", "Ajuste de distrito y lógica de adquisición más claros.", "La ubicación se convierte en marco de decisión, no en filtro pasivo."],
+  ["Output asesor", "Shortlist preparada para asesoría, no lista pasiva de guardados.", "Las propiedades guardadas forman un archivo privado con prioridad y compensaciones."],
+  ["Percepción premium", "Mayor percepción premium mediante selección calma y explicable.", "El producto se siente curado porque la lógica permanece visible."],
 ];
 
 const faqs = [
-  ["Es un catálogo?", "No. Es un concepto de interfaz asesora que puede situarse encima de inventario real y reducir ruido de búsqueda."],
-  ["Puede soportar inventario real?", "Sí. En una implementación, la capa local de datos puede conectarse a CMS, feed o CRM sin cambiar el modelo asesor."],
-  ["Por qué district-first?", "Las decisiones de alto valor dependen de rutina, luz, ruido, acceso y reventa. El ajuste de distrito debe verse pronto."],
-  ["Qué lo hace premium?", "El producto vende claridad: menos opciones, mejor razonamiento, medios editoriales y una ruta privada de decisión."],
-  ["Qué ocurre después de la shortlist?", "El dossier se convierte en ruta de visita o brief de solicitud para un buyer advisor o agencia boutique."],
-  ["Puede convertirse en plataforma para clientes?", "Sí. Es una dirección front-end lista para producción que puede conectarse a contenido vivo, analytics y handoff de contacto."],
+  ["¿Es un catálogo?", "No. Es un concepto de interfaz asesora que puede situarse encima de inventario real y reducir ruido de búsqueda."],
+  ["¿Puede soportar inventario real?", "Sí. En una implementación, la capa local de datos puede conectarse a CMS, feed o CRM sin cambiar el modelo asesor."],
+  ["¿Por qué district-first?", "Las decisiones de alto valor dependen de rutina, luz, ruido, acceso y reventa. El ajuste de distrito debe verse pronto."],
+  ["¿Qué lo hace premium?", "El producto vende claridad: menos opciones, mejor razonamiento, medios editoriales y una ruta privada de decisión."],
+  ["¿Qué ocurre después de la shortlist?", "El dossier se convierte en ruta de visita o brief de solicitud para un buyer advisor o agencia boutique."],
+  ["¿Puede convertirse en plataforma para clientes?", "Sí. Es una dirección front-end lista para producción que puede conectarse a contenido vivo, analytics y handoff de contacto."],
 ];
 ---
 
@@ -51,19 +51,19 @@ const faqs = [
   title="Método asesor - Barcelona Private Advisory"
   description="Método privado de asesoría inmobiliaria en Barcelona: brief del comprador, lente de distrito, señal de propiedad, dossier y ruta de visita."
 >
-  <section class="bcn-section grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+  <section class="bcn-about-hero bcn-section grid gap-8 lg:grid-cols-[0.86fr_1.14fr] lg:items-end">
     <div class="space-y-5">
       <div class="bcn-signal-kicker text-[12px] uppercase tracking-[0.2em] text-black/42">Método asesor</div>
       <h1 class="bcn-advisory-line max-w-[760px] text-[42px] leading-[0.98] tracking-tight text-black/90 sm:text-[64px]">
         Asesoría privada, no catálogo.
       </h1>
       <p class="max-w-[680px] text-[14px] leading-[1.85] text-black/58">
-        Un método de asesoría centrado en distrito, ajuste y selección privada para compradores que necesitan claridad antes de visitar.
-        La interfaz reduce ruido de inventario y convierte la búsqueda en una ruta de decisión.
+        Una interfaz de adquisición district-first que convierte la intención del comprador en shortlist, no en browsing infinito.
+        Hace visible la lógica de selección antes de reservar la primera visita.
       </p>
     </div>
 
-    <figure class="overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
+    <figure class="bcn-about-hero__media overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
       <img
         src={bcnMedia.lens.districtLensDesk.src}
         alt="Mesa de asesoría privada con material de lente de distrito para selección inmobiliaria en Barcelona"
@@ -74,67 +74,101 @@ const faqs = [
         decoding="async"
       />
     </figure>
+
+    <div class="bcn-about-system-readout lg:col-span-2">
+      <div class="grid gap-4 border border-black/10 bg-[rgb(var(--paper))] p-4 sm:grid-cols-[0.55fr_1fr] sm:items-center">
+        <div>
+          <div class="text-[10px] uppercase tracking-[0.2em] text-black/36">Sistema de inteligencia inmobiliaria privada</div>
+          <p class="mt-2 max-w-[420px] text-[13px] leading-[1.65] text-black/58">
+            Un eje metodológico conecta intención, ajuste de distrito, señal de propiedad, lógica de shortlist y acción asesora.
+          </p>
+        </div>
+        <div class="bcn-about-system-readout__spine grid gap-2 text-[12px] uppercase tracking-[0.16em] text-black/54 sm:grid-cols-5">
+          <span>Brief</span>
+          <span>Lente</span>
+          <span>Señal</span>
+          <span>Dossier</span>
+          <span>Acción</span>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <section class="bcn-section--threshold mt-28 grid gap-10 border-y border-black/10 py-14 lg:grid-cols-[0.7fr_1.3fr]">
+  <section class="bcn-section--threshold mt-28 grid gap-10 border-y border-black/10 py-14 lg:grid-cols-[0.72fr_1.28fr]">
     <div>
       <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Por qué falla el catálogo</div>
       <h2 class="mt-4 max-w-[520px] text-[32px] leading-[1.02] tracking-tight">
         Más opciones rara vez crean mejores decisiones.
       </h2>
+      <p class="mt-4 max-w-[440px] text-[13px] leading-[1.8] text-black/52">
+        El problema no es el inventario. El problema es una estructura de decisión débil antes de empezar a comparar.
+      </p>
     </div>
-    <div class="grid gap-0 border-t border-black/10">
-      {failures.map((item) => (
-        <div class="grid gap-3 border-b border-black/10 py-4 last:border-b-0 sm:grid-cols-[72px_1fr]">
-          <div class="text-[11px] tracking-[0.16em] text-black/36">PUNTO</div>
-          <p class="text-[13px] leading-[1.7] text-black/62">{item}</p>
-        </div>
+    <div class="bcn-problem-field bcn-problem-field--diagnostic">
+      {failures.map(([title, text], index) => (
+        <article class={`bcn-problem-field__item ${index === 0 ? "bcn-problem-field__item--primary" : ""}`}>
+          <div class="bcn-problem-field__index">Punto {String(index + 1).padStart(2, "0")}</div>
+          <div class="bcn-problem-field__copy">
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </div>
+        </article>
       ))}
     </div>
   </section>
 
-  <section class="mt-24 space-y-8">
-    <div class="max-w-[760px] space-y-4">
-      <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">El método asesor</div>
-      <h2 class="text-[34px] leading-[1.02] tracking-tight sm:text-[46px]">
-        Del brief del comprador a la ruta de visita.
-      </h2>
+  <section class="bcn-method-field mt-24">
+    <div class="grid gap-8 lg:grid-cols-[0.56fr_1fr] lg:items-end">
+      <div class="space-y-4">
+        <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">El método asesor</div>
+        <h2 class="max-w-[620px] text-[34px] leading-[1.02] tracking-tight sm:text-[46px]">
+          Del brief del comprador a la ruta de visita.
+        </h2>
+      </div>
+      <p class="max-w-[680px] text-[13px] leading-[1.85] text-black/56 lg:justify-self-end">
+        El sistema no pide al comprador que navegue más. Reduce el campo, explica la señal y convierte una shortlist en un output listo para asesoría.
+      </p>
     </div>
 
-    <div class="grid gap-0 border-y border-black/10 lg:grid-cols-5">
-      {methodSteps.map(([n, title, text]) => (
-        <div class="border-b border-black/10 py-6 lg:border-b-0 lg:border-r lg:px-5 lg:last:border-r-0">
-          <div class="text-[11px] tracking-[0.18em] text-black/36">{n}</div>
-          <div class="mt-4 text-[18px] tracking-tight text-black/84">{title}</div>
-          <p class="mt-3 max-w-[260px] text-[12px] leading-[1.75] text-black/56">{text}</p>
-        </div>
+    <div class="bcn-method-spine mt-8 border border-black/10 bg-[rgb(var(--paper))]">
+      {methodSteps.map(([n, title, role, output]) => (
+        <article class="bcn-method-spine__step grid gap-4 border-b border-black/10 p-4 last:border-b-0 md:grid-cols-[64px_0.55fr_0.9fr_0.55fr] md:items-center">
+          <div class="text-[11px] tracking-[0.2em] text-black/34">{n}</div>
+          <h3 class="text-[24px] leading-[1] tracking-tight text-black/88">{title}</h3>
+          <p class="text-[13px] leading-[1.65] text-black/58">{role}</p>
+          <div class="text-[10px] uppercase tracking-[0.16em] text-black/42">{output}</div>
+        </article>
       ))}
     </div>
   </section>
 
-  <section class="mt-24 grid gap-10 lg:grid-cols-[0.74fr_1.26fr]">
+  <section class="bcn-operating-layers mt-24 grid gap-10 lg:grid-cols-[0.72fr_1.28fr]">
     <div class="space-y-4">
-      <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Módulos del sistema</div>
+      <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Capas operativas</div>
       <h2 class="max-w-[520px] text-[32px] leading-[1.03] tracking-tight">
         Resultados para cliente, no tecnología interna.
       </h2>
       <p class="max-w-[500px] text-[13px] leading-[1.85] text-black/56">
-        Cada módulo sostiene un momento de negocio: aclarar intención, hacer visible la lógica de distrito,
+        Cada capa sostiene un momento de negocio: aclarar intención, hacer visible la lógica de distrito,
         explicar el ajuste de propiedad, preparar la shortlist y convertir interés en solicitud de visita.
       </p>
     </div>
 
-    <div class="grid gap-3 md:grid-cols-2">
-      {modules.map(([title, text]) => (
-        <div class="border border-black/10 bg-[rgb(var(--paper))] p-5">
-          <h3 class="text-[15px] tracking-tight text-black/84">{title}</h3>
-          <p class="mt-3 text-[12px] leading-[1.75] text-black/56">{text}</p>
-        </div>
+    <div class="bcn-operating-layers__stack border-y border-black/10">
+      {modules.map(([title, outcome, why], index) => (
+        <article class="bcn-operating-layer grid gap-3 border-b border-black/10 py-5 last:border-b-0 md:grid-cols-[42px_0.75fr_1fr]">
+          <div class="text-[10px] uppercase tracking-[0.18em] text-black/32">{String(index + 1).padStart(2, "0")}</div>
+          <div>
+            <h3 class="text-[16px] leading-[1.25] tracking-tight text-black/84">{title}</h3>
+            <p class="mt-2 text-[13px] leading-[1.55] text-black/70">{outcome}</p>
+          </div>
+          <p class="text-[12px] leading-[1.7] text-black/54">{why}</p>
+        </article>
       ))}
     </div>
   </section>
 
-  <section class="bcn-editorial-surface mt-28 overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
+  <section class="bcn-editorial-surface bcn-value-proof mt-28 overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
     <div class="grid gap-0 lg:grid-cols-[0.9fr_1.1fr]">
       <figure class="min-h-[320px]">
         <img
@@ -152,9 +186,16 @@ const faqs = [
         <h2 class="mt-4 max-w-[560px] text-[34px] leading-[1.02] tracking-tight">
           El producto vende claridad de decisión.
         </h2>
-        <div class="mt-8 grid gap-0 border-t border-black/10">
-          {values.map((item) => (
-            <div class="border-b border-black/10 py-4 text-[13px] leading-[1.7] text-black/62">{item}</div>
+        <div class="bcn-value-proof__ledger mt-8">
+          {values.map(([label, title, text], index) => (
+            <article class={`bcn-value-proof__item ${index === 0 ? "bcn-value-proof__item--primary" : ""}`}>
+              <div class="bcn-value-proof__meta">
+                <span>{label}</span>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+              </div>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </article>
           ))}
         </div>
       </div>
@@ -169,17 +210,17 @@ const faqs = [
       </h2>
     </div>
 
-    <div class="border-t border-black/10">
+    <div class="bcn-quiet-faq border-t border-black/10">
       {faqs.map(([q, a]) => (
         <div class="grid gap-3 border-b border-black/10 py-5 sm:grid-cols-[240px_1fr]">
-          <h3 class="text-[13px] font-medium leading-[1.45] text-black/84">{q}</h3>
-          <p class="text-[12px] leading-[1.8] text-black/56">{a}</p>
+          <h3 class="text-[13px] font-medium leading-[1.45] text-black/78">{q}</h3>
+          <p class="text-[12px] leading-[1.8] text-black/52">{a}</p>
         </div>
       ))}
     </div>
   </section>
 
-  <section class="mt-20 border-t border-black/10 pt-8">
+  <section class="bcn-about-final-cta mt-20 border-t border-black/10 pt-8">
     <div class="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
       <div class="space-y-3">
         <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Siguiente paso</div>

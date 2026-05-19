@@ -4,12 +4,18 @@ import { bcnMedia } from "../../data/bcnMedia";
 import { bcnLensMedia } from "../../data/bcnLensMedia";
 
 const briefRows = [
-  ["Buyer intent", "Family calm, sea light, investment logic, privacy or another clear buyer priority."],
-  ["Preferred districts", "The district lens that should frame daily life, access, light and long-term value."],
-  ["Budget / timing", "Commercial range, decision timing and how urgent the viewing path should be."],
-  ["Selected properties", "Shortlisted homes or one specific property that should anchor the request."],
-  ["Trade-offs / constraints", "Noise, renovation tolerance, school routes, liquidity, fees or privacy concerns."],
-  ["Viewing priority", "Which options should be inspected first and what would make the viewing worthwhile."],
+  ["01", "Buyer intent", "Names the buyer priority before inventory takes over."],
+  ["02", "Preferred districts", "Keeps the request anchored in daily-life and value logic."],
+  ["03", "Budget / timing", "Frames the commercial range and urgency of the viewing path."],
+  ["04", "Selected properties", "Carries shortlist or property context into the handoff."],
+  ["05", "Trade-offs / constraints", "Surfaces risk tolerance, fees, renovation or privacy limits."],
+  ["06", "Viewing priority", "Makes clear which options deserve inspection first."],
+];
+
+const requestRows = [
+  ["Source", "Search / Property / Dossier"],
+  ["Context", "District lens, selected properties, buyer notes."],
+  ["Output", "Copy-ready viewing path request."],
 ];
 
 const methodSteps = [
@@ -30,8 +36,7 @@ const methodSteps = [
         Prepare a private viewing path.
       </h1>
       <p class="max-w-[700px] text-[14px] leading-[1.85] text-black/58">
-        Build a buyer brief from intent, district fit, shortlist context and timing, then copy it when you are ready
-        to hand it off. This page supports the same request flow used across the Lens, property detail and dossier.
+        Build a buyer brief from intent, district fit, shortlist context and timing — then copy it when ready.
       </p>
     </div>
 
@@ -56,18 +61,21 @@ const methodSteps = [
       </h2>
     </div>
 
-    <div class="grid gap-0 border-t border-black/10">
-      {briefRows.map(([label, text]) => (
-        <div class="grid gap-3 border-b border-black/10 py-4 last:border-b-0 sm:grid-cols-[190px_1fr]">
-          <div class="text-[12px] tracking-[0.16em] text-black/42">{label}</div>
-          <p class="text-[13px] leading-[1.7] text-black/62">{text}</p>
-        </div>
+    <div class="bcn-request-anatomy">
+      {briefRows.map(([n, label, text]) => (
+        <article class="bcn-request-anatomy__item">
+          <div class="bcn-request-anatomy__number">{n}</div>
+          <div>
+            <h3>{label}</h3>
+            <p>{text}</p>
+          </div>
+        </article>
       ))}
     </div>
   </section>
 
-  <section class="bcn-editorial-surface mt-28 overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
-    <div class="grid gap-0 lg:grid-cols-[0.95fr_1.05fr]">
+  <section class="bcn-editorial-surface bcn-contact-handoff mt-28 overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
+    <div class="grid gap-0 lg:grid-cols-[0.88fr_1.12fr]">
       <figure class="min-h-[320px]">
         <img
           src={bcnMedia.dossier.acquisitionMemoDetail.src}
@@ -83,33 +91,51 @@ const methodSteps = [
       <div class="p-6 sm:p-8 lg:p-10">
         <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Request brief surface</div>
         <h2 class="mt-4 max-w-[560px] text-[34px] leading-[1.02] tracking-tight">
-          Use the Request Viewing Path panel for the richest context.
+          The final output before the first message.
         </h2>
         <p class="mt-5 max-w-[620px] text-[13px] leading-[1.85] text-black/58">
-          The panel prepares a local, copy-ready advisory request. It can include property context, dossier count,
-          district lens, next action, buyer notes and preferred timing.
+          The Request Viewing Path panel turns search, property and dossier context into a local brief the buyer can inspect before copying.
         </p>
-        <div class="mt-6 border-t border-black/10 pt-5 text-[12px] leading-[1.75] text-black/54">
+
+        <div class="bcn-request-brief-readout bcn-request-surface mt-7">
+          <div class="bcn-request-surface__header">
+            <div>
+              <div class="bcn-request-surface__eyebrow">Private request brief</div>
+              <h3>Prepared locally from the current advisory context.</h3>
+            </div>
+            <div class="bcn-request-surface__status">Copy-ready</div>
+          </div>
+
+          <div class="bcn-request-surface__rows">
+            {requestRows.map(([label, value]) => (
+              <div class="bcn-request-surface__row">
+                <div>{label}</div>
+                <p>{value}</p>
+              </div>
+            ))}
+          </div>
+
+          <div class="bcn-request-surface__actions">
+            <button
+              type="button"
+              data-open-inquiry
+              data-inquiry-source="contact"
+              data-inquiry-next-action="Prepare viewing path"
+              class="rounded-full border border-black/20 bg-white px-4 py-2 text-[12px] hover:border-black/35 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
+            >
+              Open Request Viewing Path
+            </button>
+            <a
+              href="/search"
+              class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
+            >
+              Open Private Search
+            </a>
+          </div>
+        </div>
+        <div class="mt-6 text-[12px] leading-[1.75] text-black/54">
           No message is sent automatically. No placeholder contact data is used. A production deployment can connect this handoff
           to a real CRM, email workflow, calendar or WhatsApp contact.
-        </div>
-
-        <div class="mt-7 flex flex-wrap gap-2">
-          <button
-            type="button"
-            data-open-inquiry
-            data-inquiry-source="contact"
-            data-inquiry-next-action="Prepare viewing path"
-            class="rounded-full border border-black/20 bg-white px-4 py-2 text-[12px] hover:border-black/35 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
-          >
-            Open Request Viewing Path
-          </button>
-          <a
-            href="/search"
-            class="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
-          >
-            Open Private Search
-          </a>
         </div>
       </div>
     </div>
@@ -121,13 +147,13 @@ const methodSteps = [
       <h2 class="text-[32px] leading-[1.03] tracking-tight">From search context to advisor-ready brief.</h2>
     </div>
 
-    <div class="grid gap-0 border-y border-black/10 md:grid-cols-3">
+    <div class="bcn-handoff-method grid gap-0 border-y border-black/10 md:grid-cols-3">
       {methodSteps.map(([n, title, text]) => (
-        <div class="border-b border-black/10 py-6 md:border-b-0 md:border-r md:px-6 md:last:border-r-0">
+        <article class="bcn-handoff-method__step border-b border-black/10 py-6 md:border-b-0 md:border-r md:px-6 md:last:border-r-0">
           <div class="text-[11px] tracking-[0.18em] text-black/36">{n}</div>
           <div class="mt-4 text-[18px] tracking-tight text-black/84">{title}</div>
           <p class="mt-3 max-w-[300px] text-[12px] leading-[1.75] text-black/56">{text}</p>
-        </div>
+        </article>
       ))}
     </div>
   </section>
