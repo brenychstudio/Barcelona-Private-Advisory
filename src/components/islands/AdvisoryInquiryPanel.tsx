@@ -105,7 +105,7 @@ const ui = (lang: Lang) => {
     dossierSubtitle: "Este brief se prepara desde tus propiedades seleccionadas, prioridades y compensaciones.",
     close: "Cerrar",
     context: "Resumen del contexto",
-    source: "Origen",
+    source: "Fuente",
     intent: "Intención",
     district: "Lente de distrito",
     property: "Propiedad seleccionada",
@@ -117,7 +117,7 @@ const ui = (lang: Lang) => {
     selectedProperties: "propiedades seleccionadas",
     districtSpread: "Distritos",
     topPriority: "Prioridad principal",
-    highestReadiness: "Mayor preparación",
+    highestReadiness: "Preparación más alta",
     selectedList: "Propiedades seleccionadas",
     bestFor: "Ideal para",
     signal: "Señal",
@@ -275,22 +275,24 @@ export default function AdvisoryInquiryPanel({
           ? L.whatsappOpened
           : "";
 
-  const summaryRows = [
-    { label: L.source, value: L.sourceLabels[context.source] || L.sourceLabels.hero },
-    { label: L.intent, value: context.intentLabel || L.notSpecified },
-    { label: L.district, value: districtLabel || L.notSpecified },
-    { label: L.property, value: propertyTitle || L.notSelected },
-    { label: L.dossier, value: dossierLabel },
-    ...(isDossierSource
-      ? [
-          { label: L.districtSpread, value: districtSpread || L.notSpecified },
-          { label: L.topPriority, value: topPriorityTitle || L.notSelected },
-          { label: L.highestReadiness, value: highestReadiness || L.notSpecified },
-        ]
-      : []),
-    { label: L.next, value: nextAction },
-    { label: L.timingLabel, value: timing || L.notSpecified },
-  ];
+  const summaryRows = isDossierSource
+    ? [
+        { label: L.source, value: L.sourceLabels.dossier },
+        { label: L.selectedList, value: dossierLabel },
+        { label: L.districtSpread, value: districtSpread || L.notSpecified },
+        { label: L.topPriority, value: topPriorityTitle || L.notSelected },
+        { label: L.highestReadiness, value: highestReadiness || L.notSpecified },
+        { label: L.next, value: nextAction },
+      ]
+    : [
+        { label: L.source, value: L.sourceLabels[context.source] || L.sourceLabels.hero },
+        { label: L.intent, value: context.intentLabel || L.notSpecified },
+        { label: L.district, value: districtLabel || L.notSpecified },
+        { label: L.property, value: propertyTitle || L.notSelected },
+        { label: L.dossier, value: dossierLabel },
+        { label: L.next, value: nextAction },
+        { label: L.timingLabel, value: timing || L.notSpecified },
+      ];
 
   useEffect(() => {
     setMounted(true);
@@ -548,11 +550,18 @@ export default function AdvisoryInquiryPanel({
                 ].join(" ")}
               >
                 <div className="text-[11px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{L.context}</div>
-                <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                <div className={isDossierSource ? "mt-3 grid gap-0" : "mt-4 grid gap-2 sm:grid-cols-2"}>
                   {summaryRows.map((row) => (
-                    <div key={row.label} className="border border-[var(--bcn-line)] bg-white/70 p-3">
+                    <div
+                      key={row.label}
+                      className={
+                        isDossierSource
+                          ? "grid gap-2 border-t border-[var(--bcn-line)] py-2.5 sm:grid-cols-[160px_1fr]"
+                          : "border border-[var(--bcn-line)] bg-white/70 p-3"
+                      }
+                    >
                       <div className="text-[10px] uppercase tracking-[0.15em] text-[var(--bcn-muted)]">{row.label}</div>
-                      <div className="mt-2 text-[13px] leading-[1.35] text-[var(--bcn-graphite)]">{row.value}</div>
+                      <div className={isDossierSource ? "text-[13px] leading-[1.35] text-[var(--bcn-graphite)]" : "mt-2 text-[13px] leading-[1.35] text-[var(--bcn-graphite)]"}>{row.value}</div>
                     </div>
                   ))}
                 </div>

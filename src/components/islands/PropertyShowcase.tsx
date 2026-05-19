@@ -1,13 +1,27 @@
 ﻿import { AnimatePresence, motion } from "motion/react";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import type { Listing } from "../../data/listings";
 import { getListingAdvisoryCopy } from "../../lib/getListingAdvisoryCopy";
-import { useSectionProgress } from "../../hooks/useSectionProgress";
 import { useShortlist } from "../../hooks/useShortlist";
 import Lightbox from "./Lightbox";
 import { openAdvisoryInquiry, type AdvisoryInquirySource } from "./AdvisoryInquiryPanel";
 
 type Lang = "en" | "es";
+const propertyChambers = [
+  { id: "overview", en: "Overview", es: "Resumen", shortEn: "Overview", shortEs: "Resumen" },
+  { id: "gallery", en: "Gallery", es: "Galería", shortEn: "Gallery", shortEs: "Galería" },
+  { id: "district", en: "District fit", es: "Ajuste de distrito", shortEn: "District", shortEs: "Distrito" },
+  { id: "acquisition", en: "Acquisition logic", es: "Lógica de adquisición", shortEn: "Logic", shortEs: "Lógica" },
+  { id: "risk", en: "Risk & diligence", es: "Riesgo y diligencia", shortEn: "Risk", shortEs: "Riesgo" },
+  { id: "viewing", en: "Viewing path", es: "Ruta de visita", shortEn: "Action", shortEs: "Acción" },
+] as const;
+type PropertyChamberId = (typeof propertyChambers)[number]["id"];
+type ChamberDirection = "next" | "prev";
+
+const WHEEL_COOLDOWN = 950;
+const WHEEL_THRESHOLD = 36;
+const SWIPE_DISTANCE = 48;
+const SWIPE_DOMINANCE = 1.25;
 
 function MachineReadout({ code, progress }: { code: string; progress: number }) {
   const p = Math.round((progress ?? 0) * 100);
@@ -21,11 +35,19 @@ function MachineReadout({ code, progress }: { code: string; progress: number }) 
   );
 }
 
-function StickyStage({ src, alt }: { src: string; alt?: string }) {
+function StickyStage({
+  src,
+  alt,
+  onImageError,
+}: {
+  src: string;
+  alt?: string;
+  onImageError?: (src: string) => void;
+}) {
   return (
-    <div className="bcn-property-stage sticky top-[84px]">
+    <div className="bcn-property-stage">
       <div className="bcn-property-stage__surface overflow-hidden bg-[rgb(var(--paper))] shadow-[0_34px_120px_rgba(46,43,35,0.12)] ring-1 ring-black/10">
-        <div className="relative aspect-[4/5] w-full">
+        <div className="bcn-property-stage__frame relative aspect-[4/5] w-full">
           <AnimatePresence mode="wait">
             <motion.img
               key={src}
@@ -38,6 +60,7 @@ function StickyStage({ src, alt }: { src: string; alt?: string }) {
               transition={{ duration: 0.75, ease: [0.2, 0.8, 0.2, 1] }}
               loading="lazy"
               decoding="async"
+              onError={() => onImageError?.(src)}
             />
           </AnimatePresence>
         </div>
@@ -202,7 +225,8 @@ function Chip({ children }: { children: ReactNode }) {
 const ui = (lang: Lang) => {
   const en = {
     request: "Request private viewing",
-    save: "Save to shortlist",
+    backToSearch: "Back to search",
+    save: "Save to dossier",
     saved: "Saved",
     lens: "Barcelona Lens",
     privateRecommendation: "Private recommendation",
@@ -221,6 +245,12 @@ const ui = (lang: Lang) => {
     riskNote: "Risk note",
     readiness: "Viewing readiness",
     priority: "Shortlist priority",
+    price: "Price",
+    surface: "Surface",
+    bedrooms: "Bedrooms",
+    bathrooms: "Bathrooms",
+    district: "District",
+    propertyFacts: "Property facts",
     acquisitionNote: "Acquisition note",
     advisoryPath: "Advisory path",
     privateBrief: "Private brief",
@@ -237,18 +267,33 @@ const ui = (lang: Lang) => {
     roiNote: "High-level advisory estimate.",
     risk: "RISK FLAGS",
     ctaReq: "Request prepared. Copy the inquiry brief or continue with a private viewing path.",
-    ctaSaved: "Saved to shortlist.",
+    ctaSaved: "Saved to dossier.",
     ctaRemoved: "Removed from shortlist.",
     bd: "bd",
     ba: "ba",
+    chamberLabel: "Acquisition chamber",
+    chamberHint: "Guided private file",
+    chamberGestureHint: "Scroll or swipe within the chamber to move between sections.",
+    previous: "Previous",
+    next: "Next",
+    overviewSection: "01 Overview",
+    gallerySection: "02 Gallery",
+    districtSection: "03 District fit",
+    acquisitionSection: "04 Acquisition logic",
+    riskSection: "05 Risk & diligence",
+    viewingSection: "06 Viewing path",
+    viewingHeadline: "Ready to turn this property into a viewing path?",
+    viewingCopy:
+      "Keep this file in the dossier or request a prepared viewing path with the relevant advisory context attached.",
   };
 
   const es = {
     request: "Solicitar visita",
-    save: "Guardar en selección",
+    backToSearch: "Volver a búsqueda",
+    save: "Guardar en dossier",
     saved: "Guardado",
     lens: "Barcelona Lens",
-    privateRecommendation: "Recomendacion privada",
+    privateRecommendation: "Recomendación privada",
     selectedObject: "Ficha de adquisición",
     desc: "NOTAS ADVISORY",
     gallery: "GALERÍA",
@@ -264,26 +309,46 @@ const ui = (lang: Lang) => {
     riskNote: "Nota de riesgo",
     readiness: "Preparación de visita",
     priority: "Prioridad shortlist",
+    price: "Precio",
+    surface: "Superficie",
+    bedrooms: "Habitaciones",
+    bathrooms: "Baños",
+    district: "Distrito",
+    propertyFacts: "Datos del inmueble",
     acquisitionNote: "Nota de adquisición",
     advisoryPath: "Ruta advisory",
     privateBrief: "Brief privado",
     districtFit: "encaje de distrito",
     viewingPath: "ruta de visita",
-    numbers: "NÚMEROS",
+    numbers: "LÓGICA DE ADQUISICIÓN",
     ppsm: "Precio / m²",
     est: "Costes de compra*",
     liquidity: "Liquidez",
     roi: "Potencial ROI",
     ref: "Métrica de referencia.",
-    estNote: "*Rango indicativo. Varia por impuestos, gastos y escenario.",
+    estNote: "*Rango indicativo. Varía por impuestos, gastos y escenario.",
     lensNote: "Enfoque advisory.",
-    roiNote: "Estimacion advisory de alto nivel.",
-    risk: "SEÑALES DE RIESGO",
-    ctaReq: "Solicitud preparada. Copia el brief o continua con una ruta de visita privada.",
-    ctaSaved: "Guardado en selección.",
-    ctaRemoved: "Quitado de la selección.",
+    roiNote: "Estimación advisory de alto nivel.",
+    risk: "RIESGO Y DILIGENCIA",
+    ctaReq: "Solicitud preparada. Copia el brief o continúa con una ruta de visita privada.",
+    ctaSaved: "Guardado en dossier.",
+    ctaRemoved: "Quitado del dossier.",
     bd: "hab",
     ba: "baños",
+    chamberLabel: "Cámara de adquisición",
+    chamberHint: "Ficha privada guiada",
+    chamberGestureHint: "Desplázate o desliza dentro de la cámara para cambiar de sección.",
+    previous: "Anterior",
+    next: "Siguiente",
+    overviewSection: "01 Resumen",
+    gallerySection: "02 Galería",
+    districtSection: "03 Ajuste de distrito",
+    acquisitionSection: "04 Lógica de adquisición",
+    riskSection: "05 Riesgo y diligencia",
+    viewingSection: "06 Ruta de visita",
+    viewingHeadline: "¿Listo para convertir esta propiedad en una ruta de visita?",
+    viewingCopy:
+      "Guarda esta ficha en el dossier o solicita una ruta de visita preparada con el contexto de asesoría relevante.",
   };
 
   return lang === "es" ? es : en;
@@ -298,25 +363,154 @@ export default function PropertyShowcase({
 }) {
   const L = ui(lang);
   const prefix = lang === "es" ? "/es" : "";
+  const searchHref = lang === "es" ? "/es/search" : "/search";
 
-  const sections = ["overview", "gallery", "neighborhood", "numbers"] as const;
-  const progress = useSectionProgress([...sections]);
+  const [activeChamber, setActiveChamber] = useState<PropertyChamberId>("overview");
+  const [transitionDirection, setTransitionDirection] = useState<ChamberDirection>("next");
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [failedImageSrcs, setFailedImageSrcs] = useState<Set<string>>(() => new Set());
+  const deckRef = useRef<HTMLElement | null>(null);
+  const lastWheelAtRef = useRef(0);
+  const pointerStartRef = useRef<{ x: number; y: number; pointerId: number } | null>(null);
+  const activeChamberIndex = propertyChambers.findIndex((item) => item.id === activeChamber);
+  const activeChamberConfig = propertyChambers[activeChamberIndex] ?? propertyChambers[0];
+  const activeP = (Math.max(0, activeChamberIndex) + 1) / propertyChambers.length;
 
-  const active = sections.reduce(
-    (best, id) => ((progress[id] ?? 0) > (progress[best] ?? 0) ? id : best),
-    "overview" as (typeof sections)[number]
+  const goToChamberIndex = (nextIndex: number, direction: ChamberDirection) => {
+    if (nextIndex < 0 || nextIndex >= propertyChambers.length || nextIndex === activeChamberIndex) return false;
+    setTransitionDirection(direction);
+    setActiveChamber(propertyChambers[nextIndex].id);
+    return true;
+  };
+
+  const goToChamber = (id: PropertyChamberId) => {
+    const nextIndex = propertyChambers.findIndex((item) => item.id === id);
+    if (nextIndex < 0 || nextIndex === activeChamberIndex) return;
+    setTransitionDirection(nextIndex > activeChamberIndex ? "next" : "prev");
+    setActiveChamber(id);
+  };
+
+  const goToPreviousChamber = () => {
+    goToChamberIndex(activeChamberIndex - 1, "prev");
+  };
+
+  const goToNextChamber = () => {
+    goToChamberIndex(activeChamberIndex + 1, "next");
+  };
+
+  const handleChamberKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      event.preventDefault();
+      goToPreviousChamber();
+    }
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      event.preventDefault();
+      goToNextChamber();
+    }
+    if (event.key === "Home") {
+      event.preventDefault();
+      goToChamberIndex(0, "prev");
+    }
+    if (event.key === "End") {
+      event.preventDefault();
+      goToChamberIndex(propertyChambers.length - 1, "next");
+    }
+  };
+
+  const handlePanelPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (prefersReducedMotion || event.pointerType === "mouse") return;
+    pointerStartRef.current = { x: event.clientX, y: event.clientY, pointerId: event.pointerId };
+  };
+
+  const handlePanelPointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const start = pointerStartRef.current;
+    pointerStartRef.current = null;
+    if (!start || start.pointerId !== event.pointerId || prefersReducedMotion) return;
+
+    const dx = event.clientX - start.x;
+    const dy = event.clientY - start.y;
+    const absX = Math.abs(dx);
+    const absY = Math.abs(dy);
+    if (absX < SWIPE_DISTANCE || absX < absY * SWIPE_DOMINANCE) return;
+
+    const nextIndex = activeChamberIndex + (dx < 0 ? 1 : -1);
+    const changed = goToChamberIndex(nextIndex, dx < 0 ? "next" : "prev");
+    if (changed) event.preventDefault();
+  };
+
+  const handlePanelPointerCancel = () => {
+    pointerStartRef.current = null;
+  };
+
+  useEffect(() => {
+    const media = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!media) return;
+
+    const updateMotionPreference = () => setPrefersReducedMotion(media.matches);
+    updateMotionPreference();
+    media.addEventListener("change", updateMotionPreference);
+    return () => media.removeEventListener("change", updateMotionPreference);
+  }, []);
+
+  useEffect(() => {
+    const deck = deckRef.current;
+    if (!deck) return;
+
+    const handleDeckWheel = (event: WheelEvent) => {
+      if (prefersReducedMotion) return;
+      if (Math.abs(event.deltaY) < WHEEL_THRESHOLD || Math.abs(event.deltaY) < Math.abs(event.deltaX)) return;
+
+      const target = event.target instanceof Element ? event.target : null;
+      if (target?.closest('input, textarea, select, [contenteditable="true"], [data-bcn-gesture-ignore]')) return;
+
+      const direction = event.deltaY > 0 ? 1 : -1;
+      const nextIndex = activeChamberIndex + direction;
+      if (nextIndex < 0 || nextIndex >= propertyChambers.length) return;
+
+      const now = Date.now();
+      if (now - lastWheelAtRef.current < WHEEL_COOLDOWN) {
+        event.preventDefault();
+        return;
+      }
+
+      event.preventDefault();
+      lastWheelAtRef.current = now;
+      goToChamberIndex(nextIndex, direction > 0 ? "next" : "prev");
+    };
+
+    deck.addEventListener("wheel", handleDeckWheel, { passive: false });
+    return () => deck.removeEventListener("wheel", handleDeckWheel);
+  }, [activeChamberIndex, prefersReducedMotion]);
+
+  const visibleGalleryImages = useMemo(
+    () => listing.images.gallery.filter((src) => !failedImageSrcs.has(src)),
+    [listing.images.gallery, failedImageSrcs]
   );
+  const visibleImageCount = 1 + visibleGalleryImages.length;
 
-  const stageSrc =
-    active === "overview"
+  const markImageFailed = (src: string) => {
+    if (!src || src === listing.images.hero) return;
+    setFailedImageSrcs((current) => {
+      if (current.has(src)) return current;
+      const next = new Set(current);
+      next.add(src);
+      return next;
+    });
+  };
+
+  const chamberStageSrc =
+    activeChamber === "overview"
       ? listing.images.hero
-      : active === "gallery"
-      ? listing.images.gallery[0] ?? listing.images.hero
-      : active === "neighborhood"
-      ? listing.images.gallery[1] ?? listing.images.hero
-      : listing.images.gallery[2] ?? listing.images.hero;
-
-  const activeP = Math.max(...sections.map((s) => progress[s] ?? 0));
+      : activeChamber === "gallery"
+      ? visibleGalleryImages[0] ?? listing.images.hero
+      : activeChamber === "district"
+      ? visibleGalleryImages[1] ?? listing.images.hero
+      : activeChamber === "acquisition"
+      ? visibleGalleryImages[1] ?? visibleGalleryImages[0] ?? listing.images.hero
+      : activeChamber === "risk"
+      ? visibleGalleryImages[1] ?? visibleGalleryImages[0] ?? listing.images.hero
+      : listing.images.hero;
 
   const adv = useMemo(() => computeAdvisory(listing, lang), [listing, lang]);
 
@@ -343,8 +537,6 @@ export default function PropertyShowcase({
   const requestLabel = advisoryCopy.nextAction || L.request;
   const advisorMemo = advisoryCopy.advisorReason || advisoryCopy.acquisitionNote || advisoryCopy.bestFor || descText;
   const chamberMeta = `${districtLabel} / ${listing.sqm} m2 / ${listing.beds} ${L.bd} / EUR ${fmtEUR(listing.price)}`;
-  const pathIntent = advisoryCopy.bestFor || L.privateBrief;
-  const advisoryPath = `${pathIntent} -> ${districtLabel || L.districtFit} -> ${titleText} -> ${requestLabel || L.viewingPath}`;
   const signalRows = [
     { label: L.bestFor, value: advisoryCopy.bestFor },
     { label: L.signal, value: advisoryCopy.signal },
@@ -353,6 +545,56 @@ export default function PropertyShowcase({
     { label: L.readiness, value: advisoryCopy.viewingReadinessLabel },
   ].filter((row) => row.value);
   const riskFlags = [advisoryCopy.riskNote, ...adv.riskFlags.filter((r) => r !== advisoryCopy.riskNote)].filter(Boolean);
+  const chamberReadout: Record<PropertyChamberId, { title: string; body: string; meta: string[] }> = {
+    overview: {
+      title: lang === "es" ? "Resumen del asesor" : "Advisor summary",
+      body: advisorMemo,
+      meta: [districtLabel, advisoryCopy.viewingReadinessLabel, `${L.priority} #${listing.shortlistPriority}`, requestLabel],
+    },
+    gallery: {
+      title: lang === "es" ? "Vista de inspección" : "Inspection preview",
+      body:
+        lang === "es"
+          ? "Revisa las imágenes clave o abre la galería completa como cámara de inspección."
+          : "Review the key images or open the full gallery as an inspection chamber.",
+      meta: [
+        `${visibleImageCount} ${lang === "es" ? "vistas" : "views"}`,
+        lang === "es" ? "Cámara de inspección" : "Inspection shell",
+        lang === "es" ? "Visual primero" : "Image-led",
+        advisoryCopy.viewingReadinessLabel,
+      ],
+    },
+    district: {
+      title: lang === "es" ? "Ajuste de distrito" : "District fit",
+      body: advisoryCopy.bestFor || advisorMemo,
+      meta: [districtLabel, L.lens, lang === "es" ? "Encaje comprador" : "Buyer fit"],
+    },
+    acquisition: {
+      title: lang === "es" ? "Lógica de adquisición" : "Acquisition logic",
+      body:
+        lang === "es"
+          ? "Precio, liquidez y supuestos de compra para esta recomendación."
+          : "Price, liquidity and ownership assumptions for this recommendation.",
+      meta: [`€${fmtEUR(adv.ppsm)}/m²`, adv.liquidity, adv.roi, adv.estCosts],
+    },
+    risk: {
+      title: lang === "es" ? "Foco de diligencia" : "Diligence focus",
+      body: advisoryCopy.riskNote || riskFlags[0] || (lang === "es" ? "Revisión estándar recomendada." : "Standard diligence recommended."),
+      meta: [lang === "es" ? "Diligencia" : "Diligence", lang === "es" ? "Gastos" : "Fees", lang === "es" ? "Exposición" : "Exposure", lang === "es" ? "Mantenimiento" : "Maintenance"],
+    },
+    viewing: {
+      title: lang === "es" ? "Ruta de visita" : "Viewing path",
+      body:
+        lang === "es"
+          ? "Convierte esta propiedad en una solicitud preparada con contexto de asesoría."
+          : "Turn this property into a prepared viewing request with advisory context attached.",
+      meta: [requestLabel, L.save, lang === "es" ? "Brief asesor" : "Advisor brief"],
+    },
+  };
+  const activeReadout = chamberReadout[activeChamber];
+  const activeReadoutMeta = Array.from(
+    new Set(activeReadout.meta.map((item) => item?.trim()).filter(Boolean))
+  ).slice(0, 4);
 
   const requestViewing = (source: Extract<AdvisoryInquirySource, "property" | "gallery"> = "property") => {
     openAdvisoryInquiry({
@@ -370,16 +612,21 @@ export default function PropertyShowcase({
   const allImages = useMemo(
     () => [
       { src: listing.images.hero, alt: `${titleText} private recommendation hero image` },
-      ...listing.images.gallery.map((src, i) => ({
+      ...visibleGalleryImages.map((src, i) => ({
         src,
         alt: `${titleText} gallery image ${i + 1}`,
       })),
     ],
-    [listing.images.hero, listing.images.gallery, titleText]
+    [listing.images.hero, visibleGalleryImages, titleText]
   );
 
   const [lbOpen, setLbOpen] = useState(false);
   const [lbIndex, setLbIndex] = useState(0);
+
+  useEffect(() => {
+    if (!allImages.length || lbIndex < allImages.length) return;
+    setLbIndex(Math.max(0, allImages.length - 1));
+  }, [allImages.length, lbIndex]);
 
   const openLightboxBySrc = (src: string) => {
     const i = allImages.findIndex((x) => x.src === src);
@@ -387,34 +634,237 @@ export default function PropertyShowcase({
     setLbOpen(true);
   };
 
+  const renderChamberPanel = () => {
+    switch (activeChamber) {
+      case "overview":
+        return (
+          <div className="bcn-property-chamber-panel bcn-property-chamber-panel--overview">
+            <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
+              <div className="bcn-property-memo bcn-memo-surface self-start bg-[var(--bcn-graphite)] p-5 pl-6 text-[var(--bcn-porcelain)] shadow-[0_30px_110px_rgba(28,28,24,0.16)]">
+                <div className="text-[11px] uppercase tracking-[0.18em] text-white/48">{L.advisorMemo}</div>
+                <p className="mt-4 text-[22px] leading-[1.28] tracking-tight text-white/86">{advisorMemo}</p>
+              </div>
+
+              <div className="bcn-property-signals bcn-property-signals--compact">
+                <div className="px-1 py-3 text-[11px] uppercase tracking-[0.18em] text-black/42">{L.signals}</div>
+                {signalRows.slice(0, 4).map((row) => (
+                  <div key={row.label} className="bcn-property-signal-readout grid gap-3 border-t border-black/10 px-1 py-3 sm:grid-cols-[124px_1fr]">
+                    <div className="bcn-property-signal-readout__label text-[11px] text-black/42">{row.label}</div>
+                    <div className="text-[13px] leading-[1.65] text-black/66">{row.value}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {advisoryCopy.acquisitionNote && (
+              <p className="mt-3 border-l border-black/10 bg-[rgb(var(--paper))] p-3 text-[12px] leading-[1.65] text-black/56">
+                {advisoryCopy.acquisitionNote}
+              </p>
+            )}
+          </div>
+        );
+
+      case "gallery": {
+        const previewImages = [listing.images.hero, ...visibleGalleryImages].slice(0, 4);
+        return (
+          <div className="bcn-property-chamber-panel bcn-property-chamber-panel--gallery">
+            <div className="bcn-property-chamber-panel__intro">
+              <div className="text-[11px] uppercase tracking-[0.18em] text-black/42">{L.gallery}</div>
+              <p className="mt-2 max-w-[680px] text-[14px] leading-[1.65] text-black/60">
+                {lang === "es"
+                  ? "Revisa las imágenes principales o abre la galería como cámara de inspección."
+                  : "Review key images or open the gallery as an inspection chamber."}
+              </p>
+            </div>
+
+            <div className="bcn-property-gallery-preview-grid mt-5 grid gap-3">
+              {previewImages.map((src, index) => (
+                <button
+                  key={`${src}-${index}`}
+                  type="button"
+                  onClick={() => openLightboxBySrc(src)}
+                  className="overflow-hidden border border-black/10 bg-[rgb(var(--paper))] text-left"
+                >
+                  <div className="aspect-[4/5] bg-black/5">
+                    <img
+                      className="h-full w-full object-cover"
+                      src={src}
+                      alt={`${titleText} gallery view ${index + 1}`}
+                      loading="lazy"
+                      decoding="async"
+                      onError={() => markImageFailed(src)}
+                    />
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => openLightboxBySrc(listing.images.hero)}
+              className="mt-5 rounded-full border border-black/15 px-4 py-2 text-[12px] text-black/70 hover:border-black/25 hover:text-black"
+            >
+              {L.inspectGallery}
+            </button>
+          </div>
+        );
+      }
+
+      case "district":
+        return (
+          <div className="bcn-property-chamber-panel">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="text-[12px] tracking-[0.18em] text-black/50">{L.neighborhood}</div>
+              <a href={`${prefix}/district/${adv.districtSlug}`} className="text-[12px] text-black/50 hover:text-black">
+                {L.openDistrict}
+              </a>
+            </div>
+
+            <div className="mt-4 border border-black/10 bg-[rgb(var(--paper))] p-5">
+              <div className="text-[12px] text-black/60">{L.recommended}</div>
+
+              <div className="mt-3 flex flex-wrap gap-2">
+                {fitTags.length ? fitTags.map((t0) => <Chip key={t0}>{labels[t0] ?? t0}</Chip>) : <Chip>Barcelona-first</Chip>}
+              </div>
+
+              <div className="mt-4 grid gap-2 md:grid-cols-2">
+                {adv.facts.slice(0, 4).map((f) => (
+                  <div key={f} className="border border-black/10 bg-white px-3 py-2 text-[12px] text-black/70">
+                    {f}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+
+      case "acquisition":
+        return (
+          <div className="bcn-property-chamber-panel">
+            <div className="text-[12px] tracking-[0.18em] text-black/50">{L.numbers}</div>
+
+            <div className="mt-4 border-y border-black/10 bg-[rgb(var(--paper))]">
+              {[
+                [L.ppsm, `€${fmtEUR(adv.ppsm)}`, L.ref],
+                [L.est, adv.estCosts, L.estNote],
+                [L.liquidity, adv.liquidity, L.lensNote],
+                [L.roi, adv.roi, L.roiNote],
+              ].map(([label, value, note]) => (
+                <div key={label} className="grid gap-2 border-b border-black/10 px-4 py-4 last:border-b-0 sm:grid-cols-[190px_1fr]">
+                  <div className="text-[12px] text-black/46">{label}</div>
+                  <div>
+                    <div className="text-[18px] tracking-tight text-black/82">{value}</div>
+                    <div className="mt-1 text-[12px] leading-[1.55] text-black/54">{note}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "risk":
+        return (
+          <div className="bcn-property-chamber-panel">
+            <div className="text-[12px] tracking-[0.18em] text-black/50">{L.risk}</div>
+
+            <div className="mt-4 border-l border-black/10 bg-[rgb(var(--paper))] p-5">
+              <div className="grid gap-2">
+                {riskFlags.map((r) => (
+                  <div key={r} className="border-t border-black/10 py-2 text-[12px] text-black/66 first:border-t-0">
+                    {r}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+
+      case "viewing":
+        return (
+          <div className="bcn-property-chamber-panel bcn-property-chamber-panel--viewing">
+            <div className="bcn-editorial-surface border border-black/10 bg-[rgb(var(--paper))] p-6">
+              <div className="text-[11px] uppercase tracking-[0.18em] text-black/42">{L.viewingSection}</div>
+              <h2 className="mt-4 max-w-[680px] text-[28px] leading-[1.15] tracking-tight text-black/86">
+                {L.viewingHeadline}
+              </h2>
+              <p className="mt-3 max-w-[620px] text-[14px] leading-[1.7] text-black/60">{L.viewingCopy}</p>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => requestViewing("property")}
+                  className="bcn-property-cta-primary rounded-full border border-black/25 bg-white px-4 py-2 text-[12px] hover:border-black/35"
+                >
+                  {requestLabel}
+                </button>
+                <button
+                  type="button"
+                  onClick={saveToShortlist}
+                  className={[
+                    "rounded-full border px-4 py-2 text-[12px]",
+                    saved
+                      ? "border-black/25 bg-white text-black"
+                      : "border-black/15 text-black/70 hover:border-black/25 hover:text-black",
+                  ].join(" ")}
+                >
+                  {saved ? L.saved : L.save}
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="bcn-property-shell bcn-section grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)]">
-      <div className="space-y-16">
-        <section data-section="overview" className="bcn-property-file bcn-section--threshold space-y-8 border-b border-black/10 pb-10">
-          <div className="space-y-4">
-            <div className="flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.18em] text-black/42">
+    <div className="bcn-property-shell bcn-property-chamber-shell bcn-section">
+      <div className="bcn-property-chamber-shell__left">
+        <section className="bcn-property-file bcn-property-file-header">
+          <div className="bcn-property-file-header__main">
+            <div className="bcn-property-file-header__eyebrow flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.18em] text-black/42">
               <span>{L.privateRecommendation}</span>
-              <span className="h-px w-10 bg-black/14" />
+              <span className="bcn-property-file-header__rule h-px w-10 bg-black/14" />
               <span>{L.selectedObject} {listing.code}</span>
             </div>
 
-            <h1 className="bcn-advisory-line max-w-[820px] text-[42px] leading-[0.98] tracking-tight text-black/90 sm:text-[64px]">
+            <h1 className="bcn-property-file-header__title bcn-advisory-line max-w-[880px] text-[36px] leading-[0.98] tracking-tight text-black/90 sm:text-[52px]">
               {titleText}
             </h1>
 
-            <div className="max-w-[760px] text-[13px] leading-[1.7] text-black/58">
-              {districtLabel} / {listing.sqm} m2 / {listing.beds} {L.bd} / {listing.baths} {L.ba} / EUR{" "}
-              {fmtEUR(listing.price)}
+            <div className="bcn-property-file-header__facts" aria-label={L.propertyFacts}>
+              <div className="bcn-property-file-header__fact bcn-property-file-header__fact--price">
+                <span>{L.price}</span>
+                <strong>EUR {fmtEUR(listing.price)}</strong>
+              </div>
+              <div className="bcn-property-file-header__fact">
+                <span>{L.surface}</span>
+                <strong>{listing.sqm} m2</strong>
+              </div>
+              <div className="bcn-property-file-header__fact">
+                <span>{L.bedrooms}</span>
+                <strong>{listing.beds} {L.bd}</strong>
+              </div>
+              <div className="bcn-property-file-header__fact">
+                <span>{L.bathrooms}</span>
+                <strong>{listing.baths} {L.ba}</strong>
+              </div>
+              <div className="bcn-property-file-header__fact">
+                <span>{L.district}</span>
+                <strong>{districtLabel}</strong>
+              </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 text-[12px] text-black/62">
+          <div className="bcn-property-file-header__metrics flex flex-wrap gap-2 text-[12px] text-black/62">
             <span className="border border-black/10 bg-white/70 px-3 py-1.5">{L.readiness}: {advisoryCopy.viewingReadinessLabel}</span>
             <span className="border border-black/10 bg-white/70 px-3 py-1.5">{L.priority}: #{listing.shortlistPriority}</span>
             <span className="border border-black/10 bg-white/70 px-3 py-1.5">{L.lens}: {listing.district}</span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 pt-2">
+          <div className="bcn-property-file-header__actions flex flex-wrap items-center gap-2 pt-2">
             <button
               type="button"
               onClick={() => requestViewing("property")}
@@ -438,7 +888,7 @@ export default function PropertyShowcase({
 
             <button
               type="button"
-              onClick={() => openLightboxBySrc(listing.images.hero)}
+              onClick={() => openLightboxBySrc(chamberStageSrc)}
               className="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
             >
               {L.inspectGallery}
@@ -446,9 +896,9 @@ export default function PropertyShowcase({
 
             <a
               href={`${prefix}/district/${adv.districtSlug}`}
-              className="rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
+              className="bcn-property-file-header__district-link rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
             >
-              {L.lens}: {listing.district}
+              {L.openDistrict}
             </a>
           </div>
 
@@ -458,158 +908,128 @@ export default function PropertyShowcase({
             </div>
           )}
 
-          <div className="flex flex-wrap gap-2 pt-2">
+          <div className="bcn-property-file-header__tags flex flex-wrap gap-2 pt-2">
             {highlights.map((h) => (
               <span key={h} className="rounded-full border border-black/10 bg-[rgb(var(--paper))] px-3 py-1.5 text-[12px] text-black/64">
                 {h}
               </span>
             ))}
           </div>
-
-          <div className="mt-8 grid gap-5 lg:grid-cols-[1.16fr_0.84fr]">
-            <div className="bcn-property-memo bcn-memo-surface bg-[var(--bcn-graphite)] p-6 pl-7 text-[var(--bcn-porcelain)] shadow-[0_30px_110px_rgba(28,28,24,0.16)]">
-              <div className="text-[11px] uppercase tracking-[0.18em] text-white/48">{L.advisorMemo}</div>
-              <p className="mt-5 text-[24px] leading-[1.3] tracking-tight text-white/86">{advisorMemo}</p>
-              {advisoryCopy.acquisitionNote && (
-                <p className="mt-6 border-t border-white/12 pt-5 text-[13px] leading-[1.75] text-white/62">
-                  <span className="mb-2 block text-[10px] uppercase tracking-[0.18em] text-white/38">{L.acquisitionNote}</span>
-                  {advisoryCopy.acquisitionNote}
-                </p>
-              )}
-            </div>
-
-            <div className="bcn-property-path bcn-editorial-surface border-l border-black/10 bg-[rgb(var(--paper))] p-5">
-              <div className="text-[11px] uppercase tracking-[0.18em] text-black/42">{L.advisoryPath}</div>
-              <p className="mt-4 text-[14px] leading-[1.65] text-black/66">{advisoryPath}</p>
-            </div>
-          </div>
-
-          <div className="bcn-property-signals bcn-section--threshold border-y border-black/10 py-2">
-            <div className="px-1 py-4 text-[11px] uppercase tracking-[0.18em] text-black/42">{L.signals}</div>
-            {signalRows.map((row) => (
-              <div key={row.label} className="grid gap-3 border-t border-black/10 px-1 py-4 sm:grid-cols-[170px_1fr]">
-                <div className="text-[11px] text-black/42">{row.label}</div>
-                <div className="text-[13px] leading-[1.65] text-black/66">{row.value}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-6 space-y-3">
-            <div className="text-[12px] tracking-[0.18em] text-black/50">{L.desc}</div>
-            <div className="border-l border-black/10 bg-[rgb(var(--paper))] p-5">
-              {descText
-                .split("\n\n")
-                .filter(Boolean)
-                .map((p, i) => (
-                  <p key={i} className={["text-[13px] leading-[1.85] text-black/60", i ? "mt-4" : ""].join(" ")}>
-                    {p}
-                  </p>
-                ))}
-            </div>
-          </div>
         </section>
 
-        <section data-section="gallery" className="bcn-section space-y-3">
-          <div className="text-[12px] tracking-[0.18em] text-black/50">{L.gallery}</div>
-          <div className="grid gap-3 md:grid-cols-2">
-            {listing.images.gallery.map((src) => (
-              <div key={src} className="overflow-hidden border border-black/10 bg-[rgb(var(--paper))]">
-                <div className="aspect-[4/5] bg-black/5">
-                  <button
-                    type="button"
-                    onClick={() => openLightboxBySrc(src)}
-                    className="h-full w-full"
-                    aria-label="Open image"
-                  >
-                    <img
-                      className="h-full w-full object-cover"
-                      src={src}
-                      alt={`${titleText} gallery view`}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section data-section="neighborhood" className="bcn-section space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="text-[12px] tracking-[0.18em] text-black/50">{L.neighborhood}</div>
-            <a href={`${prefix}/district/${adv.districtSlug}`} className="text-[12px] text-black/50 hover:text-black">
-              {L.openDistrict}
-            </a>
-          </div>
-
-          <div className="border border-black/10 bg-[rgb(var(--paper))] p-5">
-            <div className="text-[12px] text-black/60">{L.recommended}</div>
-
-            <div className="mt-3 flex flex-wrap gap-2">
-              {fitTags.length ? fitTags.map((t0) => <Chip key={t0}>{labels[t0] ?? t0}</Chip>) : <Chip>Barcelona-first</Chip>}
+        <section
+          ref={deckRef}
+          className="bcn-property-deck"
+          aria-labelledby="property-chamber-title"
+          aria-describedby="property-chamber-gesture-hint"
+          tabIndex={0}
+          onKeyDown={handleChamberKeyDown}
+        >
+          <div className="bcn-property-deck__header">
+            <div>
+              <div className="bcn-property-deck__eyebrow">{L.chamberLabel}</div>
+              <h2 id="property-chamber-title" className="bcn-property-deck__title">
+                {L.chamberHint}
+              </h2>
+              <p id="property-chamber-gesture-hint" className="bcn-property-deck__hint">
+                {L.chamberGestureHint}
+              </p>
             </div>
 
-            <div className="mt-4 grid gap-2 md:grid-cols-2">
-              {adv.facts.slice(0, 4).map((f) => (
-                <div
-                  key={f}
-                  className="border border-black/10 bg-white px-3 py-2 text-[12px] text-black/70"
+            <div className="bcn-property-deck__controls">
+              <button type="button" onClick={goToPreviousChamber} disabled={activeChamberIndex === 0}>
+                {L.previous}
+              </button>
+              <button type="button" onClick={goToNextChamber} disabled={activeChamberIndex === propertyChambers.length - 1}>
+                {L.next}
+              </button>
+            </div>
+          </div>
+
+          <div
+            className="bcn-property-deck__nav"
+            role="tablist"
+            aria-label={lang === "es" ? "Secciones del inmueble" : "Property sections"}
+          >
+            {propertyChambers.map((item, index) => {
+              const active = item.id === activeChamber;
+              return (
+                <button
+                  id={`property-chamber-tab-${item.id}`}
+                  key={item.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  aria-current={active ? "step" : undefined}
+                  aria-controls={`property-chamber-panel-${item.id}`}
+                  onClick={() => goToChamber(item.id)}
+                  className={active ? "is-active" : ""}
                 >
-                  {f}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section data-section="numbers" className="space-y-3">
-          <div className="text-[12px] tracking-[0.18em] text-black/50">{L.numbers}</div>
-
-          <div className="border-y border-black/10 bg-[rgb(var(--paper))]">
-            {[
-              [L.ppsm, `€${fmtEUR(adv.ppsm)}`, L.ref],
-              [L.est, adv.estCosts, L.estNote],
-              [L.liquidity, adv.liquidity, L.lensNote],
-              [L.roi, adv.roi, L.roiNote],
-            ].map(([label, value, note]) => (
-              <div key={label} className="grid gap-2 border-b border-black/10 px-4 py-4 last:border-b-0 sm:grid-cols-[190px_1fr]">
-                <div className="text-[12px] text-black/46">{label}</div>
-                <div>
-                  <div className="text-[18px] tracking-tight text-black/82">{value}</div>
-                  <div className="mt-1 text-[12px] leading-[1.55] text-black/54">{note}</div>
-                </div>
-              </div>
-            ))}
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <span>{lang === "es" ? item.shortEs : item.shortEn}</span>
+                </button>
+              );
+            })}
           </div>
 
-          <div className="border-l border-black/10 bg-[rgb(var(--paper))] p-5">
-            <div className="text-[12px] tracking-[0.18em] text-black/50">{L.risk}</div>
-            <div className="mt-3 grid gap-2">
-              {riskFlags.map((r) => (
-                <div
-                  key={r}
-                  className="border-t border-black/10 py-2 text-[12px] text-black/66 first:border-t-0"
-                >
-                  {r}
-                </div>
-              ))}
+          <div
+            key={activeChamber}
+            id={`property-chamber-panel-${activeChamber}`}
+            className="bcn-property-deck__panel"
+            data-direction={transitionDirection}
+            role="tabpanel"
+            aria-labelledby={`property-chamber-tab-${activeChamber}`}
+            onPointerDown={handlePanelPointerDown}
+            onPointerUp={handlePanelPointerUp}
+            onPointerCancel={handlePanelPointerCancel}
+          >
+            <div className="mb-5 text-[11px] uppercase tracking-[0.18em] text-black/38">
+              {String(activeChamberIndex + 1).padStart(2, "0")} / {lang === "es" ? activeChamberConfig.es : activeChamberConfig.en}
             </div>
+            {renderChamberPanel()}
           </div>
         </section>
       </div>
 
-      <div className="space-y-3">
+      <aside className="bcn-property-chamber-shell__right">
         <MachineReadout code={listing.code} progress={activeP} />
         <button
           type="button"
-          onClick={() => openLightboxBySrc(stageSrc)}
+          onClick={() => openLightboxBySrc(chamberStageSrc)}
           className="w-full text-left"
           aria-label="Open gallery"
         >
-          <StickyStage src={stageSrc} alt={titleText} />
+          <StickyStage src={chamberStageSrc} alt={titleText} onImageError={markImageFailed} />
         </button>
-      </div>
+
+        <aside className="bcn-property-stage-readout">
+          <div className="bcn-property-stage-readout__eyebrow">
+            {lang === "es" ? "Cámara activa" : "Current chamber"}
+          </div>
+          <h2>{activeReadout.title}</h2>
+          <p>{activeReadout.body}</p>
+          <div className="bcn-property-stage-readout__meta">
+            {activeReadoutMeta.map((item) => (
+              <span key={item}>{item}</span>
+            ))}
+          </div>
+          <div className="bcn-property-stage-readout__controls">
+            <button type="button" onClick={goToPreviousChamber} disabled={activeChamberIndex === 0}>
+              {L.previous}
+            </button>
+            <button type="button" onClick={goToNextChamber} disabled={activeChamberIndex === propertyChambers.length - 1}>
+              {L.next}
+            </button>
+          </div>
+        </aside>
+
+        <div className="bcn-property-media-actions">
+          <a href={searchHref} className="bcn-property-back-link bcn-property-back-link--stage">
+            <span aria-hidden="true">←</span>
+            <span>{L.backToSearch}</span>
+          </a>
+        </div>
+      </aside>
 
       <Lightbox
         open={lbOpen}
@@ -633,6 +1053,7 @@ export default function PropertyShowcase({
         }}
         onRequestAction={() => requestViewing("gallery")}
         onSaveAction={saveToShortlist}
+        onImageError={markImageFailed}
       />
     </div>
   );

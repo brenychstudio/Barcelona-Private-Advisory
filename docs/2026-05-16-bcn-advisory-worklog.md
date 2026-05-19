@@ -695,6 +695,54 @@ Escape closes fullscreen Lens
 Mobile Lens stacks without horizontal overflow
 ```
 
+## 2026-05-18 — Property / Gallery Inspection Work
+
+### Property Detail Chamber
+
+- Property detail was moved from a long vertical acquisition page toward a guided private acquisition chamber.
+- Added and refined the in-place chamber model:
+  - Overview
+  - Gallery
+  - District
+  - Logic
+  - Risk
+  - Action
+- The chamber now changes active content in place instead of using anchor-style page jumps.
+- Top property facts were made more visible, with price, surface, bedrooms, bathrooms and district promoted into the primary file header.
+- Back to search was moved into the right-side visual/navigation area so it reads as a natural return path after inspection.
+- Footer transition was softened so the shared footer no longer feels like a hard visual defect after short property states.
+
+### BCN-GALLERY-01 — Cinematic Adaptive Inspect Shell
+
+- Read and applied the relevant parts of `Concept2048_Cinematic_Adaptive_Inspect_Shell_UA.pdf`.
+- Adopted the appropriate pattern for this build: adaptive inspect sizing driven by image ratio, not a full data-model rewrite.
+- Added a local orientation/ratio layer inside `Lightbox.tsx`:
+  - landscape
+  - portrait
+  - square
+- Added a CSS variable bridge for the inspect shell:
+  - `--inspect-shell-width`
+  - `--inspect-media-width`
+  - `--inspect-photo-max-height`
+  - `--inspect-columns`
+  - `--inspect-gap`
+- Preserved the core guardrails from the document:
+  - no global low-height image clamp;
+  - no forced crop;
+  - no listing-data changes;
+  - no media-path changes;
+  - no WebGL or new dependency.
+- Latest polish:
+  - portrait/vertical frames now receive a wider, taller shell preset instead of being compressed into a narrow chamber;
+  - image transitions were slowed and made more cinematic with directional blur/fade/scale motion;
+  - shell, media, grid and image-field sizing transitions now morph together more smoothly.
+- Remaining manual QA focus:
+  - wide terrace image;
+  - interior horizontal image;
+  - portrait-style bedroom image;
+  - detail/material frame;
+  - mobile inspection shell at around 390px.
+
 ### 2. Inspect Shell QA on Small Viewports
 
 Although the viewport overflow bug was fixed, still manually verify:

@@ -5,6 +5,13 @@ const home = isEs ? "/es" : "/";
 const search = isEs ? "/es/search" : "/search";
 const contact = isEs ? "/es/contact" : "/contact";
 const isHome = path === "/" || path === "/es" || path === "/es/";
+const routePath = (isEs ? path.replace(/^\/es(?=\/|$)/, "") || "/" : path).replace(/\/$/, "") || "/";
+const isSearch = routePath.startsWith("/search");
+const isProperty = routePath.startsWith("/p/");
+const isAbout = routePath.startsWith("/about");
+const isContact = routePath.startsWith("/contact");
+const showRail = isHome || isSearch || isProperty || isAbout || isContact;
+const railMode = isHome ? "sections" : "global";
 
 const sectionHref = (id: string) => (isHome ? `#${id}` : `${home}#${id}`);
 
@@ -27,39 +34,42 @@ const items = isEs
     ];
 
 const labels = isEs
-  ? { index: "Índice privado", home: "Inicio", search: "Búsqueda", dossier: "Dossier", contact: "Contacto" }
-  : { index: "Private index", home: "Home", search: "Search", dossier: "Dossier", contact: "Contact" };
+  ? { index: "Índice privado", quick: "Acceso privado", home: "Inicio", search: "Búsqueda", dossier: "Dossier", contact: "Contacto" }
+  : { index: "Private index", quick: "Private access", home: "Home", search: "Search", dossier: "Dossier", contact: "Contact" };
 ---
 
 <aside
   data-side-rail
-  aria-label="Private advisory index"
-  class={isHome ? "fixed right-5 top-1/2 z-40 hidden -translate-y-1/2 opacity-0 transition duration-500 hover:opacity-80 xl:block" : "hidden"}
+  data-rail-mode={railMode}
+  aria-label={isEs ? "Índice privado" : "Private advisory index"}
+  class={showRail ? "fixed right-5 top-1/2 z-40 hidden -translate-y-1/2 opacity-0 transition duration-500 hover:opacity-80 xl:block" : "hidden"}
 >
   <div class="group flex items-center gap-3">
     <div class="pointer-events-none hidden min-w-[104px] text-right opacity-0 transition duration-300 group-hover:opacity-100 2xl:block">
-      <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{labels.index}</div>
+      <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{isHome ? labels.index : labels.quick}</div>
     </div>
 
     <div class="border-r border-[rgba(23,23,22,0.08)] pr-2">
-      <nav class="grid gap-2.5">
-        {items.map((item) => (
-          <a
-            href={item.href}
-            data-section-id={item.id}
-            class="bcn-side-item group/item relative flex h-5 w-5 items-center justify-center"
-            aria-label={item.label}
-          >
-            <span class="bcn-side-label pointer-events-none absolute right-7 top-1/2 hidden -translate-y-1/2 whitespace-nowrap border border-[var(--bcn-line)] bg-[rgba(255,255,252,0.86)] px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-[var(--bcn-muted)] opacity-0 shadow-[0_12px_40px_rgba(28,28,24,0.06)] backdrop-blur-sm transition group-hover/item:opacity-100 2xl:block">
-              {item.label}
-            </span>
-            <span class="bcn-side-ring absolute h-5 w-5 rounded-full border border-transparent transition"></span>
-            <span class="bcn-side-dot h-1.5 w-1.5 rounded-full bg-[rgba(114,112,103,0.48)] transition group-hover/item:bg-[var(--bcn-sea-deep)]"></span>
-          </a>
-        ))}
-      </nav>
+      {isHome && (
+        <nav class="grid gap-2.5">
+          {items.map((item) => (
+            <a
+              href={item.href}
+              data-section-id={item.id}
+              class="bcn-side-item group/item relative flex h-5 w-5 items-center justify-center"
+              aria-label={item.label}
+            >
+              <span class="bcn-side-label pointer-events-none absolute right-7 top-1/2 hidden -translate-y-1/2 whitespace-nowrap border border-[var(--bcn-line)] bg-[rgba(255,255,252,0.86)] px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-[var(--bcn-muted)] opacity-0 shadow-[0_12px_40px_rgba(28,28,24,0.06)] backdrop-blur-sm transition group-hover/item:opacity-100 2xl:block">
+                {item.label}
+              </span>
+              <span class="bcn-side-ring absolute h-5 w-5 rounded-full border border-transparent transition"></span>
+              <span class="bcn-side-dot h-1.5 w-1.5 rounded-full bg-[rgba(114,112,103,0.48)] transition group-hover/item:bg-[var(--bcn-sea-deep)]"></span>
+            </a>
+          ))}
+        </nav>
+      )}
 
-      <div class="mt-4 grid gap-2.5 border-t border-[var(--bcn-line)] pt-4">
+      <div class={isHome ? "mt-4 grid gap-2.5 border-t border-[var(--bcn-line)] pt-4" : "grid gap-2.5"}>
         <a href={home} class="bcn-side-action group/item relative flex h-5 w-5 items-center justify-center" aria-label={labels.home}>
           <span class="pointer-events-none absolute right-7 top-1/2 hidden -translate-y-1/2 whitespace-nowrap border border-[var(--bcn-line)] bg-[rgba(255,255,252,0.86)] px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-[var(--bcn-muted)] opacity-0 shadow-[0_12px_40px_rgba(28,28,24,0.06)] backdrop-blur-sm transition group-hover/item:opacity-100 2xl:block">{labels.home}</span>
           <span class="h-1.5 w-1.5 rounded-full bg-[rgba(23,23,22,0.42)] transition group-hover/item:bg-[var(--bcn-graphite)]"></span>
@@ -86,6 +96,10 @@ const labels = isEs
     opacity: 0.38;
   }
 
+  [data-side-rail][data-rail-mode="global"] {
+    opacity: 0.34;
+  }
+
   [data-side-rail] .bcn-side-label,
   [data-side-rail] .group > .pointer-events-none {
     display: none;
@@ -110,6 +124,7 @@ const labels = isEs
       const rail = document.querySelector("[data-side-rail]");
       if (!rail) return;
 
+      const railMode = rail.getAttribute("data-rail-mode") || "sections";
       const links = Array.from(rail.querySelectorAll("[data-section-id]"));
       const sections = links
         .map((link) => {
@@ -120,6 +135,11 @@ const labels = isEs
         .filter(Boolean);
 
       const update = () => {
+        if (railMode === "global") {
+          rail.setAttribute("data-visible", "true");
+          return;
+        }
+
         rail.setAttribute("data-visible", window.scrollY > 220 ? "true" : "false");
 
         if (!sections.length) return;

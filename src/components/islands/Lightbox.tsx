@@ -1,9 +1,17 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useCallback, useEffect, useRef, useState, type WheelEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type WheelEvent } from "react";
 import { createPortal } from "react-dom";
 
 export type LightboxImage = { src: string; alt?: string };
 type Lang = "en" | "es";
+type InspectionOrientation = "landscape" | "portrait" | "square";
+type InspectSize = {
+  shellWidth: string;
+  mediaWidth: string;
+  photoMaxHeight: string;
+  columns: string;
+  gap: string;
+};
 
 export type LightboxChamberContext = {
   title: string;
@@ -46,11 +54,61 @@ const ui = (lang: Lang) => {
     bestFor: "Ideal para",
     signal: "Señal",
     tradeOff: "Trade-off",
-    readiness: "Preparacion",
+    readiness: "Preparación",
     request: "Solicitar visita",
-    save: "Anadir al dossier",
+    save: "Añadir al dossier",
   };
   return lang === "es" ? es : en;
+};
+
+const getInspectSize = (ratio?: number): InspectSize => {
+  if (!ratio) {
+    return {
+      shellWidth: "min(92rem, calc(100vw - 2rem))",
+      mediaWidth: "min(62rem, 100%)",
+      photoMaxHeight: "min(calc(100dvh - 8rem), 58rem)",
+      columns: "minmax(0, min(64rem, 70vw)) minmax(18rem, 21rem)",
+      gap: "clamp(0.65rem, 1.15vw, 1.2rem)",
+    };
+  }
+
+  if (ratio > 1.6) {
+    return {
+      shellWidth: "min(96rem, calc(100vw - 2rem))",
+      mediaWidth: "min(68rem, 100%)",
+      photoMaxHeight: "min(calc(100dvh - 8.75rem), 52rem)",
+      columns: "minmax(0, min(68rem, 72vw)) minmax(18rem, 22rem)",
+      gap: "clamp(0.55rem, 1vw, 1.1rem)",
+    };
+  }
+
+  if (ratio > 1.16) {
+    return {
+      shellWidth: "min(94rem, calc(100vw - 2rem))",
+      mediaWidth: "min(66rem, 100%)",
+      photoMaxHeight: "min(calc(100dvh - 8.75rem), 54rem)",
+      columns: "minmax(0, min(66rem, 72vw)) minmax(18rem, 22rem)",
+      gap: "clamp(0.55rem, 1vw, 1.1rem)",
+    };
+  }
+
+  if (ratio < 0.86) {
+    return {
+      shellWidth: "min(78rem, calc(100vw - 2rem))",
+      mediaWidth: "min(44rem, 100%)",
+      photoMaxHeight: "min(calc(100dvh - 8rem), 62rem)",
+      columns: "minmax(0, min(46rem, 58vw)) minmax(18rem, 21rem)",
+      gap: "clamp(0.45rem, 0.85vw, 0.95rem)",
+    };
+  }
+
+  return {
+    shellWidth: "min(92rem, calc(100vw - 2rem))",
+    mediaWidth: "min(62rem, 100%)",
+    photoMaxHeight: "min(calc(100dvh - 8rem), 58rem)",
+    columns: "minmax(0, min(64rem, 70vw)) minmax(18rem, 21rem)",
+    gap: "clamp(0.65rem, 1.15vw, 1.2rem)",
+  };
 };
 
 export default function Lightbox({
@@ -63,6 +121,7 @@ export default function Lightbox({
   context,
   onRequestAction,
   onSaveAction,
+  onImageError,
 }: {
   open: boolean;
   images: LightboxImage[];
@@ -73,6 +132,7 @@ export default function Lightbox({
   context?: LightboxChamberContext;
   onRequestAction?: () => void;
   onSaveAction?: () => void;
+  onImageError?: (src: string) => void;
 }) {
   const L = ui(lang);
   const shouldReduceMotion = useReducedMotion();
@@ -81,19 +141,16 @@ export default function Lightbox({
   const imagesLengthRef = useRef(images.length);
   const wheelCooldownRef = useRef(0);
   const onCloseRef = useRef(onClose);
-  const [direction, setDirection] = useState(0);
-  const [pulseKey, setPulseKey] = useState(0);
   const [mounted, setMounted] = useState(false);
   const [present, setPresent] = useState(open);
   const [closing, setClosing] = useState(false);
+  const [imageRatios, setImageRatios] = useState<Record<string, number>>({});
   const closingRef = useRef(false);
   const closeTimerRef = useRef<number | undefined>(undefined);
 
   const setActiveIndex = (nextIndex: number, currentIndex = index) => {
     const clamped = Math.max(0, Math.min(images.length - 1, nextIndex));
     if (clamped === currentIndex) return;
-    setDirection(clamped > currentIndex ? 1 : -1);
-    setPulseKey((current) => current + 1);
     setIndex(clamped);
   };
 
@@ -170,32 +227,24 @@ export default function Lightbox({
       if (e.key === "ArrowLeft") {
         const nextIndex = Math.max(0, indexRef.current - 1);
         if (nextIndex !== indexRef.current) {
-          setDirection(-1);
-          setPulseKey((current) => current + 1);
           setIndex(nextIndex);
         }
       }
       if (e.key === "ArrowRight") {
         const nextIndex = Math.min(imagesLengthRef.current - 1, indexRef.current + 1);
         if (nextIndex !== indexRef.current) {
-          setDirection(1);
-          setPulseKey((current) => current + 1);
           setIndex(nextIndex);
         }
       }
       if (e.key === "ArrowUp") {
         const nextIndex = Math.max(0, indexRef.current - 1);
         if (nextIndex !== indexRef.current) {
-          setDirection(-1);
-          setPulseKey((current) => current + 1);
           setIndex(nextIndex);
         }
       }
       if (e.key === "ArrowDown") {
         const nextIndex = Math.min(imagesLengthRef.current - 1, indexRef.current + 1);
         if (nextIndex !== indexRef.current) {
-          setDirection(1);
-          setPulseKey((current) => current + 1);
           setIndex(nextIndex);
         }
       }
@@ -225,29 +274,57 @@ export default function Lightbox({
     }));
   }, [closing, present, index, images.length, context?.title]);
 
+  const recordImageRatio = useCallback((imageSrc: string, width: number, height: number) => {
+    if (!imageSrc || !width || !height) return;
+    const ratio = width / height;
+    setImageRatios((current) => {
+      if (current[imageSrc] === ratio) return current;
+      return { ...current, [imageSrc]: ratio };
+    });
+  }, []);
+
   useEffect(() => {
     if (!present) return;
 
-    [images[index - 1], images[index + 1]].forEach((image) => {
+    images.forEach((image) => {
       if (!image?.src) return;
       const preload = new Image();
+      preload.onload = () => recordImageRatio(image.src, preload.naturalWidth, preload.naturalHeight);
       preload.src = image.src;
     });
-  }, [present, images, index]);
+  }, [present, images, recordImageRatio]);
+  const advisorRows = useMemo(
+    () =>
+      [
+        { label: L.bestFor, value: context?.bestFor },
+        { label: L.signal, value: context?.signal },
+        { label: L.tradeOff, value: context?.tradeOff },
+        { label: L.readiness, value: context?.readiness },
+      ].filter((row) => row.value),
+    [L.bestFor, L.readiness, L.signal, L.tradeOff, context?.bestFor, context?.readiness, context?.signal, context?.tradeOff]
+  );
 
   if (!images.length || !mounted) return null;
 
   const src = images[index]?.src ?? images[0].src;
   const alt = images[index]?.alt ?? "";
-  const previousImage = images[index - 1];
-  const nextImage = images[index + 1];
+  const activeRatio = imageRatios[src];
+  const inspectSize = getInspectSize(activeRatio);
+  const inspectStyle = {
+    "--inspect-shell-width": inspectSize.shellWidth,
+    "--inspect-media-width": inspectSize.mediaWidth,
+    "--inspect-photo-max-height": inspectSize.photoMaxHeight,
+    "--inspect-columns": inspectSize.columns,
+    "--inspect-gap": inspectSize.gap,
+  } as CSSProperties;
+  const activeOrientation: InspectionOrientation = activeRatio
+    ? activeRatio > 1.16
+      ? "landscape"
+      : activeRatio < 0.86
+      ? "portrait"
+      : "square"
+    : "square";
   const hasMultiple = images.length > 1;
-  const advisorRows = [
-    { label: L.bestFor, value: context?.bestFor },
-    { label: L.signal, value: context?.signal },
-    { label: L.tradeOff, value: context?.tradeOff },
-    { label: L.readiness, value: context?.readiness },
-  ].filter((row) => row.value);
 
   const prev = () => goTo(index - 1);
   const next = () => goTo(index + 1);
@@ -259,7 +336,7 @@ export default function Lightbox({
     event.stopPropagation();
 
     const now = window.performance.now();
-    if (now - wheelCooldownRef.current < 1050) return;
+    if (now - wheelCooldownRef.current < 280) return;
     wheelCooldownRef.current = now;
 
     setActiveIndex(indexRef.current + (event.deltaY > 0 ? 1 : -1), indexRef.current);
@@ -277,7 +354,7 @@ export default function Lightbox({
             initial={{ opacity: 0 }}
             animate={{ opacity: inspectionActive ? 1 : 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: shouldReduceMotion ? 0.12 : 0.82, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: shouldReduceMotion ? 0.12 : 0.72, ease: [0.16, 1, 0.3, 1] }}
             onClick={requestClose}
           />
 
@@ -294,13 +371,15 @@ export default function Lightbox({
                   filter: inspectionActive ? "blur(0px)" : "blur(8px)",
                 }}
             exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, filter: "blur(8px)" }}
-            transition={{ duration: shouldReduceMotion ? 0.12 : 0.9, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: shouldReduceMotion ? 0.12 : 0.76, ease: [0.16, 1, 0.3, 1] }}
           >
             <motion.div
               role="dialog"
               aria-modal="true"
               aria-labelledby="property-inspection-title"
-              className="bcn-inspection-shell relative flex h-[calc(100dvh-16px)] w-full max-w-[1360px] flex-col overflow-hidden border border-black/10 bg-[rgb(var(--paper))] shadow-[0_30px_120px_rgba(46,43,35,0.16)] sm:h-[calc(100dvh-32px)]"
+              data-orientation={activeOrientation}
+              style={inspectStyle}
+              className="bcn-inspection-shell bcn-inspection-shell--data-sized relative flex h-[calc(100dvh-16px)] w-full max-w-[1360px] flex-col overflow-hidden border border-black/10 bg-[rgb(var(--paper))] shadow-[0_30px_120px_rgba(46,43,35,0.16)] sm:h-[calc(100dvh-32px)]"
               initial={shouldReduceMotion ? { opacity: 0 } : { y: 10, opacity: 0 }}
               animate={shouldReduceMotion
                 ? { opacity: inspectionActive ? 1 : 0 }
@@ -311,7 +390,7 @@ export default function Lightbox({
                     filter: inspectionActive ? "blur(0px)" : "blur(10px)",
                   }}
               exit={shouldReduceMotion ? { opacity: 0 } : { y: 18, scale: 0.982, opacity: 0, filter: "blur(10px)" }}
-              transition={{ duration: shouldReduceMotion ? 0.12 : 0.82, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: shouldReduceMotion ? 0.12 : 0.78, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="bcn-inspection-topbar z-10 flex flex-none flex-wrap items-center gap-2 border-b border-black/10 bg-[rgb(var(--paper))] px-3 py-3">
@@ -362,50 +441,36 @@ export default function Lightbox({
               </div>
 
               <div className="min-h-0 flex-1 overflow-hidden">
-                <div className="grid h-full min-h-0 gap-0 lg:grid-cols-[minmax(0,1fr)_390px] xl:grid-cols-[minmax(0,1fr)_420px]">
-                  <div className="bcn-inspection-media relative grid min-h-0 place-items-center p-3 sm:p-5" onWheel={onWheelBrowse}>
-                    <motion.div
-                      key={`pulse-${pulseKey}`}
-                      className="bcn-inspection-pulse"
-                      initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: "-42%" }}
-                      animate={shouldReduceMotion ? { opacity: 0 } : { opacity: [0, 0.56, 0], x: "54%" }}
-                      transition={{ duration: 0.94, ease: [0.16, 1, 0.3, 1] }}
-                      aria-hidden="true"
-                    />
-                    <div className="bcn-inspection-image-field">
-                      {previousImage && (
-                        <img
-                          src={previousImage.src}
-                          alt=""
-                          className="bcn-inspection-ghost bcn-inspection-ghost--prev"
-                          loading="lazy"
-                          decoding="async"
-                          aria-hidden="true"
-                        />
-                      )}
-                      {nextImage && (
-                        <img
-                          src={nextImage.src}
-                          alt=""
-                          className="bcn-inspection-ghost bcn-inspection-ghost--next"
-                          loading="lazy"
-                          decoding="async"
-                          aria-hidden="true"
-                        />
-                      )}
-                      <AnimatePresence mode="popLayout" custom={direction}>
+                <div
+                  className="bcn-inspection-layout bcn-inspection-layout--data-sized grid h-full min-h-0 gap-0 lg:grid-cols-[minmax(0,1fr)_390px] xl:grid-cols-[minmax(0,1fr)_420px]"
+                  data-orientation={activeOrientation}
+                >
+                  <div
+                    className="bcn-inspection-media bcn-inspection-media--data-sized relative grid min-h-0 place-items-center p-3 sm:p-5"
+                    data-orientation={activeOrientation}
+                    onWheel={onWheelBrowse}
+                  >
+                    <div className="bcn-inspection-image-field bcn-inspection-image-field--data-sized" data-orientation={activeOrientation}>
+                      <AnimatePresence initial={false}>
                         <motion.img
                           key={src}
                           src={src}
                           alt={alt}
-                          className="bcn-inspection-image h-auto max-h-[calc(100dvh-260px)] w-auto max-w-full select-none object-contain shadow-[0_18px_70px_rgba(46,43,35,0.12)] sm:max-h-[76vh]"
-                          custom={direction}
-                          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: direction * 26, scale: 1.018, filter: "blur(8px)" }}
-                          animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, x: 0, scale: 1, filter: "blur(0px)" }}
-                          exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: direction * -22, scale: 1.006, filter: "blur(6px)" }}
-                          transition={{ duration: shouldReduceMotion ? 0.12 : 0.42, ease: [0.16, 1, 0.3, 1] }}
+                          data-orientation={activeOrientation}
+                          className="bcn-inspection-image bcn-inspection-image--data-sized h-auto max-h-[calc(100dvh-260px)] w-auto max-w-full select-none object-contain shadow-[0_18px_70px_rgba(46,43,35,0.12)] sm:max-h-[76vh]"
+                          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.997 }}
+                          animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+                          exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.997 }}
+                          transition={{ duration: shouldReduceMotion ? 0.1 : 0.3, ease: [0.22, 0.8, 0.24, 1] }}
                           draggable={false}
+                          loading="eager"
                           decoding="async"
+                          fetchPriority="high"
+                          onLoad={(event) => {
+                            const image = event.currentTarget;
+                            recordImageRatio(src, image.naturalWidth, image.naturalHeight);
+                          }}
+                          onError={() => onImageError?.(src)}
                         />
                       </AnimatePresence>
                     </div>
@@ -440,15 +505,7 @@ export default function Lightbox({
                     exit={shouldReduceMotion ? { opacity: 0 } : { x: 8, opacity: 0 }}
                     transition={{ duration: shouldReduceMotion ? 0.12 : 0.24, ease: [0.2, 0.8, 0.2, 1] }}
                   >
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={`panel-${src}`}
-                        className="bcn-inspection-panel__scroll min-h-0 flex-1 overflow-y-auto pr-1"
-                        initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 8, filter: "blur(6px)" }}
-                        animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, filter: "blur(0px)" }}
-                        exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -5, filter: "blur(4px)" }}
-                        transition={{ duration: shouldReduceMotion ? 0.12 : 0.54, delay: shouldReduceMotion ? 0 : 0.08, ease: [0.16, 1, 0.3, 1] }}
-                      >
+                    <div className="bcn-inspection-panel__scroll min-h-0 flex-1 overflow-y-auto pr-1">
                         <div className="text-[11px] uppercase tracking-[0.18em] text-black/42">{L.view}</div>
                         <h2 id="property-inspection-title" className="mt-3 text-[28px] leading-[1.02] tracking-tight text-black">
                           {context?.title ?? L.view}
@@ -474,8 +531,7 @@ export default function Lightbox({
                             </div>
                           ))}
                         </div>
-                      </motion.div>
-                    </AnimatePresence>
+                    </div>
 
                     <div className="mt-4 flex flex-none flex-wrap gap-2">
                       <button
@@ -518,6 +574,11 @@ export default function Lightbox({
                         loading="lazy"
                         decoding="async"
                         draggable={false}
+                        onLoad={(event) => {
+                          const image = event.currentTarget;
+                          recordImageRatio(im.src, image.naturalWidth, image.naturalHeight);
+                        }}
+                        onError={() => onImageError?.(im.src)}
                       />
                     </button>
                   ))}

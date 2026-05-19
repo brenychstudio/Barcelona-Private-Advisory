@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { bcnMedia } from "../../data/bcnMedia";
 import type { Listing } from "../../data/listings";
 import { useShortlist } from "../../hooks/useShortlist";
 import { getListingAdvisoryCopy, type AdvisoryLang } from "../../lib/getListingAdvisoryCopy";
@@ -390,101 +389,19 @@ export default function ShortlistWidget({
             </div>
 
             <div className="p-4 sm:p-5">
-              <div className="bcn-dossier-document grid overflow-hidden border border-[var(--bcn-line)] bg-[var(--bcn-porcelain)] sm:grid-cols-[1fr_152px]">
-                <div className="p-5">
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    {summaryStats.map((stat) => (
-                      <div key={stat.label} className="border border-[var(--bcn-line)] bg-white/60 px-3 py-2">
-                        <div className="text-[10px] uppercase tracking-[0.15em] text-[var(--bcn-muted)]">{stat.label}</div>
-                        <div className="mt-1 text-[12px] leading-[1.35] text-[var(--bcn-graphite)]">{stat.value}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <img
-                  src={bcnMedia.dossier.acquisitionMemoDetail.src}
-                  alt={bcnMedia.dossier.acquisitionMemoDetail.alt}
-                  className="hidden h-full min-h-[174px] w-full object-cover opacity-90 sm:block"
-                  loading="lazy"
-                  decoding="async"
-                  width={bcnMedia.dossier.acquisitionMemoDetail.width}
-                  height={bcnMedia.dossier.acquisitionMemoDetail.height}
-                />
-              </div>
-
-              {items.length > 0 && (
-                <section className="bcn-dossier-handoff mt-4 border border-[var(--bcn-line-strong)] bg-white p-4">
-                  <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
-                    <div>
-                      <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--bcn-muted)]">{L.handoffEyebrow}</div>
-                      <div className="mt-2 text-[18px] leading-[1.15] tracking-tight text-[var(--bcn-graphite)]">
-                        {L.handoffTitle}
-                      </div>
-                      <p className="mt-2 max-w-[440px] text-[12px] leading-[1.65] text-[var(--bcn-graphite-soft)]">
-                        {L.handoffText}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => openDossierInquiry()}
-                      className="rounded-full border border-[var(--bcn-graphite)] bg-[var(--bcn-graphite)] px-4 py-2 text-[12px] text-[var(--bcn-porcelain)] outline-none hover:bg-black focus-visible:ring-2 focus-visible:ring-black/20"
-                    >
-                      {L.handoffCta}
-                    </button>
-                  </div>
-                  <div className="mt-4 grid gap-2 border-t border-[var(--bcn-line)] pt-3 text-[11px] leading-[1.5] text-[var(--bcn-muted)] sm:grid-cols-2">
-                    <div>{L.summaryOnly}</div>
-                    <div>{L.inquiryBrief}</div>
-                  </div>
-                </section>
-              )}
-
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={copyDossierSummary}
-                    disabled={!items.length}
-                    className="rounded-full border border-[var(--bcn-line)] px-3 py-1.5 text-[12px] text-[var(--bcn-muted)] outline-none hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20 disabled:opacity-40"
-                  >
-                    {copied ? L.copied : L.copySummary}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={copyShareLink}
-                    disabled={!ids.length}
-                    className="rounded-full border border-[var(--bcn-line)] px-3 py-1.5 text-[12px] text-[var(--bcn-muted)] outline-none hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20 disabled:opacity-40"
-                  >
-                    {copiedLink ? L.copied : L.copyLink}
-                  </button>
-                  <a
-                    href={lang === "es" ? "/es/search" : "/search"}
-                    className="rounded-full border border-[var(--bcn-line)] px-3 py-1.5 text-[12px] text-[var(--bcn-muted)] outline-none hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20"
-                  >
-                    {L.explore}
-                  </a>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={clear}
-                  disabled={!count}
-                  className="rounded-full border border-[var(--bcn-line)] px-3 py-1.5 text-[12px] text-[var(--bcn-muted)] outline-none hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20 disabled:opacity-40"
-                >
-                  {L.clear}
-                </button>
-              </div>
-
               {imported && (
-                <div className="mt-3 border border-[var(--bcn-line)] bg-white px-3 py-2 text-[12px] text-[var(--bcn-muted)]">
+                <div className="mb-3 border border-[var(--bcn-line)] bg-white px-3 py-2 text-[12px] text-[var(--bcn-muted)]">
                   {L.imported}
                 </div>
               )}
 
-              {!items.length && (
-                <div className="mt-5 border border-[var(--bcn-line)] bg-white p-5">
-                  <div className="text-[24px] leading-[1.05] tracking-tight text-[var(--bcn-graphite)]">{L.emptyTitle}</div>
-                  <p className="mt-3 text-[13px] leading-[1.75] text-[var(--bcn-muted)]">{L.emptyCopy}</p>
+              {!items.length ? (
+                <div className="border border-[var(--bcn-line)] bg-white p-5">
+                  <div className="text-[10px] uppercase tracking-[0.16em] text-[var(--bcn-muted)]">
+                    {L.status}: {statusLabel(status, L)}
+                  </div>
+                  <div className="mt-4 text-[24px] leading-[1.05] tracking-tight text-[var(--bcn-graphite)]">{L.emptyTitle}</div>
+                  <p className="mt-3 max-w-[420px] text-[13px] leading-[1.65] text-[var(--bcn-muted)]">{L.emptyCopy}</p>
                   <a
                     href={lang === "es" ? "/es/search" : "/search"}
                     className="mt-4 inline-flex rounded-full border border-[var(--bcn-line-strong)] px-3 py-1.5 text-[12px] text-[var(--bcn-graphite)] outline-none hover:border-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20"
@@ -492,6 +409,83 @@ export default function ShortlistWidget({
                     {L.explore}
                   </a>
                 </div>
+              ) : (
+                <>
+                  <div className="bcn-dossier-document border border-[var(--bcn-line)] bg-[var(--bcn-porcelain)] p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <div className="text-[10px] uppercase tracking-[0.16em] text-[var(--bcn-muted)]">{L.status}</div>
+                        <div className="mt-1 text-[18px] leading-tight text-[var(--bcn-graphite)]">{statusLabel(status, L)}</div>
+                      </div>
+                      <div className="text-[12px] text-[var(--bcn-muted)]">{count} {L.saved}</div>
+                    </div>
+                    <div className="mt-4 grid gap-2 sm:grid-cols-5">
+                      {summaryStats.map((stat) => (
+                        <div key={stat.label} className="border-t border-[var(--bcn-line)] pt-2">
+                          <div className="text-[10px] uppercase tracking-[0.14em] text-[var(--bcn-muted)]">{stat.label}</div>
+                          <div className="mt-1 line-clamp-2 text-[12px] leading-[1.35] text-[var(--bcn-graphite)]">{stat.value}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <section className="bcn-dossier-handoff mt-4 border border-[var(--bcn-line-strong)] bg-white p-4">
+                    <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
+                      <div>
+                        <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--bcn-muted)]">{L.handoffEyebrow}</div>
+                        <div className="mt-2 text-[18px] leading-[1.15] tracking-tight text-[var(--bcn-graphite)]">
+                          {L.handoffTitle}
+                        </div>
+                        <p className="mt-2 max-w-[440px] text-[12px] leading-[1.55] text-[var(--bcn-graphite-soft)]">
+                          {L.handoffText}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => openDossierInquiry()}
+                        className="rounded-full border border-[var(--bcn-graphite)] bg-[var(--bcn-graphite)] px-4 py-2 text-[12px] text-[var(--bcn-porcelain)] outline-none hover:bg-black focus-visible:ring-2 focus-visible:ring-black/20"
+                      >
+                        {L.handoffCta}
+                      </button>
+                    </div>
+                    <div className="mt-3 border-t border-[var(--bcn-line)] pt-3 text-[11px] leading-[1.5] text-[var(--bcn-muted)]">
+                      {L.inquiryBrief}
+                    </div>
+                  </section>
+
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={copyDossierSummary}
+                        className="rounded-full border border-[var(--bcn-line)] px-3 py-1.5 text-[12px] text-[var(--bcn-muted)] outline-none hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20"
+                      >
+                        {copied ? L.copied : L.copySummary}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={copyShareLink}
+                        className="rounded-full border border-[var(--bcn-line)] px-3 py-1.5 text-[12px] text-[var(--bcn-muted)] outline-none hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20"
+                      >
+                        {copiedLink ? L.copied : L.copyLink}
+                      </button>
+                      <a
+                        href={lang === "es" ? "/es/search" : "/search"}
+                        className="rounded-full border border-[var(--bcn-line)] px-3 py-1.5 text-[12px] text-[var(--bcn-muted)] outline-none hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20"
+                      >
+                        {L.explore}
+                      </a>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={clear}
+                      className="rounded-full border border-[var(--bcn-line)] px-3 py-1.5 text-[12px] text-[var(--bcn-muted)] outline-none hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20"
+                    >
+                      {L.clear}
+                    </button>
+                  </div>
+                </>
               )}
 
               <div className="mt-4 grid gap-3">
@@ -501,9 +495,9 @@ export default function ShortlistWidget({
                   return (
                   <article
                     key={x.id}
-                    className="bcn-dossier-entry overflow-hidden border border-[var(--bcn-line)] bg-white shadow-[0_18px_52px_rgba(28,28,24,0.05)]"
+                    className="bcn-dossier-entry overflow-hidden border border-[var(--bcn-line)] bg-white shadow-[0_12px_36px_rgba(28,28,24,0.04)]"
                   >
-                    <div className="grid sm:grid-cols-[144px_1fr]">
+                    <div className="grid sm:grid-cols-[112px_1fr]">
                       <a
                         href={`${prefix}/p/${x.id}`}
                         className="block bg-[linear-gradient(135deg,var(--bcn-limestone),var(--bcn-porcelain))] outline-none focus-visible:ring-2 focus-visible:ring-black/20"
@@ -512,12 +506,12 @@ export default function ShortlistWidget({
                         <img
                           src={x.images.hero}
                           alt={titleFor(x, lang)}
-                          className="h-48 w-full object-cover sm:h-full"
+                          className="h-36 w-full object-cover sm:h-full"
                           loading="lazy"
                           decoding="async"
                         />
                       </a>
-                      <div className="p-4">
+                      <div className="p-3.5">
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <div className="text-[10px] tracking-[0.18em] text-[var(--bcn-muted)]">
@@ -540,11 +534,11 @@ export default function ShortlistWidget({
                           </button>
                         </div>
 
-                        <div className="mt-2 text-[12px] text-[var(--bcn-muted)]">
+                        <div className="mt-2 text-[12px] leading-[1.45] text-[var(--bcn-muted)]">
                           {districtFor(x)} / {x.sqm} m2 / {x.beds} bd / {formatEUR(x.price)}
                         </div>
 
-                        <div className="mt-3 flex flex-wrap gap-2">
+                        <div className="mt-2 flex flex-wrap gap-2">
                           <span className="border border-[var(--bcn-line)] px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-[var(--bcn-sea-deep)]">
                             {L.priority} #{x.shortlistPriority}
                           </span>
@@ -553,20 +547,24 @@ export default function ShortlistWidget({
                           </span>
                         </div>
 
-                        <div className="mt-3 grid gap-2 border-t border-[var(--bcn-line)] pt-3 text-[12px] leading-[1.55] text-[var(--bcn-graphite-soft)]">
+                        <div className="mt-3 grid gap-1.5 border-t border-[var(--bcn-line)] pt-3 text-[12px] leading-[1.45] text-[var(--bcn-graphite-soft)]">
                           <div>
-                            <span className="text-[var(--bcn-muted)]">{L.bestFor}:</span> {copy.bestFor}
+                            <span className="text-[var(--bcn-muted)]">{L.bestFor}:</span>{" "}
+                            <span className="line-clamp-1">{copy.bestFor}</span>
                           </div>
                           <div>
-                            <span className="text-[var(--bcn-muted)]">{L.signal}:</span> {copy.signal}
-                          </div>
-                          <div>
-                            <span className="text-[var(--bcn-muted)]">{L.tradeoff}:</span> {copy.tradeOff}
-                          </div>
-                          <div>
-                            <span className="text-[var(--bcn-muted)]">{L.risk}:</span> {copy.riskNote}
+                            <span className="text-[var(--bcn-muted)]">{L.signal}:</span>{" "}
+                            <span className="line-clamp-1">{copy.signal}</span>
                           </div>
                         </div>
+
+                        <details className="mt-2 text-[11px] leading-[1.45] text-[var(--bcn-muted)]">
+                          <summary className="cursor-pointer text-[var(--bcn-graphite-soft)]">{L.tradeoff}</summary>
+                          <div className="mt-2 grid gap-1.5 border-t border-[var(--bcn-line)] pt-2">
+                            <div>{copy.tradeOff}</div>
+                            <div>{copy.riskNote}</div>
+                          </div>
+                        </details>
 
                         <div className="mt-3 flex flex-wrap items-center gap-2">
                           <a
@@ -590,25 +588,25 @@ export default function ShortlistWidget({
               </div>
 
               {items.length > 1 && (
-                <section className="bcn-dossier-comparison mt-4 border border-[var(--bcn-line)] bg-[var(--bcn-porcelain)] p-4">
-                  <div className="text-[11px] tracking-[0.18em] text-[var(--bcn-muted)]">{L.comparison}</div>
-                  <div className="mt-3 grid gap-3">
+                <details className="bcn-dossier-comparison mt-4 border border-[var(--bcn-line)] bg-[var(--bcn-porcelain)] p-4">
+                  <summary className="cursor-pointer text-[11px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">
+                    {L.comparison}
+                  </summary>
+                  <div className="mt-3 grid gap-2">
                     {items.map((x) => {
                       const copy = getListingAdvisoryCopy(x, lang);
 
                       return (
-                      <div key={`compare-${x.id}`} className="border border-[var(--bcn-line)] bg-white p-3">
+                      <div key={`compare-${x.id}`} className="border-t border-[var(--bcn-line)] bg-white/40 pt-3">
                         <div className="text-[13px] font-medium leading-[1.25] text-[var(--bcn-graphite)]">{titleFor(x, lang)}</div>
-                        <div className="mt-3 grid gap-2 text-[12px] leading-[1.55] text-[var(--bcn-graphite-soft)] sm:grid-cols-2">
-                          <div><span className="text-[var(--bcn-muted)]">{L.bestFor}:</span> {copy.bestFor}</div>
-                          <div><span className="text-[var(--bcn-muted)]">{L.signal}:</span> {copy.signal}</div>
+                        <div className="mt-2 grid gap-2 text-[12px] leading-[1.45] text-[var(--bcn-graphite-soft)] sm:grid-cols-2">
                           <div><span className="text-[var(--bcn-muted)]">{L.tradeoff}:</span> {copy.tradeOff}</div>
                           <div><span className="text-[var(--bcn-muted)]">{L.readiness}:</span> {copy.viewingReadinessLabel}</div>
                         </div>
                       </div>
                     )})}
                   </div>
-                </section>
+                </details>
               )}
             </div>
           </motion.aside>

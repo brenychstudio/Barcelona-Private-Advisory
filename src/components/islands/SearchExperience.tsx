@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { buyerIntents, districtLens, type BuyerIntentId } from "../../data/barcelonaLens";
 import type { Listing } from "../../data/listings";
 import { getListingAdvisoryCopy } from "../../lib/getListingAdvisoryCopy";
@@ -6,6 +6,10 @@ import ShortlistToggle from "./ShortlistToggle";
 
 type Mode = "best" | "investment" | "sea" | "family";
 type Lang = "en" | "es";
+type ViewMode = "field" | "index";
+
+const FIELD_INITIAL_VISIBLE_COUNT = 16;
+const INDEX_INITIAL_VISIBLE_COUNT = 18;
 
 const searchModeByIntentId: Record<BuyerIntentId, Mode> = {
   "family-calm": "family",
@@ -56,6 +60,14 @@ const ui = (lang: Lang) => {
     rankedSuffix: "advisory-ranked candidates",
     rankedNote: "Ranked by intent fit, district logic and viewing readiness.",
     reset: "Reset brief",
+    field: "Field",
+    index: "Index",
+    fieldCaption: "Advisory view",
+    indexCaption: "Fast scan",
+    openExtended: "Open extended search field",
+    closeExtended: "Close extended field",
+    moreRanked: "more ranked options",
+    surfaceNote: "Field is image-led for judgment. Index is compact for many candidates.",
     allDistricts: "All districts",
     anyBeds: "Any beds",
     anyPrice: "Any price",
@@ -99,6 +111,14 @@ const ui = (lang: Lang) => {
     rankedSuffix: "opciones priorizadas por asesoría",
     rankedNote: "Ordenadas por ajuste de intención, lógica de distrito y preparación para visita.",
     reset: "Reiniciar brief",
+    field: "Campo",
+    index: "Índice",
+    fieldCaption: "Vista asesorada",
+    indexCaption: "Escaneo rápido",
+    openExtended: "Abrir campo ampliado de búsqueda",
+    closeExtended: "Cerrar campo ampliado",
+    moreRanked: "opciones priorizadas más",
+    surfaceNote: "Campo prioriza lectura visual. Índice permite escanear muchos candidatos.",
     allDistricts: "Todos los distritos",
     anyBeds: "Cualquier",
     anyPrice: "Cualquier",
@@ -197,8 +217,14 @@ export default function SearchExperience({
 }) {
   const L = ui(lang);
   const prefix = lang === "es" ? "/es" : "";
+  const expandedAnchorRef = useRef<HTMLElement | null>(null);
+  const firstRevealedRef = useRef<HTMLElement | null>(null);
+  const expandedOpenedAt = useRef(0);
 
   const [mode, setMode] = useState<Mode>("best");
+  const [viewMode, setViewMode] = useState<ViewMode>("field");
+  const [expanded, setExpanded] = useState(false);
+  const [expandedEntered, setExpandedEntered] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [district, setDistrict] = useState<string>("");
   const [minBeds, setMinBeds] = useState<number>(0);
@@ -307,6 +333,18 @@ export default function SearchExperience({
       .map((r) => r.x);
   }, [listings, mode, effectiveTags, district, minBeds, maxPrice]);
 
+  const visibleLimit = viewMode === "field" ? FIELD_INITIAL_VISIBLE_COUNT : INDEX_INITIAL_VISIBLE_COUNT;
+  const canExpand = results.length > visibleLimit;
+  const visibleResults = expanded ? results : results.slice(0, visibleLimit);
+  const collapsedHiddenCount = Math.max(0, results.length - visibleLimit);
+
+  useEffect(() => {
+    setExpanded(false);
+    setExpandedEntered(false);
+    expandedAnchorRef.current = null;
+    firstRevealedRef.current = null;
+  }, [mode, selectedTags, district, minBeds, maxPrice, viewMode]);
+
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let cards: HTMLElement[] = [];
@@ -332,6 +370,12 @@ export default function SearchExperience({
         card.style.setProperty("--candidate-surface-alpha", "0.72");
       }
     };
+
+    if (viewMode !== "field") {
+      collect();
+      setNeutral();
+      return undefined;
+    }
 
     const render = () => {
       frame = 0;
@@ -420,7 +464,40 @@ export default function SearchExperience({
       reduceMotion.removeEventListener("change", handleMotionChange);
       if (frame) window.cancelAnimationFrame(frame);
     };
-  }, [results]);
+  }, [visibleResults, viewMode]);
+
+  useEffect(() => {
+    if (!expanded) return;
+    expandedOpenedAt.current = window.performance.now();
+    setExpandedEntered(false);
+
+    const scrollToRevealed = window.setTimeout(() => {
+      const target = firstRevealedRef.current || expandedAnchorRef.current;
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+
+    return () => window.clearTimeout(scrollToRevealed);
+  }, [expanded]);
+
+  useEffect(() => {
+    if (!expanded || !canExpand) return;
+
+    const onScroll = () => {
+      if (window.performance.now() - expandedOpenedAt.current < 900) return;
+      const anchor = expandedAnchorRef.current;
+      if (!anchor) return;
+
+      const rect = anchor.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.64) setExpandedEntered(true);
+      if (expandedEntered && rect.top > window.innerHeight * 0.72) {
+        setExpanded(false);
+        setExpandedEntered(false);
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [canExpand, expanded, expandedEntered]);
 
   const toggleTag = (key: string) => {
     setSelectedTags((prev) => (prev.includes(key) ? prev.filter((x) => x !== key) : [...prev, key]));
@@ -430,6 +507,7 @@ export default function SearchExperience({
     const copy = getListingAdvisoryCopy(listing, lang);
     openInquiry({
       source: "search",
+      intentLabel: modeLabel,
       districtLabel: districtFor(listing),
       propertyTitle: titleFor(listing, lang),
       propertyId: listing.id,
@@ -578,38 +656,138 @@ export default function SearchExperience({
         </div>
       </section>
 
-      <div className="bcn-section--threshold flex flex-col gap-3 border-b border-black/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
+      <div className="bcn-section--threshold flex flex-col gap-4 border-b border-black/10 pb-6 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <div className="text-[26px] leading-none tracking-tight text-black/86">
             {results.length} {L.rankedSuffix}
           </div>
           <p className="mt-2 text-[12px] text-black/52">{L.rankedNote}</p>
+          <p className="mt-1 text-[12px] text-black/42">{L.surfaceNote}</p>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            setMode("best");
-            setSelectedTags([]);
-            setDistrict("");
-            setMinBeds(0);
-            setMaxPrice(0);
-            setNote("");
-            setQueryContextActive(false);
-          }}
-          className="w-fit rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
-        >
-          {L.reset}
-        </button>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:justify-end">
+          <div className="inline-grid w-fit grid-cols-2 border border-black/10 bg-white/50 p-1">
+            {([
+              ["field", L.field, L.fieldCaption],
+              ["index", L.index, L.indexCaption],
+            ] as const).map(([key, label, caption]) => {
+              const active = viewMode === key;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setViewMode(key)}
+                  className={[
+                    "px-3 py-2 text-left text-[12px] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-black/50",
+                    active ? "bg-[var(--bcn-graphite)] text-white" : "text-black/58 hover:text-black",
+                  ].join(" ")}
+                  aria-pressed={active}
+                >
+                  <span className="block leading-none">{label}</span>
+                  <span className="mt-1 block text-[10px] opacity-62">{caption}</span>
+                </button>
+              );
+            })}
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setMode("best");
+              setSelectedTags([]);
+              setDistrict("");
+              setMinBeds(0);
+              setMaxPrice(0);
+              setNote("");
+              setQueryContextActive(false);
+              setExpanded(false);
+            }}
+            className="w-fit rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
+          >
+            {L.reset}
+          </button>
+        </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {results.map((listing) => {
+      <div
+        className={
+          viewMode === "field"
+            ? "grid gap-4 lg:grid-cols-2 xl:grid-cols-3"
+            : "bcn-search-index-list grid gap-3"
+        }
+      >
+        {visibleResults.map((listing, index) => {
           const copy = getListingAdvisoryCopy(listing, lang);
           const title = titleFor(listing, lang);
           const detailHref = `${prefix}/p/${listing.id}`;
+          const isFirstRevealed = expanded && index === visibleLimit;
+
+          if (viewMode === "index") {
+            return (
+              <article
+                key={listing.id}
+                ref={(node) => {
+                  if (isFirstRevealed) {
+                    firstRevealedRef.current = node;
+                    expandedAnchorRef.current = node;
+                  }
+                }}
+                className="bcn-search-index-row grid gap-3 border border-black/10 bg-[rgb(var(--paper))] p-3 transition hover:border-black/20 sm:grid-cols-[132px_minmax(0,1fr)_auto] sm:items-center"
+              >
+                <a href={detailHref} aria-label={title} className="block overflow-hidden bg-black/5">
+                  <img
+                    src={listing.images.hero}
+                    alt={`${title} advisory candidate`}
+                    className="h-36 w-full object-cover sm:h-24"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </a>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.15em] text-black/38">
+                    <span>{L.priority} #{listing.shortlistPriority}</span>
+                    <span>{copy.viewingReadinessLabel}</span>
+                  </div>
+                  <h2 className="mt-2 truncate text-[15px] font-medium leading-snug text-black/86">
+                    <a
+                      href={detailHref}
+                      className="hover:text-black focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
+                    >
+                      {title}
+                    </a>
+                  </h2>
+                  <div className="mt-1 truncate text-[12px] text-black/58">
+                    {districtFor(listing)} / {listing.beds} {L.bd} / {listing.sqm} m2 / EUR {fmtEUR(listing.price)}
+                  </div>
+                  <p className="mt-2 line-clamp-2 text-[12px] leading-[1.45] text-black/62">{copy.signal}</p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+                  <ShortlistToggle id={listing.id} lang={lang} />
+                  <button
+                    type="button"
+                    onClick={() => requestViewing(listing)}
+                    className="rounded-full border border-black/20 bg-white px-3 py-2 text-[12px] text-black/78 hover:border-black/38 hover:text-black focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
+                  >
+                    {L.request}
+                  </button>
+                  <a
+                    href={detailHref}
+                    className="rounded-full border border-black/10 px-3 py-2 text-center text-[12px] text-black/58 hover:border-black/22 hover:text-black focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
+                  >
+                    {L.open}
+                  </a>
+                </div>
+              </article>
+            );
+          }
+
           return (
             <article
               key={listing.id}
+              ref={(node) => {
+                if (isFirstRevealed) {
+                  firstRevealedRef.current = node;
+                  expandedAnchorRef.current = node;
+                }
+              }}
               data-bcn-search-card
               className="bcn-search-card group flex min-h-full flex-col overflow-hidden border border-black/10 bg-[rgb(var(--paper))] transition hover:border-black/20"
             >
@@ -684,6 +862,43 @@ export default function SearchExperience({
           );
         })}
       </div>
+
+      {expanded && canExpand && (
+        <div className="bcn-search-extended-control flex flex-col gap-3 border-y border-black/10 bg-white/34 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="text-[12px] leading-[1.5] text-black/52">
+            <span className="block text-[11px] uppercase tracking-[0.16em] text-black/36">
+              {viewMode === "field" ? L.field : L.index}
+            </span>
+            {`${results.length} ${L.rankedSuffix}`}
+          </div>
+          <button
+            type="button"
+            onClick={() => setExpanded(false)}
+            className="w-fit rounded-full border border-black/16 bg-white px-4 py-2 text-[12px] text-black/74 shadow-[0_12px_34px_rgba(25,25,22,0.06)] hover:border-black/28 hover:text-black focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
+          >
+            {L.closeExtended}
+          </button>
+        </div>
+      )}
+
+      {!expanded && canExpand && (
+        <div className="bcn-search-extended-control flex flex-col gap-3 border-y border-black/10 bg-white/34 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="text-[12px] leading-[1.5] text-black/52">
+            <span className="block text-[11px] uppercase tracking-[0.16em] text-black/36">
+              {viewMode === "field" ? L.field : L.index}
+            </span>
+            {`${visibleResults.length} / ${results.length} ${L.rankedSuffix}`}
+          </div>
+          <button
+            type="button"
+            onClick={() => setExpanded(true)}
+            className="w-fit rounded-full border border-black/16 bg-white px-4 py-2 text-[12px] text-black/74 shadow-[0_12px_34px_rgba(25,25,22,0.06)] hover:border-black/28 hover:text-black focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
+          >
+            {L.openExtended}
+            {collapsedHiddenCount > 0 ? ` · + ${collapsedHiddenCount} ${L.moreRanked}` : ""}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
