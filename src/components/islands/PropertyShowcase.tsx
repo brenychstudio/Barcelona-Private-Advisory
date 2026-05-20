@@ -827,7 +827,7 @@ export default function PropertyShowcase({
   return (
     <div className="bcn-property-shell bcn-property-chamber-shell bcn-section">
       <div className="bcn-property-chamber-shell__left">
-        <section className="bcn-property-file bcn-property-file-header">
+        <section className="bcn-property-file bcn-property-file-header" data-bcn-reveal="section">
           <div className="bcn-property-file-header__main">
             <div className="bcn-property-file-header__eyebrow flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.18em] text-black/42">
               <span>{L.privateRecommendation}</span>
@@ -925,6 +925,8 @@ export default function PropertyShowcase({
         <section
           ref={deckRef}
           className="bcn-property-deck"
+          data-bcn-reveal="section"
+          data-bcn-reveal-delay="1"
           aria-labelledby="property-chamber-title"
           aria-describedby="property-chamber-gesture-hint"
           tabIndex={0}
@@ -996,18 +998,20 @@ export default function PropertyShowcase({
         </section>
       </div>
 
-      <aside className="bcn-property-chamber-shell__right">
+      <aside className="bcn-property-chamber-shell__right" data-bcn-reveal="card-soft" data-bcn-reveal-delay="1">
         <MachineReadout code={listing.code} progress={activeP} />
         <button
           type="button"
           onClick={() => openLightboxBySrc(chamberStageSrc)}
           className="w-full text-left"
           aria-label="Open gallery"
+          data-bcn-reveal="media"
+          data-bcn-reveal-delay="2"
         >
           <StickyStage src={chamberStageSrc} alt={titleText} onImageError={markImageFailed} />
         </button>
 
-        <aside className="bcn-property-stage-readout">
+        <aside className="bcn-property-stage-readout" data-bcn-reveal="copy" data-bcn-reveal-delay="3">
           <div className="bcn-property-stage-readout__eyebrow">
             {lang === "es" ? "Cámara activa" : "Current chamber"}
           </div>

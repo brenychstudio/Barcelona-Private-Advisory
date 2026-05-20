@@ -597,7 +597,7 @@ export default function SearchExperience({
 
   return (
     <div className="bcn-section space-y-8">
-      <div className="bcn-section--threshold border-b border-black/10 pb-8">
+      <div className="bcn-section--threshold border-b border-black/10 pb-8" data-bcn-reveal="section">
         <div className="space-y-3">
           <div className="bcn-signal-kicker text-[12px] uppercase tracking-[0.2em] text-black/48">{L.eyebrow}</div>
           <h1 className="bcn-advisory-line max-w-[820px] text-[34px] leading-[1.02] tracking-tight text-black/88 md:text-[54px]">
@@ -612,7 +612,7 @@ export default function SearchExperience({
         </div>
       </div>
 
-      <div className="bcn-active-brief-bar border-y border-black/10 py-3">
+      <div className="bcn-active-brief-bar border-y border-black/10 py-3" data-bcn-reveal="row" data-bcn-reveal-delay="1">
         <div className="bcn-active-brief-bar__main">
           <div className="bcn-active-brief-bar__heading">{L.privateBuyerBrief}</div>
           <div className="bcn-active-brief-bar__intents" aria-label={L.filters.intent}>
@@ -665,6 +665,8 @@ export default function SearchExperience({
       <section
         id="bcn-private-brief-composer"
         className="bcn-buyer-brief-composer bcn-editorial-surface border border-black/10 bg-[rgb(var(--paper))] p-3"
+        data-bcn-reveal="card-soft"
+        data-bcn-reveal-delay="2"
         data-state={briefComposerOpen ? "open" : "closed"}
         aria-hidden={!briefComposerOpen}
         inert={briefComposerOpen ? undefined : true}
@@ -774,7 +776,7 @@ export default function SearchExperience({
 
       </section>
 
-      <div className="bcn-section--threshold flex flex-col gap-4 border-b border-black/10 pb-6 lg:flex-row lg:items-end lg:justify-between">
+      <div className="bcn-section--threshold flex flex-col gap-4 border-b border-black/10 pb-6 lg:flex-row lg:items-end lg:justify-between" data-bcn-reveal="section">
         <div>
           <div className="text-[26px] leading-none tracking-tight text-black/86">
             {results.length} {L.rankedSuffix}
@@ -833,6 +835,8 @@ export default function SearchExperience({
                   }
                 }}
                 className="bcn-search-index-row grid gap-3 border border-black/10 bg-[rgb(var(--paper))] p-3 transition hover:border-black/20 sm:grid-cols-[132px_minmax(0,1fr)_auto] sm:items-center"
+                data-bcn-reveal="card-soft"
+                data-bcn-reveal-delay={String(Math.min(index + 1, 3))}
               >
                 <a href={detailHref} aria-label={title} className="block overflow-hidden bg-black/5">
                   <img
@@ -892,6 +896,8 @@ export default function SearchExperience({
                 }
               }}
               data-bcn-search-card
+              data-bcn-reveal="card-soft"
+              data-bcn-reveal-delay={String(Math.min(index + 1, 3))}
               className="bcn-search-card group flex min-h-full flex-col overflow-hidden border border-black/10 bg-[rgb(var(--paper))] transition hover:border-black/20"
             >
               <div className="bcn-search-card__media relative aspect-[5/4] bg-black/5">

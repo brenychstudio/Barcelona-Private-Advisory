@@ -120,7 +120,7 @@ const copy = lang === "es"
 <section id="advisory" data-bcn-section="threshold" class="bcn-section relative min-h-[calc(100vh-5.5rem)] scroll-mt-24 overflow-hidden pb-10">
   <div class="grid min-h-[calc(100vh-8rem)] min-w-0 gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-stretch">
     <div class="relative z-10 flex min-w-0 flex-col justify-end py-12 lg:py-20">
-      <div class="bcn-hero-primary min-w-0 max-w-[760px]">
+      <div class="bcn-hero-primary min-w-0 max-w-[760px]" data-bcn-reveal="copy">
         <div class="bcn-signal-kicker mb-8 text-[11px] tracking-[0.22em] text-[var(--bcn-muted)]">
           <span>{copy.eyebrow}</span>
           <span>BCN</span>
@@ -150,7 +150,7 @@ const copy = lang === "es"
         </div>
       </div>
 
-      <div class="mt-14 grid max-w-[740px] border-y border-[rgba(23,23,22,0.1)] bg-white/24 sm:grid-cols-4">
+      <div class="mt-14 grid max-w-[740px] border-y border-[rgba(23,23,22,0.1)] bg-white/24 sm:grid-cols-4" data-bcn-reveal="row" data-bcn-reveal-delay="1">
         {copy.metrics.map(([k, v]) => (
           <div class="border-b border-[var(--bcn-line)] py-4 sm:border-b-0 sm:border-r sm:px-4 sm:first:pl-0 sm:last:border-r-0">
             <div class="text-[22px] leading-none tracking-tight text-[var(--bcn-graphite)]">{k}</div>
@@ -159,7 +159,7 @@ const copy = lang === "es"
         ))}
       </div>
 
-      <div class="bcn-hero-journey-note mt-7 max-w-[760px] border-l border-[var(--bcn-line)] pl-4">
+      <div class="bcn-hero-journey-note mt-7 max-w-[760px] border-l border-[var(--bcn-line)] pl-4" data-bcn-reveal="copy" data-bcn-reveal-delay="2">
         <div class="text-[11px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{copy.direction}</div>
         <div class="mt-4 flex flex-wrap items-center gap-2">
           {copy.journey.map((step, index) => (
@@ -177,7 +177,7 @@ const copy = lang === "es"
       </div>
     </div>
 
-    <div class="relative min-h-[640px] overflow-hidden bg-[var(--bcn-limestone)] shadow-[0_44px_120px_rgba(28,28,24,0.13)] lg:min-h-[calc(100vh-7rem)]">
+    <div class="relative min-h-[640px] overflow-hidden bg-[var(--bcn-limestone)] shadow-[0_44px_120px_rgba(28,28,24,0.13)] lg:min-h-[calc(100vh-7rem)]" data-bcn-reveal="media" data-bcn-reveal-delay="1">
       <img
         src={bcnMedia.hero.main.src}
         alt={copy.heroAlt}
@@ -224,7 +224,7 @@ const copy = lang === "es"
   </div>
 </section>
 
-<section data-bcn-section="intent" class="bcn-home-bridge mt-16 scroll-mt-24 border-y border-[var(--bcn-line)] py-8 sm:mt-20">
+<section data-bcn-section="intent" data-bcn-reveal="section" class="bcn-home-bridge mt-16 scroll-mt-24 border-y border-[var(--bcn-line)] py-8 sm:mt-20">
   <div class="grid gap-6 lg:grid-cols-[0.58fr_1.42fr] lg:items-center">
     <div>
       <div class="text-[11px] uppercase tracking-[0.2em] text-[var(--bcn-muted)]">{copy.lensBridgeEyebrow}</div>
@@ -250,11 +250,11 @@ const copy = lang === "es"
   </div>
 </section>
 
-<div data-bcn-section="lens" class="bcn-home-lens-frame">
+<div data-bcn-section="lens" data-bcn-reveal="section" class="bcn-home-lens-frame">
   <BarcelonaLensSystem client:load lang={lang} />
 </div>
 
-<section id="method" data-bcn-section="method" class="bcn-home-method bcn-section--threshold mt-32 scroll-mt-24 py-16">
+<section id="method" data-bcn-section="method" data-bcn-reveal="section" class="bcn-home-method bcn-section--threshold mt-32 scroll-mt-24 py-16">
   <div class="grid gap-9 lg:grid-cols-[0.62fr_1.38fr]">
   <div class="bcn-home-method__intro">
     <div class="text-[12px] tracking-[0.18em] text-[var(--bcn-muted)]">{copy.methodEyebrow}</div>
@@ -264,8 +264,8 @@ const copy = lang === "es"
   </div>
 
   <div class="bcn-home-method__list grid gap-2">
-    {copy.method.map(([n, title, text]) => (
-      <div class="bcn-home-method__row grid gap-3 py-5 sm:grid-cols-[80px_180px_1fr]">
+    {copy.method.map(([n, title, text], index) => (
+      <div class="bcn-home-method__row grid gap-3 py-5 sm:grid-cols-[80px_180px_1fr]" data-bcn-reveal="row" data-bcn-reveal-delay={String(Math.min(index + 1, 3))}>
         <div class="text-[11px] tracking-[0.18em] text-[var(--bcn-muted)]">{n}</div>
         <div class="text-[18px] tracking-tight text-[var(--bcn-graphite)]">{title}</div>
         <div class="text-[13px] leading-[1.75] text-[var(--bcn-muted)]">{text}</div>
@@ -275,9 +275,9 @@ const copy = lang === "es"
   </div>
 </section>
 
-<section id="action" data-bcn-section="action" class="bcn-final-handoff bcn-editorial-surface mt-32 scroll-mt-24 overflow-hidden bg-[var(--bcn-surface)] ring-1 ring-[var(--bcn-line)]">
+<section id="action" data-bcn-section="action" data-bcn-reveal="section" class="bcn-final-handoff bcn-editorial-surface mt-32 scroll-mt-24 overflow-hidden bg-[var(--bcn-surface)] ring-1 ring-[var(--bcn-line)]">
   <div class="grid min-h-[620px] lg:grid-cols-[0.92fr_1.08fr]">
-    <div class="bcn-final-handoff__media relative min-h-[430px] overflow-hidden bg-[linear-gradient(135deg,var(--bcn-limestone),var(--bcn-porcelain))]">
+    <div class="bcn-final-handoff__media relative min-h-[430px] overflow-hidden bg-[linear-gradient(135deg,var(--bcn-limestone),var(--bcn-porcelain))]" data-bcn-reveal="media">
       <img
         src={bcnLensMedia.materials.handoff.src}
         alt={bcnLensMedia.materials.handoff.alt}
@@ -303,7 +303,7 @@ const copy = lang === "es"
         </div>
       </div>
     </div>
-    <div class="bcn-final-handoff__content relative flex flex-col justify-center p-8 sm:p-14">
+    <div class="bcn-final-handoff__content relative flex flex-col justify-center p-8 sm:p-14" data-bcn-reveal="copy" data-bcn-reveal-delay="1">
       <div class="absolute right-10 top-10 hidden h-28 w-28 border-r border-t border-[var(--bcn-line)] lg:block" aria-hidden="true"></div>
       <div class="text-[12px] tracking-[0.18em] text-[var(--bcn-muted)]">{copy.actionEyebrow}</div>
       <h2 class="mt-5 max-w-[680px] text-[42px] leading-[0.98] tracking-tight text-[var(--bcn-graphite)] sm:text-[66px]">
@@ -313,8 +313,8 @@ const copy = lang === "es"
         {copy.actionCopy}
       </p>
       <div class="bcn-final-handoff__steps mt-9 grid border-y border-[var(--bcn-line)]">
-        {copy.actionCards.map(([n, title, text]) => (
-          <div class="bcn-final-handoff__step grid gap-3 border-b border-[var(--bcn-line)] py-4 last:border-b-0 sm:grid-cols-[58px_170px_1fr] sm:items-start">
+        {copy.actionCards.map(([n, title, text], index) => (
+          <div class="bcn-final-handoff__step grid gap-3 border-b border-[var(--bcn-line)] py-4 last:border-b-0 sm:grid-cols-[58px_170px_1fr] sm:items-start" data-bcn-reveal="row" data-bcn-reveal-delay={String(Math.min(index + 1, 3))}>
             <div class="text-[11px] tracking-[0.18em] text-[var(--bcn-muted)]">{n}</div>
             <div class="text-[16px] leading-[1.12] tracking-tight text-[var(--bcn-graphite)]">{title}</div>
             <div class="text-[13px] leading-[1.55] text-[var(--bcn-graphite-soft)]">{text}</div>

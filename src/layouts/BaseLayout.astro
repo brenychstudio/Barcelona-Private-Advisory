@@ -114,6 +114,52 @@ const schemaOrg = {
     <meta name="twitter:image" content={ogImageAbs} />
 
     <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
+    <script is:inline>
+      (() => {
+        if (window.__bcnRevealReady) return;
+        window.__bcnRevealReady = true;
+
+        const initReveal = () => {
+          const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          const revealNodes = Array.from(document.querySelectorAll("[data-bcn-reveal]:not(.is-visible)"));
+
+          if (reduceMotion || !("IntersectionObserver" in window)) {
+            revealNodes.forEach((node) => node.classList.add("is-visible"));
+            return;
+          }
+
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add("is-visible");
+                observer.unobserve(entry.target);
+              });
+            },
+            {
+              rootMargin: "0px 0px -12% 0px",
+              threshold: 0.12,
+            },
+          );
+
+          revealNodes.forEach((node) => observer.observe(node));
+        };
+
+        const scheduleReveal = () => {
+          initReveal();
+          window.requestAnimationFrame(initReveal);
+          window.setTimeout(initReveal, 240);
+        };
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", scheduleReveal, { once: true });
+        } else {
+          scheduleReveal();
+        }
+
+        document.addEventListener("astro:page-load", scheduleReveal);
+      })();
+    </script>
 
     <ClientRouter />
   </head>
