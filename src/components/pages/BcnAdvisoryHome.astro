@@ -12,6 +12,10 @@ const copy = lang === "es"
   ? {
       eyebrow: "INTELIGENCIA PRIVADA DE PROPIEDAD",
       title: "Asesoría privada inmobiliaria en Barcelona.",
+      mobileTitle: "Asesoría privada inmobiliaria en Barcelona",
+      mobileIntro: "Inteligencia de distrito, señal de propiedad y shortlist calmada antes de la ruta de visita.",
+      mobileProof: "Un umbral privado se convierte en intención, lente, señal y dossier listo para conversar.",
+      mobilePath: "Intención -> Lens -> Señal -> Dossier -> Acción",
       intro: "Una superficie privada de adquisición para compradores que necesitan inteligencia de distrito, señal del inmueble y una shortlist que merezca conversación.",
       start: "Iniciar búsqueda privada",
       dossier: "Abrir dossier",
@@ -65,6 +69,10 @@ const copy = lang === "es"
   : {
       eyebrow: "PRIVATE PROPERTY INTELLIGENCE",
       title: "Barcelona Private Property Advisory.",
+      mobileTitle: "Barcelona Private Property Advisory",
+      mobileIntro: "District intelligence, property signal and a calm shortlist before a viewing path.",
+      mobileProof: "A private threshold becomes intent, lens, signal and a dossier worth discussing.",
+      mobilePath: "Intent -> Lens -> Signal -> Dossier -> Action",
       intro: "A private acquisition surface for buyers who need district intelligence, property signal and a shortlist worth discussing.",
       start: "Start private search",
       dossier: "Open dossier",
@@ -118,6 +126,44 @@ const copy = lang === "es"
 ---
 
 <section id="advisory" data-bcn-section="threshold" class="bcn-home-hero bcn-section relative min-h-[calc(100vh-5.5rem)] scroll-mt-24 overflow-hidden pb-10">
+  <div class="bcn-mobile-cover" data-bcn-reveal="section">
+    <figure class="bcn-mobile-cover__figure">
+      <img
+        src={bcnMedia.hero.main.src}
+        alt={copy.heroAlt}
+        class="bcn-mobile-cover__image"
+        loading="eager"
+        decoding="async"
+        width={bcnMedia.hero.main.width}
+        height={bcnMedia.hero.main.height}
+      />
+      <div class="bcn-mobile-cover__wash" aria-hidden="true"></div>
+      <figcaption class="bcn-mobile-cover__panel">
+        <div class="bcn-mobile-cover__eyebrow">
+          <span>{copy.eyebrow}</span>
+          <span>BCN</span>
+        </div>
+        <h1>{copy.mobileTitle}</h1>
+        <p>{copy.mobileIntro}</p>
+        <div class="bcn-mobile-cover__actions">
+          <a
+            href={`${prefix}/search`}
+            data-open-inquiry
+            data-inquiry-source="hero"
+            data-inquiry-next-action={copy.start}
+          >
+            {copy.start}
+          </a>
+          <button data-open-shortlist type="button">
+            {copy.dossier}
+          </button>
+        </div>
+        <div class="bcn-mobile-cover__path">{copy.mobilePath}</div>
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="bcn-home-hero__desktop">
   <div class="bcn-home-hero__grid grid min-h-[calc(100vh-8rem)] min-w-0 gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-stretch">
     <div class="relative z-10 flex min-w-0 flex-col justify-end py-12 lg:py-20">
       <div class="bcn-hero-primary min-w-0 max-w-[760px]" data-bcn-reveal="copy">
@@ -221,6 +267,19 @@ const copy = lang === "es"
         </div>
       </div>
     </div>
+  </div>
+  </div>
+</section>
+
+<section class="bcn-mobile-proof" aria-label={copy.pathEyebrow} data-bcn-reveal="section">
+  <p>{copy.mobileProof}</p>
+  <div class="bcn-mobile-proof__metrics">
+    {copy.metrics.map(([k, v]) => (
+      <div>
+        <strong>{k}</strong>
+        <span>{v}</span>
+      </div>
+    ))}
   </div>
 </section>
 

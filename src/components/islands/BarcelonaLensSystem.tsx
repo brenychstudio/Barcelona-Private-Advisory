@@ -1272,10 +1272,10 @@ export default function BarcelonaLensSystem({ lang = "en" }: { lang?: Lang }) {
                 <div className="mt-4 text-[13px] text-[var(--bcn-muted)]">
                   {featured.district} / {featured.sqm} m2 / EUR {fmtEUR(featured.price)}
                 </div>
-                <div className="mt-6 grid gap-3 border-y border-[var(--bcn-line)] py-4 text-[12px] leading-[1.55] text-[var(--bcn-graphite-soft)]">
-                  <div><span className="text-[var(--bcn-muted)]">{L.bestFor}:</span> {featuredCopy.bestFor}</div>
-                  <div><span className="text-[var(--bcn-muted)]">{L.signal}:</span> {featuredCopy.signal}</div>
-                  <div><span className="text-[var(--bcn-muted)]">{L.tradeOff}:</span> {featuredCopy.tradeOff}</div>
+                <div className="bcn-property-signal-readout mt-6 grid gap-3 border-y border-[var(--bcn-line)] py-4 text-[12px] leading-[1.55] text-[var(--bcn-graphite-soft)]">
+                  <div className="bcn-property-signal-fit"><span className="text-[var(--bcn-muted)]">{L.bestFor}:</span> {featuredCopy.bestFor}</div>
+                  <div className="bcn-property-signal-core"><span className="text-[var(--bcn-muted)]">{L.signal}:</span> {featuredCopy.signal}</div>
+                  <div className="bcn-property-signal-tradeoff"><span className="text-[var(--bcn-muted)]">{L.tradeOff}:</span> {featuredCopy.tradeOff}</div>
                 </div>
               </div>
 
@@ -1292,7 +1292,7 @@ export default function BarcelonaLensSystem({ lang = "en" }: { lang?: Lang }) {
                 <div className="mt-5 border-t border-[var(--bcn-line)] pt-4 text-[12px] leading-[1.55] text-[var(--bcn-muted)]">
                   {featuredCopy.acquisitionNote}
                 </div>
-                <div className="mt-5 flex flex-wrap gap-2">
+                <div className="bcn-property-signal-actions mt-5 flex flex-wrap gap-2">
                   <ShortlistToggle id={featured.id} lang={lang} className="border-[var(--bcn-line-strong)] bg-white px-4 py-2 text-[12px]" />
                   <button
                     type="button"
@@ -1344,10 +1344,10 @@ export default function BarcelonaLensSystem({ lang = "en" }: { lang?: Lang }) {
                       <div className="mt-2 text-[18px] leading-[1.1] tracking-tight text-[var(--bcn-graphite)]">{propertyTitle(property, lang)}</div>
                       <div className="mt-2 text-[12px] text-[var(--bcn-muted)]">{propertyMeta(property)}</div>
                     </div>
-                    <div className="mt-4 border-t border-[var(--bcn-line)] pt-3 text-[12px] leading-[1.45] text-[var(--bcn-graphite-soft)]">
+                    <div className="bcn-property-supporting-detail mt-4 border-t border-[var(--bcn-line)] pt-3 text-[12px] leading-[1.45] text-[var(--bcn-graphite-soft)]">
                       <span className="text-[var(--bcn-muted)]">{L.bestFor}:</span> {copy.bestFor}
                     </div>
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <div className="bcn-property-supporting-badges mt-3 flex flex-wrap gap-2">
                       <span className="border border-[var(--bcn-line)] px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-[var(--bcn-sea-deep)]">
                         {L.priority} {property.shortlistPriority}
                       </span>
