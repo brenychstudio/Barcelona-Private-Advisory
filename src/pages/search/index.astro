@@ -2,8 +2,11 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import SearchExperience from "../../components/islands/SearchExperience";
 import { listings } from "../../data/listings";
+import { getRouteSeo } from "../../lib/seo";
+
+const seo = getRouteSeo("search", "en");
 ---
 
-<BaseLayout title="Private Search - Barcelona Private Advisory">
+<BaseLayout seo={seo}>
   <SearchExperience client:load listings={listings} />
 </BaseLayout>

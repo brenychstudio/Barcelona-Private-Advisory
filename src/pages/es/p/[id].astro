@@ -2,6 +2,7 @@
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import PropertyShowcase from "../../../components/islands/PropertyShowcase";
 import { listings } from "../../../data/listings";
+import { getPropertySeo } from "../../../lib/seo";
 
 export function getStaticPaths() {
   return listings.map((l) => ({
@@ -11,9 +12,9 @@ export function getStaticPaths() {
 }
 
 const { listing } = Astro.props;
-const title = listing.title_es ?? listing.title;
+const seo = getPropertySeo(listing, "es");
 ---
 
-<BaseLayout title={`${title} — Barcelona Private Advisory`}>
+<BaseLayout seo={seo}>
   <PropertyShowcase client:load listing={listing} lang="es" />
 </BaseLayout>

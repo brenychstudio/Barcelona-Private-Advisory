@@ -2,6 +2,9 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { bcnMedia } from "../../data/bcnMedia";
 import { bcnLensMedia } from "../../data/bcnLensMedia";
+import { getRouteSeo } from "../../lib/seo";
+
+const seo = getRouteSeo("about", "en");
 
 const methodSteps = [
   ["01", "Brief", "Buyer constraints become the frame.", "Operating brief"],
@@ -47,10 +50,7 @@ const faqs = [
 ];
 ---
 
-<BaseLayout
-  title="Advisory Method - Barcelona Private Advisory"
-  description="A district-first private property advisory method for Barcelona buyers: buyer brief, district lens, property signal, shortlist dossier and viewing path."
->
+<BaseLayout seo={seo}>
   <section class="bcn-about-hero bcn-section grid gap-8 lg:grid-cols-[0.86fr_1.14fr] lg:items-end">
     <div class="space-y-5">
       <div class="bcn-signal-kicker text-[12px] uppercase tracking-[0.2em] text-black/42">Advisory method</div>

@@ -7,7 +7,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   output: "static",
-  site: process.env.PUBLIC_SITE_URL || "https://example.com",
+  site: process.env.PUBLIC_SITE_URL || "http://localhost:4321",
   integrations: [react(), sitemap()],
   vite: {
     plugins: [tailwindcss()],

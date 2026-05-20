@@ -5,18 +5,20 @@ import RightSideNav from "../components/ui/RightSideNav.astro";
 import WhatsAppFab from "../components/ui/WhatsAppFab.astro";
 import Footer from "../components/ui/Footer.astro";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, OG_IMAGE, INDEXABLE } from "../config/site";
+import type { SeoMetadata } from "../lib/seo";
 import { ClientRouter, fade } from "astro:transitions";
 
 type Props = {
   title?: string;
   description?: string;
+  seo?: SeoMetadata;
 };
 
-const { title = SITE_NAME, description = SITE_DESCRIPTION } = Astro.props;
+const { title, description, seo } = Astro.props;
 
 const path = Astro.url.pathname;
 const isEs = path.startsWith("/es");
-const lang = isEs ? "es" : "en";
+const inferredLang = isEs ? "es" : "en";
 const routePath = (isEs ? path.replace(/^\/es(?=\/|$)/, "") || "/" : path).replace(/\/$/, "") || "/";
 const legalRoutes = new Set(["/legal", "/privacy", "/cookies", "/terms", "/accessibility", "/demo-notice"]);
 const bcnRoute =
@@ -34,14 +36,31 @@ const bcnRoute =
               ? "legal"
               : "default";
 
-const canonical = new URL(path, SITE_URL).toString();
-const ogImageAbs = new URL(OG_IMAGE, SITE_URL).toString();
-
-const robots = INDEXABLE ? "index,follow" : "noindex,nofollow";
-
 const base = isEs ? (path.replace(/^\/es/, "") || "/") : path;
-const enPath = base;
-const esPath = base === "/" ? "/es" : `/es${base}`;
+const fallbackEnPath = base;
+const fallbackEsPath = base === "/" ? "/es/" : `/es${base}`;
+
+const metadata: SeoMetadata = seo ?? {
+  title: title ?? SITE_NAME,
+  description: description ?? SITE_DESCRIPTION,
+  canonicalPath: path,
+  lang: inferredLang,
+  alternatePath: inferredLang === "en" ? fallbackEsPath : fallbackEnPath,
+  ogTitle: title ?? SITE_NAME,
+  ogDescription: description ?? SITE_DESCRIPTION,
+  ogImage: OG_IMAGE,
+  ogType: "website",
+  robots: "index,follow",
+};
+
+const lang = metadata.lang;
+const canonical = new URL(metadata.canonicalPath, SITE_URL).toString();
+const ogImageAbs = new URL(metadata.ogImage, SITE_URL).toString();
+
+const robots = INDEXABLE ? metadata.robots : "noindex,nofollow";
+
+const enPath = lang === "en" ? metadata.canonicalPath : metadata.alternatePath;
+const esPath = lang === "es" ? metadata.canonicalPath : metadata.alternatePath;
 const altEn = new URL(enPath, SITE_URL).toString();
 const altEs = new URL(esPath, SITE_URL).toString();
 
@@ -49,18 +68,11 @@ const schemaOrg = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "Organization",
-      "@id": `${SITE_URL}#org`,
-      name: SITE_NAME,
-      url: SITE_URL,
-    },
-    {
       "@type": "WebSite",
       "@id": `${SITE_URL}#website`,
       url: SITE_URL,
       name: SITE_NAME,
       description: SITE_DESCRIPTION,
-      publisher: { "@id": `${SITE_URL}#org` },
     },
   ],
 };
@@ -71,9 +83,13 @@ const schemaOrg = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <title>{metadata.title}</title>
+    <meta name="description" content={metadata.description} />
     <meta name="robots" content={robots} />
 
     <link rel="canonical" href={canonical} />
@@ -82,16 +98,19 @@ const schemaOrg = {
     <link rel="alternate" hreflang="es" href={altEs} />
     <link rel="alternate" hreflang="x-default" href={altEn} />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={metadata.ogType} />
     <meta property="og:site_name" content={SITE_NAME} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta property="og:title" content={metadata.ogTitle} />
+    <meta property="og:description" content={metadata.ogDescription} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageAbs} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Barcelona Private Advisory social preview" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:title" content={metadata.ogTitle} />
+    <meta name="twitter:description" content={metadata.ogDescription} />
     <meta name="twitter:image" content={ogImageAbs} />
 
     <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>

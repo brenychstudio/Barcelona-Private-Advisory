@@ -2,6 +2,9 @@
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import { bcnMedia } from "../../../data/bcnMedia";
 import { bcnLensMedia } from "../../../data/bcnLensMedia";
+import { getRouteSeo } from "../../../lib/seo";
+
+const seo = getRouteSeo("contact", "es");
 
 const briefRows = [
   ["01", "Intención del comprador", "Nombra la prioridad antes de que el inventario domine."],
@@ -25,10 +28,7 @@ const methodSteps = [
 ];
 ---
 
-<BaseLayout
-  title="Handoff asesor - Barcelona Private Advisory"
-  description="Prepara una solicitud privada de ruta de visita desde intención, distrito, shortlist y timing."
->
+<BaseLayout seo={seo}>
   <section class="bcn-section grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
     <div class="space-y-5">
       <div class="bcn-signal-kicker text-[12px] uppercase tracking-[0.2em] text-black/42">Handoff asesor</div>

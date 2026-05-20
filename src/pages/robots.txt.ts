@@ -1,13 +1,14 @@
 export const prerender = true;
 
-export function GET() {
-  const site = (import.meta.env.PUBLIC_SITE_URL || "https://example.com").replace(/\/$/, "");
-  const indexable = (import.meta.env.PUBLIC_INDEXABLE || "false").toLowerCase() === "true";
+import { SITE_URL, SITE_URL_IS_CONFIGURED, INDEXABLE } from "../config/site";
 
+export function GET() {
   const lines = [
     "User-agent: *",
-    indexable ? "Allow: /" : "Disallow: /",
-    `Sitemap: ${site}/sitemap-index.xml`,
+    INDEXABLE ? "Allow: /" : "Disallow: /",
+    SITE_URL_IS_CONFIGURED
+      ? `Sitemap: ${SITE_URL}/sitemap-index.xml`
+      : "# TODO: set PUBLIC_SITE_URL before final publish to expose the absolute sitemap URL.",
     "",
   ];
 

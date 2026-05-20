@@ -2,6 +2,9 @@
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import { bcnMedia } from "../../../data/bcnMedia";
 import { bcnLensMedia } from "../../../data/bcnLensMedia";
+import { getRouteSeo } from "../../../lib/seo";
+
+const seo = getRouteSeo("about", "es");
 
 const methodSteps = [
   ["01", "Brief", "Los límites del comprador se convierten en el marco.", "Brief operativo"],
@@ -47,10 +50,7 @@ const faqs = [
 ];
 ---
 
-<BaseLayout
-  title="Método asesor - Barcelona Private Advisory"
-  description="Método privado de asesoría inmobiliaria en Barcelona: brief del comprador, lente de distrito, señal de propiedad, dossier y ruta de visita."
->
+<BaseLayout seo={seo}>
   <section class="bcn-about-hero bcn-section grid gap-8 lg:grid-cols-[0.86fr_1.14fr] lg:items-end">
     <div class="space-y-5">
       <div class="bcn-signal-kicker text-[12px] uppercase tracking-[0.2em] text-black/42">Método asesor</div>

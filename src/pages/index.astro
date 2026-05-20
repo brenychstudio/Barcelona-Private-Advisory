@@ -1,11 +1,11 @@
 ---
 import BcnAdvisoryHome from "../components/pages/BcnAdvisoryHome.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { getRouteSeo } from "../lib/seo";
+
+const seo = getRouteSeo("home", "en");
 ---
 
-<BaseLayout
-  title="Barcelona Private Property Advisory"
-  description="A premium private advisory interface for Barcelona property buyers: district lens, buyer intent, curated shortlist and private advisory action."
->
+<BaseLayout seo={seo}>
   <BcnAdvisoryHome lang="en" />
 </BaseLayout>
