@@ -402,8 +402,8 @@ export default function BarcelonaLensSystem({ lang = "en" }: { lang?: Lang }) {
   return (
     <>
       <section id="brief" data-bcn-section="intent" className="bcn-home-flow-section bcn-home-flow-section--intent relative mt-28 grid scroll-mt-24 gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-stretch">
-        <div className="relative overflow-hidden bg-[rgba(255,255,252,0.72)] shadow-[0_34px_120px_rgba(28,28,24,0.07)] ring-1 ring-[var(--bcn-line)]">
-          <div className="relative min-h-[620px]">
+        <div className="bcn-intent-visual-card relative overflow-hidden bg-[rgba(255,255,252,0.72)] shadow-[0_34px_120px_rgba(28,28,24,0.07)] ring-1 ring-[var(--bcn-line)]">
+          <div className="bcn-intent-visual-field relative min-h-[620px]">
             <img
               key={activeIntentVisual.src}
               src={activeIntentVisual.src}
@@ -532,6 +532,55 @@ export default function BarcelonaLensSystem({ lang = "en" }: { lang?: Lang }) {
               className="bcn-lens-open-button border border-[var(--bcn-line-strong)] bg-[var(--bcn-surface)] px-5 py-3 text-[11px] uppercase tracking-[0.16em] text-[var(--bcn-graphite)] shadow-[var(--bcn-shadow-soft)] hover:border-[var(--bcn-graphite)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--bcn-sea-deep)]"
             >
               {L.openMap}
+            </button>
+          </div>
+        </div>
+
+        <div className="bcn-lens-mobile-summary" aria-live="polite">
+          <div className="bcn-lens-mobile-summary__top">
+            <div>
+              <div className="bcn-lens-mobile-summary__eyebrow">{L.activeIntent}</div>
+              <div className="bcn-lens-mobile-summary__intent">{activeIntentCopy.shortLabel}</div>
+            </div>
+            <div>
+              <div className="bcn-lens-mobile-summary__eyebrow">{L.activeDistrict}</div>
+              <div className="bcn-lens-mobile-summary__district">{activeDistrictCopy.name}</div>
+            </div>
+            <div>
+              <div className="bcn-lens-mobile-summary__eyebrow">{L.match}</div>
+              <div className="bcn-lens-mobile-summary__count">{totalMatches} {L.matches}</div>
+            </div>
+          </div>
+
+          <div className="bcn-lens-mobile-summary__recommendation">
+            <div className="bcn-lens-mobile-summary__eyebrow">{L.topRecommendation}</div>
+            <a href={`${prefix}/p/${topMatchProperty.id}`} className="bcn-lens-mobile-summary__title">
+              {topMatchTitle}
+            </a>
+            <div className="bcn-lens-mobile-summary__meta">
+              {L.priority} #{topMatchProperty.shortlistPriority} / {L.readiness} {highestReadiness}
+            </div>
+          </div>
+
+          <div className="bcn-lens-mobile-summary__rows">
+            <div>
+              <span>{L.signal}</span>
+              <strong>{activeDistrictCopy.signal}</strong>
+            </div>
+            <div>
+              <span>{L.buyerFit}</span>
+              <strong>{activeDistrictCopy.bestFor}</strong>
+            </div>
+            <div>
+              <span>{L.valueLogic}</span>
+              <strong>{activeDistrictCopy.valueShort}</strong>
+            </div>
+          </div>
+
+          <div className="bcn-lens-mobile-summary__actions">
+            <a href={matchedSearchHref}>{L.viewAllMatchedOptions}</a>
+            <button type="button" onClick={() => openLensInquiry("lens")}>
+              {L.openPrivateSearch}
             </button>
           </div>
         </div>
@@ -1182,11 +1231,11 @@ export default function BarcelonaLensSystem({ lang = "en" }: { lang?: Lang }) {
         <div className="grid gap-6 xl:grid-cols-[1.48fr_0.52fr]">
           <div
             key={featured.id}
-            className="group grid min-h-[680px] overflow-hidden bg-[rgba(255,255,252,0.72)] shadow-[0_44px_140px_rgba(28,28,24,0.1)] ring-1 ring-[var(--bcn-line)] lg:grid-cols-[1.15fr_0.85fr]"
+            className="bcn-property-signal-card group grid min-h-[680px] overflow-hidden bg-[rgba(255,255,252,0.72)] shadow-[0_44px_140px_rgba(28,28,24,0.1)] ring-1 ring-[var(--bcn-line)] lg:grid-cols-[1.15fr_0.85fr]"
             onMouseEnter={() => setActivePropertyId(featured.id)}
             onFocus={() => setActivePropertyId(featured.id)}
           >
-            <div className="relative min-h-[500px] bg-[linear-gradient(135deg,var(--bcn-limestone),var(--bcn-porcelain))]">
+            <div className="bcn-property-signal-media relative min-h-[500px] bg-[linear-gradient(135deg,var(--bcn-limestone),var(--bcn-porcelain))]">
               <ShortlistToggle id={featured.id} lang={lang} className="absolute right-5 top-5 z-10" />
               <a href={`${prefix}/p/${featured.id}`} aria-label={`${L.viewProperty} ${propertyTitle(featured, lang)}`}>
                 <img
@@ -1209,7 +1258,7 @@ export default function BarcelonaLensSystem({ lang = "en" }: { lang?: Lang }) {
                 </span>
               </div>
             </div>
-            <div className="flex flex-col justify-between p-8 sm:p-10">
+            <div className="bcn-property-signal-body flex flex-col justify-between p-8 sm:p-10">
               <div>
                 <div className="flex flex-wrap items-center gap-2">
                   <div className="text-[11px] tracking-[0.2em] text-[var(--bcn-muted)]">{L.productObject}</div>
@@ -1230,7 +1279,7 @@ export default function BarcelonaLensSystem({ lang = "en" }: { lang?: Lang }) {
                 </div>
               </div>
 
-              <div className="mt-10 bg-[var(--bcn-porcelain)] p-6 ring-1 ring-[var(--bcn-line)]" aria-live="polite">
+              <div className="bcn-property-signal-memo mt-10 bg-[var(--bcn-porcelain)] p-6 ring-1 ring-[var(--bcn-line)]" aria-live="polite">
                 <div className="text-[11px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{L.advisorMemo}</div>
                 <p className="mt-4 text-[24px] leading-[1.18] tracking-tight text-[var(--bcn-graphite)]">
                   {featuredCopy.advisorReason}
@@ -1257,7 +1306,7 @@ export default function BarcelonaLensSystem({ lang = "en" }: { lang?: Lang }) {
             </div>
           </div>
 
-          <div className="grid content-center gap-0">
+          <div className="bcn-property-supporting-list grid content-center gap-0">
             {supporting.map(({ property, rankLabel }, i) => {
               const isActive = lensState.activePropertyId === property.id;
               const visual = propertyVisual(property);
@@ -1267,6 +1316,7 @@ export default function BarcelonaLensSystem({ lang = "en" }: { lang?: Lang }) {
                 <div
                   key={property.id}
                   className={[
+                    "bcn-property-supporting-card",
                     "group grid min-h-[220px] grid-cols-[136px_1fr] bg-[rgba(255,255,252,0.78)] shadow-[0_20px_70px_rgba(28,28,24,0.05)] ring-1 transition hover:-translate-y-1 hover:shadow-[var(--bcn-shadow-soft)] motion-reduce:transition-none",
                     i ? "-mt-3" : "",
                     isActive ? "ring-[var(--bcn-line-strong)]" : "ring-[var(--bcn-line)]",

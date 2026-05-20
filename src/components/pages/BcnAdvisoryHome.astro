@@ -117,8 +117,8 @@ const copy = lang === "es"
     };
 ---
 
-<section id="advisory" data-bcn-section="threshold" class="bcn-section relative min-h-[calc(100vh-5.5rem)] scroll-mt-24 overflow-hidden pb-10">
-  <div class="grid min-h-[calc(100vh-8rem)] min-w-0 gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-stretch">
+<section id="advisory" data-bcn-section="threshold" class="bcn-home-hero bcn-section relative min-h-[calc(100vh-5.5rem)] scroll-mt-24 overflow-hidden pb-10">
+  <div class="bcn-home-hero__grid grid min-h-[calc(100vh-8rem)] min-w-0 gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-stretch">
     <div class="relative z-10 flex min-w-0 flex-col justify-end py-12 lg:py-20">
       <div class="bcn-hero-primary min-w-0 max-w-[760px]" data-bcn-reveal="copy">
         <div class="bcn-signal-kicker mb-8 text-[11px] tracking-[0.22em] text-[var(--bcn-muted)]">
@@ -150,9 +150,9 @@ const copy = lang === "es"
         </div>
       </div>
 
-      <div class="mt-14 grid max-w-[740px] border-y border-[rgba(23,23,22,0.1)] bg-white/24 sm:grid-cols-4" data-bcn-reveal="row" data-bcn-reveal-delay="1">
+      <div class="bcn-hero-metrics mt-14 grid max-w-[740px] border-y border-[rgba(23,23,22,0.1)] bg-white/24 sm:grid-cols-4" data-bcn-reveal="row" data-bcn-reveal-delay="1">
         {copy.metrics.map(([k, v]) => (
-          <div class="border-b border-[var(--bcn-line)] py-4 sm:border-b-0 sm:border-r sm:px-4 sm:first:pl-0 sm:last:border-r-0">
+          <div class="bcn-hero-metric border-b border-[var(--bcn-line)] py-4 sm:border-b-0 sm:border-r sm:px-4 sm:first:pl-0 sm:last:border-r-0">
             <div class="text-[22px] leading-none tracking-tight text-[var(--bcn-graphite)]">{k}</div>
             <div class="mt-2 text-[11px] uppercase tracking-[0.14em] text-[var(--bcn-muted)]">{v}</div>
           </div>
@@ -177,7 +177,7 @@ const copy = lang === "es"
       </div>
     </div>
 
-    <div class="relative min-h-[640px] overflow-hidden bg-[var(--bcn-limestone)] shadow-[0_44px_120px_rgba(28,28,24,0.13)] lg:min-h-[calc(100vh-7rem)]" data-bcn-reveal="media" data-bcn-reveal-delay="1">
+    <div class="bcn-home-hero__media relative min-h-[640px] overflow-hidden bg-[var(--bcn-limestone)] shadow-[0_44px_120px_rgba(28,28,24,0.13)] lg:min-h-[calc(100vh-7rem)]" data-bcn-reveal="media" data-bcn-reveal-delay="1">
       <img
         src={bcnMedia.hero.main.src}
         alt={copy.heroAlt}
@@ -191,7 +191,7 @@ const copy = lang === "es"
       <div class="absolute inset-x-10 top-10 h-px bg-white/70"></div>
       <div class="absolute bottom-10 left-10 top-10 w-px bg-white/60"></div>
 
-      <div class="absolute bottom-8 left-8 w-[min(82vw,440px)] border border-white/65 bg-[rgba(255,255,252,0.9)] p-6 shadow-[0_24px_80px_rgba(23,23,22,0.14)] backdrop-blur-sm">
+      <div class="bcn-home-hero__note absolute bottom-8 left-8 w-[min(82vw,440px)] border border-white/65 bg-[rgba(255,255,252,0.9)] p-6 shadow-[0_24px_80px_rgba(23,23,22,0.14)] backdrop-blur-sm">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--bcn-line)] pb-3">
           <div class="min-w-0 max-w-[220px] text-[11px] tracking-[0.2em] text-[var(--bcn-muted)]">{copy.noteEyebrow}</div>
           <div class="shrink-0 border border-[var(--bcn-line)] px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-[var(--bcn-sea-deep)]">{copy.noteStatus}</div>
@@ -276,7 +276,7 @@ const copy = lang === "es"
 </section>
 
 <section id="action" data-bcn-section="action" data-bcn-reveal="section" class="bcn-final-handoff bcn-editorial-surface mt-32 scroll-mt-24 overflow-hidden bg-[var(--bcn-surface)] ring-1 ring-[var(--bcn-line)]">
-  <div class="grid min-h-[620px] lg:grid-cols-[0.92fr_1.08fr]">
+  <div class="bcn-final-handoff__grid grid min-h-[620px] lg:grid-cols-[0.92fr_1.08fr]">
     <div class="bcn-final-handoff__media relative min-h-[430px] overflow-hidden bg-[linear-gradient(135deg,var(--bcn-limestone),var(--bcn-porcelain))]" data-bcn-reveal="media">
       <img
         src={bcnLensMedia.materials.handoff.src}

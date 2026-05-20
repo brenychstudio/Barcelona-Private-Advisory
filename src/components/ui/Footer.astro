@@ -148,7 +148,69 @@ const legalLinks = isEs
     </div>
   </div>
 
-  <div class="grid gap-10 border-b border-[var(--bcn-line)] py-10 md:grid-cols-2 xl:grid-cols-[1fr_1fr_1fr_1fr_1.05fr]">
+  <div class="bcn-footer-mobile-groups border-b border-[var(--bcn-line)] py-5 md:hidden">
+    <details open>
+      <summary>{copy.explore}</summary>
+      <ul>
+        {exploreLinks.map((item) => (
+          <li>
+            {"href" in item ? (
+              <a href={item.href}>{item.label}</a>
+            ) : (
+              <button type="button" data-open-shortlist>{item.label}</button>
+            )}
+          </li>
+        ))}
+      </ul>
+    </details>
+
+    <details>
+      <summary>{copy.advisory}</summary>
+      <ul>
+        {advisoryServices.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </details>
+
+    <details>
+      <summary>{copy.districts}</summary>
+      <ul>
+        {districts.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </details>
+
+    <details>
+      <summary>{copy.focus}</summary>
+      <ul>
+        {propertyFocus.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </details>
+
+    <details>
+      <summary>{copy.legal}</summary>
+      <ul>
+        {legalLinks.map((item) => (
+          <li><a href={item.href}>{item.label}</a></li>
+        ))}
+      </ul>
+    </details>
+
+    <section class="bcn-footer-mobile-desk" aria-label={copy.deskLabel}>
+      <h2>{copy.deskLabel}</h2>
+      <div>
+        <p class="text-[var(--bcn-graphite)]">advisory@barcelonaprivateadvisory.example</p>
+        <p>{copy.deskCity}</p>
+        <p>{copy.deskMode}</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="bcn-footer-desktop-grid hidden gap-10 border-b border-[var(--bcn-line)] py-10 md:grid md:grid-cols-2 xl:grid-cols-[1fr_1fr_1fr_1fr_1.05fr]">
     <nav aria-label={copy.explore}>
       <h2 class="text-[11px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{copy.explore}</h2>
       <ul class="mt-4 grid gap-3 text-[13px] text-[var(--bcn-graphite-soft)]">
