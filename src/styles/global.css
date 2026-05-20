@@ -235,6 +235,305 @@ img {
     rgba(255, 255, 252, 0.22);
 }
 
+.bcn-active-brief-bar {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 252, 0.42), rgba(246, 245, 240, 0.24), transparent),
+    rgba(255, 255, 252, 0.18);
+}
+
+.bcn-active-brief-bar__main {
+  min-width: 0;
+}
+
+.bcn-active-brief-bar__heading {
+  color: rgba(23, 23, 22, 0.42);
+  font-size: 0.68rem;
+  font-weight: 520;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.bcn-active-brief-bar__intents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.58rem;
+}
+
+.bcn-active-brief-bar__intents button {
+  border: 1px solid rgba(23, 23, 22, 0.13);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 252, 0.64), rgba(246, 245, 240, 0.28)),
+    rgba(255, 255, 252, 0.42);
+  padding: 0.48rem 0.78rem;
+  color: rgba(23, 23, 22, 0.68);
+  font-size: 0.75rem;
+  line-height: 1;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 252, 0.72);
+}
+
+.bcn-active-brief-bar__intents button:hover,
+.bcn-active-brief-bar__intents button:focus-visible,
+.bcn-active-brief-bar__intents button.is-active {
+  border-color: rgba(23, 23, 22, 0.26);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 252, 0.88), rgba(246, 245, 240, 0.5)),
+    rgba(255, 255, 252, 0.72);
+  color: rgba(23, 23, 22, 0.9);
+}
+
+.bcn-active-brief-bar__readout {
+  min-width: 0;
+}
+
+.bcn-active-brief-bar__readout span {
+  display: block;
+  color: rgba(23, 23, 22, 0.42);
+  font-size: 0.68rem;
+  font-weight: 520;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.bcn-active-brief-bar__readout strong {
+  display: block;
+  margin-top: 0.42rem;
+  overflow: hidden;
+  color: rgba(23, 23, 22, 0.78);
+  font-size: 0.88rem;
+  font-weight: 560;
+  letter-spacing: 0;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bcn-active-brief-bar__constraints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.38rem;
+  margin-top: 0.52rem;
+}
+
+.bcn-active-brief-bar__constraints button {
+  border: 1px solid rgba(23, 23, 22, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 252, 0.36);
+  padding: 0.34rem 0.58rem;
+  color: rgba(23, 23, 22, 0.58);
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+.bcn-active-brief-bar__constraints button:hover,
+.bcn-active-brief-bar__constraints button:focus-visible {
+  border-color: rgba(23, 23, 22, 0.22);
+  color: rgba(23, 23, 22, 0.84);
+}
+
+.bcn-active-brief-bar__actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.bcn-active-brief-bar__actions button,
+.bcn-buyer-brief-composer__actions button {
+  border: 1px solid rgba(23, 23, 22, 0.13);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 252, 0.72), rgba(246, 245, 240, 0.38)),
+    rgba(255, 255, 252, 0.54);
+  padding: 0.55rem 0.95rem;
+  color: rgba(23, 23, 22, 0.72);
+  font-size: 0.75rem;
+  line-height: 1;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 252, 0.72);
+}
+
+.bcn-active-brief-bar__actions button:hover,
+.bcn-active-brief-bar__actions button:focus-visible,
+.bcn-buyer-brief-composer__actions button:hover,
+.bcn-buyer-brief-composer__actions button:focus-visible {
+  border-color: rgba(23, 23, 22, 0.24);
+  color: rgba(23, 23, 22, 0.9);
+}
+
+.bcn-buyer-brief-composer {
+  overflow: hidden;
+  max-height: 22rem;
+  margin-top: -1rem;
+  opacity: 1;
+  transform: translateY(0);
+  transform-origin: top;
+  transition:
+    max-height 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    padding-top 260ms ease,
+    padding-bottom 260ms ease,
+    border-color 260ms ease,
+    opacity 220ms ease,
+    transform 260ms ease,
+    margin-top 260ms ease,
+    visibility 0s linear 0s;
+  visibility: visible;
+}
+
+.bcn-buyer-brief-composer[data-state="closed"] {
+  transition:
+    max-height 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    padding-top 260ms ease,
+    padding-bottom 260ms ease,
+    border-color 260ms ease,
+    opacity 220ms ease,
+    transform 260ms ease,
+    margin-top 260ms ease,
+    visibility 0s linear 360ms;
+  max-height: 0;
+  margin-top: -1.6rem;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  pointer-events: none;
+  visibility: hidden;
+  border-color: transparent;
+  opacity: 0;
+  transform: translateY(-0.35rem);
+}
+
+.bcn-buyer-brief-composer__header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.44rem;
+  border-bottom: 1px solid rgba(23, 23, 22, 0.1);
+}
+
+.bcn-buyer-brief-composer__header p {
+  margin-top: 0.24rem;
+  line-height: 1.3;
+}
+
+.bcn-buyer-brief-composer__header-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 0.44rem;
+  align-items: center;
+}
+
+.bcn-buyer-brief-composer__summary {
+  border-top: 1px solid rgba(23, 23, 22, 0.14);
+  padding-top: 0.68rem;
+}
+
+.bcn-buyer-brief-composer__summary span,
+.bcn-buyer-brief-composer__label {
+  display: block;
+  color: rgba(23, 23, 22, 0.42);
+  font-size: 0.68rem;
+  font-weight: 520;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.bcn-buyer-brief-composer__summary strong {
+  display: block;
+  margin-top: 0.48rem;
+  color: rgba(23, 23, 22, 0.76);
+  font-size: 0.82rem;
+  font-weight: 560;
+  letter-spacing: 0;
+  line-height: 1.45;
+}
+
+.bcn-buyer-brief-composer__zones {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.86fr) minmax(360px, 1fr);
+  gap: 0.58rem 1rem;
+  margin-top: 0.56rem;
+}
+
+.bcn-buyer-brief-composer__zone {
+  border-top: 1px solid rgba(23, 23, 22, 0.1);
+  padding-top: 0.5rem;
+}
+
+.bcn-buyer-brief-composer__zone--constraints {
+  grid-column: auto;
+}
+
+.bcn-buyer-brief-composer__label {
+  margin-bottom: 0.42rem;
+}
+
+.bcn-buyer-brief-composer__intent,
+.bcn-buyer-brief-composer__signal {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 252, 0.64), rgba(246, 245, 240, 0.28)),
+    rgba(255, 255, 252, 0.48);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 252, 0.72);
+}
+
+.bcn-buyer-brief-composer__signal {
+  padding: 0.3rem 0.62rem !important;
+  font-size: 0.7rem !important;
+}
+
+.bcn-buyer-brief-composer__signals {
+  gap: 0.38rem !important;
+}
+
+.bcn-buyer-brief-composer__constraints {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(120px, 0.62fr) minmax(140px, 0.72fr);
+  gap: 0.56rem;
+}
+
+.bcn-buyer-brief-composer__constraints label {
+  gap: 0.32rem;
+}
+
+.bcn-buyer-brief-composer__constraints select {
+  width: 100%;
+  height: 2.12rem;
+  font-size: 0.72rem;
+}
+
+.bcn-buyer-brief-composer__header-actions button {
+  border: 1px solid rgba(23, 23, 22, 0.13);
+  border-radius: 999px;
+  background: rgba(255, 255, 252, 0.42);
+  padding: 0.42rem 0.78rem;
+  color: rgba(23, 23, 22, 0.68);
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+.bcn-buyer-brief-composer__header-actions button:hover,
+.bcn-buyer-brief-composer__header-actions button:focus-visible {
+  border-color: rgba(23, 23, 22, 0.24);
+  color: rgba(23, 23, 22, 0.9);
+}
+
+.bcn-buyer-brief-composer__header-actions .bcn-buyer-brief-composer__reset {
+  border-color: transparent;
+  background: transparent;
+  color: rgba(23, 23, 22, 0.48);
+}
+
 .bcn-editorial-surface::before {
   position: absolute;
   inset: 0 auto auto 0;
@@ -2031,6 +2330,132 @@ body[data-bcn-inspection="open"] [data-advisory-header],
   will-change: transform;
 }
 
+.bcn-search-card__meta {
+  max-width: 100%;
+  overflow: hidden;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: rgba(23, 23, 22, 0.68);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bcn-search-card__commercial {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.46rem;
+  column-gap: 1rem;
+  align-items: start;
+  border-top: 1px solid rgba(23, 23, 22, 0.16);
+  border-bottom: 1px solid rgba(23, 23, 22, 0.1);
+  background:
+    linear-gradient(90deg, rgba(255, 255, 252, 0.94), rgba(246, 245, 240, 0.54)),
+    rgba(255, 255, 252, 0.72);
+  padding: 0.74rem 0;
+}
+
+.bcn-search-card__commercial-head {
+  display: contents;
+}
+
+.bcn-search-card__commercial-label {
+  grid-column: 1;
+  grid-row: 1;
+  color: rgba(23, 23, 22, 0.48);
+  font-size: 0.64rem;
+  font-weight: 560;
+  letter-spacing: 0.13em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.bcn-search-card__price {
+  color: rgba(23, 23, 22, 0.82);
+  font-size: 0.92rem;
+  font-weight: 560;
+  letter-spacing: 0;
+  line-height: 1.1;
+}
+
+.bcn-search-card__commercial .bcn-search-card__price {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  color: rgba(23, 23, 22, 0.84);
+  font-size: clamp(0.98rem, 0.88vw, 1.08rem);
+  font-weight: 580;
+  text-align: right;
+  transform: translateY(0.12rem);
+  white-space: nowrap;
+}
+
+.bcn-search-card__facts {
+  grid-column: 1;
+  grid-row: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.65rem;
+  color: rgba(23, 23, 22, 0.8);
+  font-size: 0.82rem;
+  font-weight: 560;
+  line-height: 1.25;
+}
+
+.bcn-search-card__facts span {
+  position: relative;
+  white-space: nowrap;
+}
+
+.bcn-search-card__facts span:not(:last-child)::after {
+  position: absolute;
+  top: 0.2em;
+  right: -0.38rem;
+  width: 1px;
+  height: 0.85em;
+  content: "";
+  background: rgba(23, 23, 22, 0.16);
+}
+
+.bcn-search-card__advisory {
+  display: grid;
+  gap: 0.55rem;
+  border-top: 1px solid rgba(23, 23, 22, 0.1);
+  padding-top: 0.95rem;
+  color: rgba(23, 23, 22, 0.64);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.bcn-search-card__advisory-row {
+  display: grid;
+  grid-template-columns: 6.25rem minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.bcn-search-card__advisory-row > span {
+  color: rgba(23, 23, 22, 0.38);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.bcn-search-card__advisory-row p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.bcn-search-index-commercial {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.65rem;
+}
+
 .bcn-search-extended-control {
   background:
     linear-gradient(90deg, rgba(255, 255, 252, 0.72), rgba(246, 245, 240, 0.4)),
@@ -3092,6 +3517,104 @@ body[data-bcn-inspection="open"] [data-advisory-header],
   position: relative;
 }
 
+.bcn-dossier-command {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 252, 0.98), rgba(246, 245, 240, 0.72)),
+    #fff;
+  box-shadow: 0 16px 48px rgba(28, 28, 24, 0.045);
+}
+
+.bcn-dossier-command__stat {
+  border-top: 1px solid rgba(23, 23, 22, 0.12);
+  padding-top: 0.55rem;
+}
+
+.bcn-dossier-property-row {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 252, 0.98), rgba(246, 245, 240, 0.56)),
+    #fff;
+  box-shadow: 0 18px 54px rgba(28, 28, 24, 0.052);
+}
+
+.bcn-dossier-property-shell {
+  min-height: 12.9rem;
+  align-items: stretch;
+}
+
+.bcn-dossier-property-thumb {
+  height: 100%;
+  min-height: 12.9rem;
+  align-self: stretch;
+  border-right: 1px solid rgba(23, 23, 22, 0.1);
+  overflow: hidden;
+}
+
+.bcn-dossier-property-thumb img {
+  display: block;
+  object-position: center;
+}
+
+.bcn-dossier-property-body {
+  min-width: 0;
+}
+
+.bcn-dossier-property-meta {
+  font-weight: 500;
+  color: rgba(23, 23, 22, 0.72);
+}
+
+.bcn-dossier-property-price {
+  align-self: start;
+  border-left: 1px solid rgba(23, 23, 22, 0.12);
+  padding-left: 0.9rem;
+  color: rgba(23, 23, 22, 0.92);
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.bcn-dossier-property-topline {
+  align-items: start;
+}
+
+.bcn-dossier-property-readout {
+  max-width: 100%;
+}
+
+.bcn-dossier-risk-disclosure summary {
+  max-width: max-content;
+  border: 1px solid rgba(23, 23, 22, 0.12);
+  border-radius: 999px;
+  padding: 0.32rem 0.72rem;
+  background: rgba(255, 255, 252, 0.54);
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.bcn-dossier-risk-disclosure summary:hover {
+  border-color: rgba(23, 23, 22, 0.24);
+  background: rgba(255, 255, 252, 0.88);
+  color: rgba(23, 23, 22, 0.88);
+}
+
+.bcn-dossier-risk-disclosure__mark {
+  display: inline-grid;
+  width: 0.9rem;
+  height: 0.9rem;
+  place-items: center;
+  border-left: 1px solid rgba(23, 23, 22, 0.14);
+  padding-left: 0.32rem;
+  line-height: 1;
+}
+
+.bcn-dossier-risk-disclosure[open] .bcn-dossier-risk-disclosure__mark {
+  transform: rotate(45deg);
+}
+
 .bcn-dossier-entry::before {
   position: absolute;
   inset: 0 0 auto 0;
@@ -3112,6 +3635,24 @@ body[data-bcn-inspection="open"] [data-advisory-header],
     linear-gradient(135deg, rgba(255, 255, 252, 0.92), rgba(246, 245, 240, 0.72)),
     var(--bcn-porcelain);
   box-shadow: 0 20px 70px rgba(28, 28, 24, 0.045);
+}
+
+.bcn-inquiry-document {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 252, 0.94), rgba(246, 245, 240, 0.72)),
+    var(--bcn-porcelain);
+  box-shadow: 0 18px 58px rgba(28, 28, 24, 0.045);
+}
+
+.bcn-inquiry-document-row:first-of-type {
+  border-top-color: rgba(23, 23, 22, 0.16);
+}
+
+.bcn-inquiry-memo-field {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 252, 0.98), rgba(255, 255, 252, 0.86)),
+    #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
 }
 
 @media (max-width: 720px) {
@@ -3372,8 +3913,132 @@ body[data-bcn-inspection="open"] [data-advisory-header],
     font-size: 11px;
   }
 
+  .bcn-active-brief-bar {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+
+  .bcn-active-brief-bar__readout {
+    max-width: calc(100vw - 3rem);
+  }
+
+  .bcn-active-brief-bar__readout strong {
+    white-space: normal;
+  }
+
+  .bcn-active-brief-bar__intents {
+    gap: 0.42rem;
+  }
+
+  .bcn-active-brief-bar__intents button {
+    min-height: 2.12rem;
+    padding-inline: 0.72rem;
+  }
+
+  .bcn-active-brief-bar__actions button,
+  .bcn-buyer-brief-composer__actions button {
+    min-height: 2.25rem;
+    padding-inline: 0.86rem;
+  }
+
+  .bcn-buyer-brief-composer__header,
+  .bcn-buyer-brief-composer__zones,
+  .bcn-buyer-brief-composer__constraints {
+    grid-template-columns: 1fr;
+  }
+
+  .bcn-buyer-brief-composer[data-state="open"] {
+    max-height: 44rem;
+  }
+
+  .bcn-buyer-brief-composer__header {
+    gap: 0.9rem;
+  }
+
+  .bcn-buyer-brief-composer__header > div,
+  .bcn-buyer-brief-composer__zone,
+  .bcn-buyer-brief-composer__summary {
+    min-width: 0;
+    max-width: calc(100vw - 3rem);
+  }
+
+  .bcn-buyer-brief-composer__header p,
+  .bcn-buyer-brief-composer__summary strong {
+    max-width: min(100%, 20rem);
+  }
+
+  .bcn-buyer-brief-composer__zones {
+    gap: 0.8rem;
+    margin-top: 0.82rem;
+  }
+
+  .bcn-buyer-brief-composer__zone {
+    padding-top: 0.68rem;
+  }
+
+  .bcn-buyer-brief-composer__summary strong {
+    font-size: 0.78rem;
+    line-height: 1.42;
+  }
+
+  .bcn-buyer-brief-composer__label {
+    margin-bottom: 0.58rem;
+  }
+
+  .bcn-buyer-brief-composer__actions {
+    justify-content: flex-start;
+  }
+
   .bcn-search-index-row {
     padding: 0.75rem;
+  }
+
+  .bcn-search-card__commercial {
+    grid-template-columns: 1fr;
+    row-gap: 0.42rem;
+    padding: 0.68rem 0;
+  }
+
+  .bcn-search-card__commercial .bcn-search-card__price {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
+    text-align: left;
+    transform: none;
+  }
+
+  .bcn-search-card__facts {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .bcn-search-card__advisory-row {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+
+  .bcn-dossier-property-shell {
+    min-height: 0;
+  }
+
+  .bcn-dossier-property-thumb {
+    width: calc(100% - 1.4rem);
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+    border-right: 0;
+    border-bottom: 1px solid rgba(23, 23, 22, 0.1);
+    margin: 0.7rem 0 0 0.7rem;
+  }
+
+  .bcn-dossier-property-price {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .bcn-inquiry-document-row {
+    grid-template-columns: 1fr;
   }
 
   .bcn-property-chamber-shell {

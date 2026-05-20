@@ -44,7 +44,7 @@ const ui = (lang: Lang) => {
     dossierTitle: "Private dossier handoff",
     dossierSubtitle: "This brief is prepared from your selected properties, priorities and trade-offs.",
     close: "Close",
-    context: "Context summary",
+    context: "Private request brief",
     source: "Source",
     intent: "Intent",
     district: "District lens",
@@ -104,7 +104,7 @@ const ui = (lang: Lang) => {
     dossierTitle: "Handoff del dossier privado",
     dossierSubtitle: "Este brief se prepara desde tus propiedades seleccionadas, prioridades y compensaciones.",
     close: "Cerrar",
-    context: "Resumen del contexto",
+    context: "Brief privado",
     source: "Fuente",
     intent: "Intención",
     district: "Lente de distrito",
@@ -262,6 +262,8 @@ export default function AdvisoryInquiryPanel({
   const nextAction = context.nextAction || L.defaultNext;
   const dossierLabel = `${selectedListings.length} ${L.selectedProperties}`;
   const isDossierSource = context.source === "dossier";
+  const isContextualSource =
+    context.source === "search" || context.source === "property" || context.source === "gallery" || context.source === "lens";
   const panelTitle = isDossierSource ? L.dossierTitle : L.title;
   const panelSubtitle = isDossierSource ? L.dossierSubtitle : L.subtitle;
   const emailTarget = hasRealEmailTarget(ADVISORY_EMAIL) ? ADVISORY_EMAIL : "";
@@ -275,24 +277,26 @@ export default function AdvisoryInquiryPanel({
           ? L.whatsappOpened
           : "";
 
-  const summaryRows = isDossierSource
-    ? [
-        { label: L.source, value: L.sourceLabels.dossier },
-        { label: L.selectedList, value: dossierLabel },
-        { label: L.districtSpread, value: districtSpread || L.notSpecified },
-        { label: L.topPriority, value: topPriorityTitle || L.notSelected },
-        { label: L.highestReadiness, value: highestReadiness || L.notSpecified },
-        { label: L.next, value: nextAction },
-      ]
-    : [
-        { label: L.source, value: L.sourceLabels[context.source] || L.sourceLabels.hero },
-        context.intentLabel ? { label: L.intent, value: context.intentLabel } : null,
-        districtLabel ? { label: L.district, value: districtLabel } : null,
-        propertyTitle ? { label: L.property, value: propertyTitle } : null,
-        selectedListings.length ? { label: L.dossier, value: dossierLabel } : null,
-        { label: L.next, value: nextAction },
-        { label: L.timingLabel, value: timing || L.notSpecified },
-      ].filter((row): row is { label: string; value: string } => Boolean(row));
+  const summaryRows = (
+    isDossierSource
+      ? [
+          { label: L.source, value: L.sourceLabels.dossier },
+          selectedListings.length ? { label: L.selectedList, value: dossierLabel } : null,
+          districtSpread ? { label: L.districtSpread, value: districtSpread } : null,
+          topPriorityTitle ? { label: L.topPriority, value: topPriorityTitle } : null,
+          highestReadiness ? { label: L.highestReadiness, value: highestReadiness } : null,
+          nextAction ? { label: L.next, value: nextAction } : null,
+          timing ? { label: L.timingLabel, value: timing } : null,
+        ]
+      : [
+          { label: L.source, value: L.sourceLabels[context.source] || L.sourceLabels.hero },
+          isContextualSource && districtLabel ? { label: L.district, value: districtLabel } : null,
+          isContextualSource && propertyTitle ? { label: L.property, value: propertyTitle } : null,
+          isContextualSource && selectedListings.length > 0 ? { label: L.dossier, value: dossierLabel } : null,
+          nextAction ? { label: L.next, value: nextAction } : null,
+          timing ? { label: L.timingLabel, value: timing } : null,
+        ]
+  ).filter((row): row is { label: string; value: string } => Boolean(row?.value));
 
   useEffect(() => {
     setMounted(true);
@@ -549,23 +553,19 @@ export default function AdvisoryInquiryPanel({
             <div className="min-h-0 flex-1 overflow-y-auto p-5">
               <section
                 className={[
-                  "border border-[var(--bcn-line)] bg-[var(--bcn-porcelain)] p-4",
+                  "bcn-inquiry-document border border-[var(--bcn-line)] bg-[var(--bcn-porcelain)] p-4",
                   isDossierSource ? "bcn-inquiry-dossier-summary" : "",
                 ].join(" ")}
               >
                 <div className="text-[11px] uppercase tracking-[0.18em] text-[var(--bcn-muted)]">{L.context}</div>
-                <div className={isDossierSource ? "mt-3 grid gap-0" : "mt-4 grid gap-2 sm:grid-cols-2"}>
+                <div className="mt-3 grid gap-0">
                   {summaryRows.map((row) => (
                     <div
                       key={row.label}
-                      className={
-                        isDossierSource
-                          ? "grid gap-2 border-t border-[var(--bcn-line)] py-2.5 sm:grid-cols-[160px_1fr]"
-                          : "border border-[var(--bcn-line)] bg-white/70 p-3"
-                      }
+                      className="bcn-inquiry-document-row grid gap-2 border-t border-[var(--bcn-line)] py-2.5 sm:grid-cols-[160px_1fr]"
                     >
                       <div className="text-[10px] uppercase tracking-[0.15em] text-[var(--bcn-muted)]">{row.label}</div>
-                      <div className={isDossierSource ? "text-[13px] leading-[1.35] text-[var(--bcn-graphite)]" : "mt-2 text-[13px] leading-[1.35] text-[var(--bcn-graphite)]"}>{row.value}</div>
+                      <div className="text-[13px] leading-[1.35] text-[var(--bcn-graphite)]">{row.value}</div>
                     </div>
                   ))}
                 </div>
@@ -587,7 +587,7 @@ export default function AdvisoryInquiryPanel({
                     onChange={(event) => setNotes(event.target.value)}
                     placeholder={L.notesPlaceholder}
                     rows={4}
-                    className="min-h-[116px] resize-y border border-[var(--bcn-line)] bg-white p-3 text-[13px] leading-[1.6] text-[var(--bcn-graphite)] outline-none focus:border-[var(--bcn-line-strong)] focus:ring-2 focus:ring-black/10"
+                    className="bcn-inquiry-memo-field min-h-[116px] resize-y border border-[var(--bcn-line)] bg-white p-3 text-[13px] leading-[1.6] text-[var(--bcn-graphite)] outline-none focus:border-[var(--bcn-line-strong)] focus:ring-2 focus:ring-black/10"
                   />
                 </label>
 

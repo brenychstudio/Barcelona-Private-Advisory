@@ -80,8 +80,19 @@ const ui = (lang: Lang) => {
     briefBeds: "Bedrooms",
     briefMax: "Budget",
     briefNote: "Note",
+    privateBuyerBrief: "Private buyer brief",
+    privateBuyerBriefCopy: "Define intent, lifestyle signals and constraints before comparing properties.",
+    activeBrief: "Active brief",
+    briefConstraints: "Brief constraints",
+    briefComposerCopy: "Lifestyle signals and constraints",
+    lensContext: "Lens context",
+    editBrief: "Edit brief",
+    closeBrief: "Close brief",
     bd: "bd",
     ba: "ba",
+    guidePrice: "Guide price",
+    buyerFit: "Buyer fit",
+    decisionSignal: "Decision signal",
     bestFor: "Best for",
     signal: "Signal",
     tradeOff: "Trade-off",
@@ -120,8 +131,8 @@ const ui = (lang: Lang) => {
     moreRanked: "opciones priorizadas más",
     surfaceNote: "Campo prioriza lectura visual. Índice permite escanear muchos candidatos.",
     allDistricts: "Todos los distritos",
-    anyBeds: "Cualquier",
-    anyPrice: "Cualquier",
+    anyBeds: "Cualquier dormitorio",
+    anyPrice: "Cualquier precio",
     best: "Mejor ajuste",
     investment: "Inversión",
     sea: "Luz mediterránea",
@@ -131,8 +142,19 @@ const ui = (lang: Lang) => {
     briefBeds: "Dormitorios",
     briefMax: "Presupuesto",
     briefNote: "Nota",
+    privateBuyerBrief: "Brief privado del comprador",
+    privateBuyerBriefCopy: "Define intención, señales de estilo de vida y restricciones antes de comparar propiedades.",
+    activeBrief: "Brief activo",
+    briefConstraints: "Restricciones del brief",
+    briefComposerCopy: "Señales de estilo de vida y restricciones",
+    lensContext: "Contexto de lente",
+    editBrief: "Editar brief",
+    closeBrief: "Cerrar brief",
     bd: "hab",
     ba: "baños",
+    guidePrice: "Precio gu\u00eda",
+    buyerFit: "Encaje comprador",
+    decisionSignal: "Se\u00f1al decisiva",
     bestFor: "Ideal para",
     signal: "Señal",
     tradeOff: "Compensación",
@@ -143,7 +165,7 @@ const ui = (lang: Lang) => {
     open: "Abrir propiedad",
     filters: {
       intent: "Intención",
-      lifestyle: "Señal lifestyle",
+      lifestyle: "Señal de estilo de vida",
       district: "Ajuste de distrito",
       beds: "Dormitorios",
       budget: "Presupuesto",
@@ -195,6 +217,26 @@ function districtFor(listing: Listing) {
   return listing.districtLabel || listing.district || "Barcelona";
 }
 
+function bedLabelFor(lang: Lang) {
+  return lang === "es" ? "hab" : "bd";
+}
+
+function bathLabelFor(lang: Lang) {
+  return lang === "es" ? "ba\u00f1os" : "ba";
+}
+
+function commercialMetaFor(listing: Listing, lang: Lang) {
+  return `${commercialPriceFor(listing)} / ${commercialFactsFor(listing, lang)}`;
+}
+
+function commercialFactsFor(listing: Listing, lang: Lang) {
+  return `${listing.sqm} m\u00b2 / ${listing.beds} ${bedLabelFor(lang)} / ${listing.baths} ${bathLabelFor(lang)} / ${districtFor(listing)}`;
+}
+
+function commercialPriceFor(listing: Listing) {
+  return `EUR ${fmtEUR(listing.price)}`;
+}
+
 function openInquiry(detail: Record<string, unknown>) {
   window.dispatchEvent(new CustomEvent("bcn:inquiry_open", { detail }));
 }
@@ -231,6 +273,7 @@ export default function SearchExperience({
   const [maxPrice, setMaxPrice] = useState<number>(0);
   const [note, setNote] = useState<string>("");
   const [queryContextActive, setQueryContextActive] = useState(false);
+  const [briefComposerOpen, setBriefComposerOpen] = useState(false);
 
   useEffect(() => {
     const sp = new URLSearchParams(window.location.search);
@@ -313,7 +356,32 @@ export default function SearchExperience({
     lang,
   ]);
 
-  const searchContextLabel = district ? `${modeLabel} / ${district}` : modeLabel;
+  const activeBriefSummary = useMemo(() => {
+    const bedsLabel = minBeds ? `${minBeds}+ ${L.briefBeds}` : L.anyBeds;
+    const priceLabel = maxPrice ? `EUR ${fmtEUR(maxPrice)}` : L.anyPrice;
+    const intentLocation = queryContextActive && district ? `${modeLabel} -> ${district}` : modeLabel;
+    const parts = queryContextActive && district
+      ? [intentLocation, bedsLabel, priceLabel]
+      : [intentLocation, district || L.allDistricts, bedsLabel, priceLabel];
+    return parts.join(" · ");
+  }, [
+    L.allDistricts,
+    L.anyBeds,
+    L.anyPrice,
+    L.briefBeds,
+    district,
+    maxPrice,
+    minBeds,
+    modeLabel,
+    queryContextActive,
+  ]);
+
+  const activeBriefLabel = queryContextActive ? L.lensContext : L.activeBrief;
+  const briefConstraintSummary = useMemo(() => {
+    const bedsLabel = minBeds ? `${minBeds}+ ${L.briefBeds}` : L.anyBeds;
+    const priceLabel = maxPrice ? `EUR ${fmtEUR(maxPrice)}` : L.anyPrice;
+    return [district || L.allDistricts, bedsLabel, priceLabel];
+  }, [L.allDistricts, L.anyBeds, L.anyPrice, L.briefBeds, district, maxPrice, minBeds]);
 
   const results = useMemo(() => {
     const scored = listings.map((x) => ({
@@ -503,6 +571,17 @@ export default function SearchExperience({
     setSelectedTags((prev) => (prev.includes(key) ? prev.filter((x) => x !== key) : [...prev, key]));
   };
 
+  const resetBrief = () => {
+    setMode("best");
+    setSelectedTags([]);
+    setDistrict("");
+    setMinBeds(0);
+    setMaxPrice(0);
+    setNote("");
+    setQueryContextActive(false);
+    setExpanded(false);
+  };
+
   const requestViewing = (listing: Listing) => {
     const copy = getListingAdvisoryCopy(listing, lang);
     openInquiry({
@@ -517,8 +596,8 @@ export default function SearchExperience({
   };
 
   return (
-    <div className="bcn-section space-y-10">
-      <div className="bcn-section--threshold grid gap-5 border-b border-black/10 pb-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(320px,0.45fr)] lg:items-end">
+    <div className="bcn-section space-y-8">
+      <div className="bcn-section--threshold border-b border-black/10 pb-8">
         <div className="space-y-3">
           <div className="bcn-signal-kicker text-[12px] uppercase tracking-[0.2em] text-black/48">{L.eyebrow}</div>
           <h1 className="bcn-advisory-line max-w-[820px] text-[34px] leading-[1.02] tracking-tight text-black/88 md:text-[54px]">
@@ -531,51 +610,84 @@ export default function SearchExperience({
             <span>{L.curationAxis}</span>
           </div>
         </div>
-        <div className="bcn-memo-surface border border-black/10 bg-[rgb(var(--paper))] p-4 pl-5 text-[12px] leading-[1.65] text-black/58">
-          <span className="block text-[10px] uppercase tracking-[0.16em] text-black/38">{L.buyerIntent}</span>
-          <span className="mt-2 block text-[18px] leading-tight text-black/84">{modeLabel}</span>
-          <span className="mt-3 block">{brief}</span>
-        </div>
       </div>
 
-      {queryContextActive && (
-        <div className="bcn-search-context-strip border-y border-black/10 py-3 text-[12px] uppercase tracking-[0.13em] text-black/42">
-          {L.showingContext} <span className="text-black/78">{searchContextLabel}</span>
+      <div className="bcn-active-brief-bar border-y border-black/10 py-3">
+        <div className="bcn-active-brief-bar__main">
+          <div className="bcn-active-brief-bar__heading">{L.privateBuyerBrief}</div>
+          <div className="bcn-active-brief-bar__intents" aria-label={L.filters.intent}>
+            {([
+              ["best", L.best],
+              ["investment", L.investment],
+              ["sea", L.sea],
+              ["family", L.family],
+            ] as const).map(([k, label]) => {
+              const active = mode === k;
+              return (
+                <button
+                  key={k}
+                  type="button"
+                  onClick={() => setMode(k as Mode)}
+                  className={active ? "is-active" : ""}
+                  aria-pressed={active}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      )}
-
-      <section className="bcn-editorial-surface space-y-4 border border-black/10 bg-[rgb(var(--paper))] p-4">
-        <div className="text-[11px] uppercase tracking-[0.18em] text-black/42">{L.filters.intent}</div>
-        <div className="flex flex-wrap items-center gap-2">
-          {([
-            ["best", L.best],
-            ["investment", L.investment],
-            ["sea", L.sea],
-            ["family", L.family],
-          ] as const).map(([k, label]) => {
-            const active = mode === k;
-            return (
-              <button
-                key={k}
-                type="button"
-                onClick={() => setMode(k as Mode)}
-                className={[
-                  "rounded-full border px-4 py-2 text-[12px] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50",
-                  active
-                    ? "border-black/25 bg-white text-black shadow-[0_12px_34px_rgba(25,25,22,0.08)]"
-                    : "border-black/15 text-black/70 hover:border-black/25 hover:text-black",
-                ].join(" ")}
-              >
-                {label}
+        <div className="bcn-active-brief-bar__readout" aria-label={brief}>
+          <span>{activeBriefLabel}</span>
+          <strong>{activeBriefSummary}</strong>
+          <div className="bcn-active-brief-bar__constraints" aria-label={L.briefConstraints}>
+            {briefConstraintSummary.map((item) => (
+              <button key={item} type="button" onClick={() => setBriefComposerOpen(true)}>
+                {item}
               </button>
-            );
-          })}
+            ))}
+          </div>
+        </div>
+        {!briefComposerOpen && (
+          <div className="bcn-active-brief-bar__actions">
+            <button
+              type="button"
+              aria-expanded={briefComposerOpen}
+              aria-controls="bcn-private-brief-composer"
+              onClick={() => setBriefComposerOpen(true)}
+            >
+              {L.editBrief}
+            </button>
+          </div>
+        )}
+      </div>
+
+      <section
+        id="bcn-private-brief-composer"
+        className="bcn-buyer-brief-composer bcn-editorial-surface border border-black/10 bg-[rgb(var(--paper))] p-3"
+        data-state={briefComposerOpen ? "open" : "closed"}
+        aria-hidden={!briefComposerOpen}
+        inert={briefComposerOpen ? undefined : true}
+      >
+        <div className="bcn-buyer-brief-composer__header">
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.18em] text-black/42">{L.editBrief}</div>
+            <p className="mt-1 max-w-[560px] text-[12px] leading-[1.6] text-black/54">{L.briefComposerCopy}</p>
+          </div>
+          <div className="bcn-buyer-brief-composer__header-actions">
+            <button type="button" onClick={() => setBriefComposerOpen(false)}>
+              {L.closeBrief}
+            </button>
+            <button type="button" onClick={resetBrief} className="bcn-buyer-brief-composer__reset">
+              {L.reset}
+            </button>
+          </div>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_180px_150px_170px]">
-          <div className="space-y-2">
-            <div className="text-[11px] uppercase tracking-[0.16em] text-black/40">{L.filters.lifestyle}</div>
-            <div className="flex flex-wrap gap-2">
+        <div className="bcn-buyer-brief-composer__zones">
+          <div className="bcn-buyer-brief-composer__zone bcn-buyer-brief-composer__zone--signals">
+            <div className="bcn-buyer-brief-composer__label">{L.filters.lifestyle}</div>
+            <div className="bcn-buyer-brief-composer__signals flex flex-wrap gap-2">
               {TAGS.map((t) => {
                 const on = effectiveTags.includes(t.key);
                 const locked =
@@ -593,7 +705,7 @@ export default function SearchExperience({
                       toggleTag(t.key);
                     }}
                     className={[
-                      "rounded-full border px-3 py-1.5 text-[12px] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50",
+                      "bcn-buyer-brief-composer__signal rounded-full border px-3 py-1.5 text-[12px] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50",
                       on
                         ? "border-black/25 bg-white text-black"
                         : "border-black/10 text-black/60 hover:border-black/20 hover:text-black",
@@ -607,53 +719,59 @@ export default function SearchExperience({
             </div>
           </div>
 
-          <label className="grid content-start gap-2 text-[11px] uppercase tracking-[0.16em] text-black/40">
-            {L.filters.district}
-            <select
-              className="h-10 rounded-full border border-black/10 bg-white px-3 text-[12px] normal-case tracking-normal text-black/70 outline-none focus:border-black/25 focus:ring-2 focus:ring-black/10"
-              value={district}
-              onChange={(e) => setDistrict(e.target.value)}
-            >
-              <option value="">{L.allDistricts}</option>
-              {districts.map((d) => (
-                <option key={d} value={d}>
-                  {d}
-                </option>
-              ))}
-            </select>
-          </label>
+          <div className="bcn-buyer-brief-composer__zone bcn-buyer-brief-composer__zone--constraints">
+            <div className="bcn-buyer-brief-composer__label">{L.briefConstraints}</div>
+            <div className="bcn-buyer-brief-composer__constraints">
+              <label className="grid content-start gap-2 text-[11px] uppercase tracking-[0.16em] text-black/40">
+                {L.filters.district}
+                <select
+                  className="h-10 rounded-full border border-black/10 bg-white px-3 text-[12px] normal-case tracking-normal text-black/70 outline-none focus:border-black/25 focus:ring-2 focus:ring-black/10"
+                  value={district}
+                  onChange={(e) => setDistrict(e.target.value)}
+                >
+                  <option value="">{L.allDistricts}</option>
+                  {districts.map((d) => (
+                    <option key={d} value={d}>
+                      {d}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-          <label className="grid content-start gap-2 text-[11px] uppercase tracking-[0.16em] text-black/40">
-            {L.filters.beds}
-            <select
-              className="h-10 rounded-full border border-black/10 bg-white px-3 text-[12px] normal-case tracking-normal text-black/70 outline-none focus:border-black/25 focus:ring-2 focus:ring-black/10"
-              value={minBeds}
-              onChange={(e) => setMinBeds(Number(e.target.value))}
-            >
-              <option value={0}>{L.anyBeds}</option>
-              <option value={1}>1+</option>
-              <option value={2}>2+</option>
-              <option value={3}>3+</option>
-              <option value={4}>4+</option>
-            </select>
-          </label>
+              <label className="grid content-start gap-2 text-[11px] uppercase tracking-[0.16em] text-black/40">
+                {L.filters.beds}
+                <select
+                  className="h-10 rounded-full border border-black/10 bg-white px-3 text-[12px] normal-case tracking-normal text-black/70 outline-none focus:border-black/25 focus:ring-2 focus:ring-black/10"
+                  value={minBeds}
+                  onChange={(e) => setMinBeds(Number(e.target.value))}
+                >
+                  <option value={0}>{L.anyBeds}</option>
+                  <option value={1}>1+</option>
+                  <option value={2}>2+</option>
+                  <option value={3}>3+</option>
+                  <option value={4}>4+</option>
+                </select>
+              </label>
 
-          <label className="grid content-start gap-2 text-[11px] uppercase tracking-[0.16em] text-black/40">
-            {L.filters.budget}
-            <select
-              className="h-10 rounded-full border border-black/10 bg-white px-3 text-[12px] normal-case tracking-normal text-black/70 outline-none focus:border-black/25 focus:ring-2 focus:ring-black/10"
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(Number(e.target.value))}
-            >
-              <option value={0}>{L.anyPrice}</option>
-              <option value={450000}>EUR 450k</option>
-              <option value={650000}>EUR 650k</option>
-              <option value={900000}>EUR 900k</option>
-              <option value={1300000}>EUR 1.3M</option>
-              <option value={2500000}>EUR 2.5M</option>
-            </select>
-          </label>
+              <label className="grid content-start gap-2 text-[11px] uppercase tracking-[0.16em] text-black/40">
+                {L.filters.budget}
+                <select
+                  className="h-10 rounded-full border border-black/10 bg-white px-3 text-[12px] normal-case tracking-normal text-black/70 outline-none focus:border-black/25 focus:ring-2 focus:ring-black/10"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                >
+                  <option value={0}>{L.anyPrice}</option>
+                  <option value={450000}>EUR 450k</option>
+                  <option value={650000}>EUR 650k</option>
+                  <option value={900000}>EUR 900k</option>
+                  <option value={1300000}>EUR 1.3M</option>
+                  <option value={2500000}>EUR 2.5M</option>
+                </select>
+              </label>
+            </div>
+          </div>
         </div>
+
       </section>
 
       <div className="bcn-section--threshold flex flex-col gap-4 border-b border-black/10 pb-6 lg:flex-row lg:items-end lg:justify-between">
@@ -688,22 +806,6 @@ export default function SearchExperience({
               );
             })}
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              setMode("best");
-              setSelectedTags([]);
-              setDistrict("");
-              setMinBeds(0);
-              setMaxPrice(0);
-              setNote("");
-              setQueryContextActive(false);
-              setExpanded(false);
-            }}
-            className="w-fit rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50"
-          >
-            {L.reset}
-          </button>
         </div>
       </div>
 
@@ -754,8 +856,9 @@ export default function SearchExperience({
                       {title}
                     </a>
                   </h2>
-                  <div className="mt-1 truncate text-[12px] text-black/58">
-                    {districtFor(listing)} / {listing.beds} {L.bd} / {listing.sqm} m2 / EUR {fmtEUR(listing.price)}
+                  <div className="bcn-search-index-commercial mt-2">
+                    <span className="bcn-search-card__price">{commercialPriceFor(listing)}</span>
+                    <span className="bcn-search-card__meta">{commercialFactsFor(listing, lang)}</span>
                   </div>
                   <p className="mt-2 line-clamp-2 text-[12px] leading-[1.45] text-black/62">{copy.signal}</p>
                 </div>
@@ -818,8 +921,18 @@ export default function SearchExperience({
                       {title}
                     </a>
                   </h2>
-                  <div className="mt-1 truncate text-[12px] leading-[1.5] text-black/58">
-                    {districtFor(listing)} / {listing.beds} {L.bd} / {listing.sqm} m2 / EUR {fmtEUR(listing.price)}
+                  <div className="bcn-search-card__commercial mt-3">
+                    <div className="bcn-search-card__commercial-head">
+                      <span className="bcn-search-card__commercial-label">{L.guidePrice}</span>
+                      <span className="bcn-search-card__price">{commercialPriceFor(listing)}</span>
+                    </div>
+                    <div className="bcn-search-card__facts">
+                      <span>{`${listing.sqm} m\u00b2`}</span>
+                      <span>{listing.beds} {bedLabelFor(lang)}</span>
+                      <span>{listing.baths} {bathLabelFor(lang)}</span>
+                      <span>{districtFor(listing)}</span>
+                    </div>
+                    <div className="sr-only">{commercialMetaFor(listing, lang)}</div>
                   </div>
                   <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-black/58">
                     <span className="border border-black/10 bg-white/70 px-2.5 py-1">
@@ -831,14 +944,14 @@ export default function SearchExperience({
                   </div>
                 </div>
 
-                <div className="mt-4 grid gap-2 border-t border-black/10 pt-4 text-[12px] leading-[1.45] text-black/62">
-                  <div>
-                    <span className="block text-[10px] text-black/38">{L.bestFor}</span>
-                    <span className="mt-0.5 line-clamp-2 block">{copy.bestFor}</span>
+                <div className="bcn-search-card__advisory mt-4">
+                  <div className="bcn-search-card__advisory-row">
+                    <span>{L.buyerFit}</span>
+                    <p>{copy.bestFor}</p>
                   </div>
-                  <div>
-                    <span className="block text-[10px] text-black/38">{L.signal}</span>
-                    <span className="mt-0.5 line-clamp-2 block">{copy.signal}</span>
+                  <div className="bcn-search-card__advisory-row">
+                    <span>{L.decisionSignal}</span>
+                    <p>{copy.signal}</p>
                   </div>
                 </div>
 
