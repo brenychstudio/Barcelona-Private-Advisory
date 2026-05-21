@@ -33,7 +33,7 @@ function districtName(id: DistrictId, lang: Lang) {
 }
 
 function propertyMeta(property: Listing) {
-  return `${property.district} / ${property.beds} bd / ${property.sqm} m2`;
+  return `${property.district} / ${property.beds} bd / ${property.sqm} m²`;
 }
 
 function propertyTitle(property: Listing, lang: Lang) {
@@ -121,6 +121,7 @@ function formatLensPropertyTitle(property: Listing, lang: Lang) {
 function ui(lang: Lang) {
   const en = {
     privateBuyerBrief: "Private buyer brief",
+    activeBrief: "Active brief",
     activeIntent: "Active intent",
     buyerIntentField: "BUYER INTENT FIELD",
     intentHeadline: "Intent changes the market surface.",
@@ -138,6 +139,7 @@ function ui(lang: Lang) {
     matchedRecommendations: "Matched recommendations",
     topRecommendation: "Top recommendation",
     matchedOptions: "Matched options",
+    matchedOptionsInline: "matched options",
     viewAllMatchedOptions: "View all matched options",
     openPrivateSearch: "Open private search",
     topMatches: "Top matches",
@@ -192,6 +194,7 @@ function ui(lang: Lang) {
   };
   const es = {
     privateBuyerBrief: "Brief privado del comprador",
+    activeBrief: "Brief activo",
     activeIntent: "Intent activo",
     buyerIntentField: "CAMPO DE INTENCIÓN DEL COMPRADOR",
     intentHeadline: "La intención cambia la superficie del mercado.",
@@ -209,6 +212,7 @@ function ui(lang: Lang) {
     matchedRecommendations: "Recomendaciones con encaje",
     topRecommendation: "Recomendación principal",
     matchedOptions: "Opciones coincidentes",
+    matchedOptionsInline: "opciones coincidentes",
     viewAllMatchedOptions: "Ver opciones coincidentes",
     openPrivateSearch: "Abrir búsqueda privada",
     topMatches: "Principales coincidencias",
@@ -537,19 +541,12 @@ export default function BarcelonaLensSystem({ lang = "en" }: { lang?: Lang }) {
         </div>
 
         <div className="bcn-lens-mobile-summary" aria-live="polite">
-          <div className="bcn-lens-mobile-summary__top">
+          <div className="bcn-lens-mobile-summary__brief">
             <div>
-              <div className="bcn-lens-mobile-summary__eyebrow">{L.activeIntent}</div>
-              <div className="bcn-lens-mobile-summary__intent">{activeIntentCopy.shortLabel}</div>
+              <span>{L.activeBrief}</span>
+              <strong>{activeIntentCopy.shortLabel} <em aria-hidden="true">→</em> {activeDistrictCopy.name}</strong>
             </div>
-            <div>
-              <div className="bcn-lens-mobile-summary__eyebrow">{L.activeDistrict}</div>
-              <div className="bcn-lens-mobile-summary__district">{activeDistrictCopy.name}</div>
-            </div>
-            <div>
-              <div className="bcn-lens-mobile-summary__eyebrow">{L.match}</div>
-              <div className="bcn-lens-mobile-summary__count">{totalMatches} {L.matches}</div>
-            </div>
+            <p>{totalMatches} {L.matchedOptionsInline}</p>
           </div>
 
           <div className="bcn-lens-mobile-summary__recommendation">
@@ -570,10 +567,6 @@ export default function BarcelonaLensSystem({ lang = "en" }: { lang?: Lang }) {
             <div>
               <span>{L.buyerFit}</span>
               <strong>{activeDistrictCopy.bestFor}</strong>
-            </div>
-            <div>
-              <span>{L.valueLogic}</span>
-              <strong>{activeDistrictCopy.valueShort}</strong>
             </div>
           </div>
 
@@ -1270,7 +1263,7 @@ export default function BarcelonaLensSystem({ lang = "en" }: { lang?: Lang }) {
                   <h3 className="mt-6 text-[42px] leading-[0.98] tracking-tight text-[var(--bcn-graphite)]">{propertyTitle(featured, lang)}</h3>
                 </a>
                 <div className="mt-4 text-[13px] text-[var(--bcn-muted)]">
-                  {featured.district} / {featured.sqm} m2 / EUR {fmtEUR(featured.price)}
+                  {featured.district} / {featured.sqm} m² / EUR {fmtEUR(featured.price)}
                 </div>
                 <div className="bcn-property-signal-readout mt-6 grid gap-3 border-y border-[var(--bcn-line)] py-4 text-[12px] leading-[1.55] text-[var(--bcn-graphite-soft)]">
                   <div className="bcn-property-signal-fit"><span className="text-[var(--bcn-muted)]">{L.bestFor}:</span> {featuredCopy.bestFor}</div>
