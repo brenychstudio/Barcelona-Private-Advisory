@@ -41,6 +41,8 @@ const ui = (lang: Lang) => {
   const en = {
     title: "Request viewing path",
     subtitle: "A private advisory request prepared from your current search context.",
+    contactSubtitle: "A copy-ready request prepared from the contact handoff.",
+    contextualSubtitle: "A private advisory request prepared from the current property context.",
     dossierTitle: "Private dossier handoff",
     dossierSubtitle: "This brief is prepared from your selected properties, priorities and trade-offs.",
     close: "Close",
@@ -99,61 +101,63 @@ const ui = (lang: Lang) => {
   };
 
   const es = {
-    title: "Solicitar ruta de visita",
-    subtitle: "Una solicitud privada preparada a partir de tu contexto de búsqueda.",
+    title: "Solicitud de ruta de visita",
+    subtitle: "Una solicitud privada preparada a partir de tu contexto de b\u00fasqueda.",
+    contactSubtitle: "Una solicitud copy-ready preparada desde el handoff de contacto.",
+    contextualSubtitle: "Una solicitud privada preparada a partir del contexto actual de propiedad.",
     dossierTitle: "Handoff del dossier privado",
     dossierSubtitle: "Este brief se prepara desde tus propiedades seleccionadas, prioridades y compensaciones.",
     close: "Cerrar",
     context: "Brief privado",
     source: "Fuente",
-    intent: "Intención",
+    intent: "Intenci\u00f3n",
     district: "Lente de distrito",
     property: "Propiedad seleccionada",
     dossier: "Dossier",
-    next: "Siguiente acción",
+    next: "Siguiente acci\u00f3n",
     open: "Abierto",
-    notSpecified: "Aún no especificado",
+    notSpecified: "A\u00fan no especificado",
     notSelected: "No seleccionada",
     selectedProperties: "propiedades seleccionadas",
     districtSpread: "Distritos",
     topPriority: "Prioridad principal",
-    highestReadiness: "Preparación más alta",
+    highestReadiness: "Mayor preparaci\u00f3n",
     selectedList: "Propiedades seleccionadas",
     bestFor: "Ideal para",
-    signal: "Señal",
-    tradeOff: "Compensación",
-    readiness: "Preparación",
+    signal: "Se\u00f1al",
+    tradeOff: "Compensaci\u00f3n",
+    readiness: "Preparaci\u00f3n",
     buyerNotes: "Notas del comprador",
-    notesPlaceholder: "Añade timing, presupuesto, limitaciones o preguntas.",
+    notesPlaceholder: "A\u00f1ade timing, presupuesto, limitaciones o preguntas.",
     timing: "Momento preferido",
     contact: "Contacto",
     name: "Nombre",
     email: "Email",
-    phone: "Teléfono / WhatsApp opcional",
-    copy: "Copiar brief de solicitud",
+    phone: "Tel\u00e9fono / WhatsApp opcional",
+    copy: "Copiar brief",
     copied: "Brief copiado",
     emailDraft: "Abrir borrador de email",
     emailOpened: "Borrador de email abierto",
     whatsappDraft: "Abrir borrador de WhatsApp",
     whatsappOpened: "Borrador de WhatsApp abierto",
     returnDossier: "Volver al dossier",
-    continue: "Seguir explorando",
-    fallbackPrompt: "Copiar brief de solicitud:",
+    continue: "Continuar explorando",
+    fallbackPrompt: "Copiar brief:",
     heading: "Barcelona Private Advisory - Solicitud de ruta de visita",
     advisorNote: "Nota del asesor",
     notes: "Notas del comprador",
     timingLabel: "Momento preferido",
     contactLabel: "Contacto",
-    timings: ["Esta semana", "Próxima semana", "Flexible", "Solo estoy investigando"],
-    defaultNext: "Iniciar búsqueda privada",
-    privacyNote: "Este brief se prepara localmente a partir de tu selección actual. No se envía nada automáticamente.",
+    timings: ["Esta semana", "Pr\u00f3xima semana", "Flexible", "Solo estoy investigando"],
+    defaultNext: "Iniciar b\u00fasqueda privada",
+    privacyNote: "Este brief se prepara localmente a partir de tu selecci\u00f3n actual. No se env\u00eda nada autom\u00e1ticamente.",
     sourceLabels: {
-      hero: "Búsqueda privada",
+      hero: "B\u00fasqueda privada",
       lens: "Barcelona Lens",
-      search: "Búsqueda privada",
+      search: "B\u00fasqueda privada",
       contact: "Handoff de contacto",
       property: "Detalle de propiedad",
-      gallery: "Inspección de galería",
+      gallery: "Inspecci\u00f3n de galer\u00eda",
       dossier: "Dossier privado",
     },
   };
@@ -265,7 +269,13 @@ export default function AdvisoryInquiryPanel({
   const isContextualSource =
     context.source === "search" || context.source === "property" || context.source === "gallery" || context.source === "lens";
   const panelTitle = isDossierSource ? L.dossierTitle : L.title;
-  const panelSubtitle = isDossierSource ? L.dossierSubtitle : L.subtitle;
+  const panelSubtitle = isDossierSource
+    ? L.dossierSubtitle
+    : context.source === "contact"
+      ? L.contactSubtitle
+      : isContextualSource
+        ? L.contextualSubtitle
+        : L.subtitle;
   const emailTarget = hasRealEmailTarget(ADVISORY_EMAIL) ? ADVISORY_EMAIL : "";
   const whatsappTarget = hasRealWhatsAppTarget(WHATSAPP_PHONE) ? WHATSAPP_PHONE : "";
   const statusText =
@@ -511,7 +521,7 @@ export default function AdvisoryInquiryPanel({
       {open && (
         <>
           <motion.div
-            className="fixed inset-0 z-[160] bg-[rgba(23,23,22,0.28)] backdrop-blur-sm"
+            className="bcn-inquiry-overlay fixed inset-0 z-[160] bg-[rgba(23,23,22,0.28)] backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -524,13 +534,13 @@ export default function AdvisoryInquiryPanel({
             aria-labelledby="advisory-inquiry-title"
             ref={panelRef}
             tabIndex={-1}
-            className="fixed bottom-0 right-0 top-14 z-[170] flex w-full max-w-[680px] flex-col overflow-hidden border-l border-[var(--bcn-line-strong)] bg-[var(--bcn-surface)] shadow-[0_34px_130px_rgba(23,23,22,0.2)] outline-none sm:right-4 sm:top-20 sm:bottom-4 sm:w-[min(94vw,680px)] sm:border"
+            className="bcn-inquiry-panel fixed bottom-0 right-0 top-14 z-[170] flex w-full max-w-[680px] flex-col overflow-hidden border-l border-[var(--bcn-line-strong)] bg-[var(--bcn-surface)] shadow-[0_34px_130px_rgba(23,23,22,0.2)] outline-none sm:right-4 sm:top-20 sm:bottom-4 sm:w-[min(94vw,680px)] sm:border"
             initial={shouldReduceMotion ? { opacity: 0 } : { x: 24, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={shouldReduceMotion ? { opacity: 0 } : { x: 24, opacity: 0 }}
             transition={{ duration: shouldReduceMotion ? 0.12 : 0.28, ease: [0.2, 0.8, 0.2, 1] }}
           >
-            <div className="border-b border-[var(--bcn-line)] bg-[var(--bcn-graphite)] p-5 text-[var(--bcn-porcelain)]">
+            <div className="bcn-inquiry-panel__header border-b border-[var(--bcn-line)] bg-[var(--bcn-graphite)] p-5 text-[var(--bcn-porcelain)]">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <div className="text-[11px] uppercase tracking-[0.2em] text-white/52">Barcelona Private Advisory</div>
@@ -550,7 +560,7 @@ export default function AdvisoryInquiryPanel({
               </div>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto p-5">
+            <div className="bcn-inquiry-panel__body min-h-0 flex-1 overflow-y-auto p-5">
               <section
                 className={[
                   "bcn-inquiry-document border border-[var(--bcn-line)] bg-[var(--bcn-porcelain)] p-4",
@@ -579,7 +589,7 @@ export default function AdvisoryInquiryPanel({
                 </p>
               </section>
 
-              <div className="mt-5 grid gap-4">
+              <div className="bcn-inquiry-form mt-5 grid gap-4">
                 <label className="grid gap-2 text-[12px] text-[var(--bcn-muted)]">
                   <span>{L.buyerNotes}</span>
                   <textarea
@@ -604,7 +614,7 @@ export default function AdvisoryInquiryPanel({
                   </select>
                 </label>
 
-                <div className="grid gap-3 sm:grid-cols-3">
+                <div className="bcn-inquiry-contact-grid grid gap-3 sm:grid-cols-3">
                   <label className="grid gap-2 text-[12px] text-[var(--bcn-muted)]">
                     <span>{L.name}</span>
                     <input
@@ -634,17 +644,17 @@ export default function AdvisoryInquiryPanel({
               </div>
             </div>
 
-            <div className="border-t border-[var(--bcn-line)] bg-[rgba(255,255,252,0.86)] p-4">
+            <div className="bcn-inquiry-panel__footer border-t border-[var(--bcn-line)] bg-[rgba(255,255,252,0.86)] p-4">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-h-5 text-[12px] text-[var(--bcn-sea-deep)]" aria-live="polite">
                   {statusText}
                 </div>
-                <div className="flex flex-wrap justify-end gap-2">
-                  {(selectedListings.length > 0 || context.source === "dossier") && (
+                <div className="bcn-inquiry-panel__footer-buttons flex flex-wrap justify-end gap-2">
+                  {isDossierSource && (
                     <button
                       type="button"
                       onClick={returnToDossier}
-                      className="rounded-full border border-[var(--bcn-line)] px-4 py-2 text-[12px] text-[var(--bcn-muted)] hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--bcn-sea-deep)]"
+                      className="bcn-inquiry-secondary-action rounded-full border border-[var(--bcn-line)] px-4 py-2 text-[12px] text-[var(--bcn-muted)] hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--bcn-sea-deep)]"
                     >
                       {L.returnDossier}
                     </button>
@@ -653,7 +663,7 @@ export default function AdvisoryInquiryPanel({
                     <button
                       type="button"
                       onClick={openEmailDraft}
-                      className="rounded-full border border-[var(--bcn-line)] px-4 py-2 text-[12px] text-[var(--bcn-muted)] hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--bcn-sea-deep)]"
+                      className="bcn-inquiry-secondary-action rounded-full border border-[var(--bcn-line)] px-4 py-2 text-[12px] text-[var(--bcn-muted)] hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--bcn-sea-deep)]"
                     >
                       {L.emailDraft}
                     </button>
@@ -662,7 +672,7 @@ export default function AdvisoryInquiryPanel({
                     <button
                       type="button"
                       onClick={openWhatsAppDraft}
-                      className="rounded-full border border-[var(--bcn-line)] px-4 py-2 text-[12px] text-[var(--bcn-muted)] hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--bcn-sea-deep)]"
+                      className="bcn-inquiry-secondary-action rounded-full border border-[var(--bcn-line)] px-4 py-2 text-[12px] text-[var(--bcn-muted)] hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--bcn-sea-deep)]"
                     >
                       {L.whatsappDraft}
                     </button>
@@ -670,14 +680,14 @@ export default function AdvisoryInquiryPanel({
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="rounded-full border border-[var(--bcn-line)] px-4 py-2 text-[12px] text-[var(--bcn-muted)] hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--bcn-sea-deep)]"
+                  className="bcn-inquiry-secondary-action rounded-full border border-[var(--bcn-line)] px-4 py-2 text-[12px] text-[var(--bcn-muted)] hover:border-[var(--bcn-line-strong)] hover:text-[var(--bcn-graphite)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--bcn-sea-deep)]"
                 >
                   {L.continue}
                 </button>
                 <button
                   type="button"
                   onClick={copyBrief}
-                  className="rounded-full border border-[var(--bcn-line-strong)] bg-white px-4 py-2 text-[12px] text-[var(--bcn-graphite)] shadow-[var(--bcn-shadow-soft)] hover:border-[var(--bcn-graphite)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--bcn-sea-deep)]"
+                  className="bcn-inquiry-primary-action rounded-full border border-[var(--bcn-line-strong)] bg-white px-4 py-2 text-[12px] text-[var(--bcn-graphite)] shadow-[var(--bcn-shadow-soft)] hover:border-[var(--bcn-graphite)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[var(--bcn-sea-deep)]"
                 >
                   {handoffStatus === "copied" ? L.copied : L.copy}
                 </button>

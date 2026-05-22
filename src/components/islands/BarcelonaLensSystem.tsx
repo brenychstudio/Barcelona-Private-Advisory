@@ -140,7 +140,9 @@ function ui(lang: Lang) {
     topRecommendation: "Top recommendation",
     matchedOptions: "Matched options",
     matchedOptionsInline: "matched options",
+    viewMatchedOptions: "View matched options",
     viewAllMatchedOptions: "View all matched options",
+    searchApartments: "Search apartments",
     openPrivateSearch: "Open private search",
     topMatches: "Top matches",
     moreInPrivateSearch: "more in Private Search",
@@ -213,7 +215,9 @@ function ui(lang: Lang) {
     topRecommendation: "Recomendación principal",
     matchedOptions: "Opciones coincidentes",
     matchedOptionsInline: "opciones coincidentes",
+    viewMatchedOptions: "Ver opciones coincidentes",
     viewAllMatchedOptions: "Ver opciones coincidentes",
+    searchApartments: "Buscar apartamentos",
     openPrivateSearch: "Abrir búsqueda privada",
     topMatches: "Principales coincidencias",
     moreInPrivateSearch: "más en Búsqueda privada",
@@ -571,10 +575,8 @@ export default function BarcelonaLensSystem({ lang = "en" }: { lang?: Lang }) {
           </div>
 
           <div className="bcn-lens-mobile-summary__actions">
-            <a href={matchedSearchHref}>{L.viewAllMatchedOptions}</a>
-            <button type="button" onClick={() => openLensInquiry("lens")}>
-              {L.openPrivateSearch}
-            </button>
+            <a href={matchedSearchHref}>{L.viewMatchedOptions}</a>
+            <a href={`${prefix}/search`}>{L.searchApartments}</a>
           </div>
         </div>
 

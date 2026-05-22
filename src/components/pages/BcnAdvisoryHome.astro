@@ -17,6 +17,7 @@ const copy = lang === "es"
       mobileProof: "Un umbral privado se convierte en intención, lente, señal y dossier listo para conversar.",
       mobilePath: "Intención -> Lens -> Señal -> Dossier -> Acción",
       intro: "Una superficie privada de adquisición para compradores que necesitan inteligencia de distrito, señal del inmueble y una shortlist que merezca conversación.",
+      searchApartments: "Buscar apartamentos",
       start: "Iniciar búsqueda privada",
       dossier: "Abrir dossier",
       metrics: [
@@ -74,6 +75,7 @@ const copy = lang === "es"
       mobileProof: "A private threshold becomes intent, lens, signal and a dossier worth discussing.",
       mobilePath: "Intent -> Lens -> Signal -> Dossier -> Action",
       intro: "A private acquisition surface for buyers who need district intelligence, property signal and a shortlist worth discussing.",
+      searchApartments: "Search apartments",
       start: "Start private search",
       dossier: "Open dossier",
       metrics: [
@@ -146,13 +148,8 @@ const copy = lang === "es"
         <h1>{copy.mobileTitle}</h1>
         <p>{copy.mobileIntro}</p>
         <div class="bcn-mobile-cover__actions">
-          <a
-            href={`${prefix}/search`}
-            data-open-inquiry
-            data-inquiry-source="hero"
-            data-inquiry-next-action={copy.start}
-          >
-            {copy.start}
+          <a href={`${prefix}/search`}>
+            {copy.searchApartments}
           </a>
           <button data-open-shortlist type="button">
             {copy.dossier}

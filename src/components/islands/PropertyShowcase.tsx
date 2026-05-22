@@ -224,7 +224,7 @@ function Chip({ children }: { children: ReactNode }) {
 
 const ui = (lang: Lang) => {
   const en = {
-    request: "Request private viewing",
+    request: "Request viewing path",
     backToSearch: "Back to search",
     save: "Save to dossier",
     saved: "Saved",
@@ -246,11 +246,14 @@ const ui = (lang: Lang) => {
     readiness: "Viewing readiness",
     priority: "Shortlist priority",
     price: "Price",
+    guidePrice: "Guide price",
     surface: "Surface",
     bedrooms: "Bedrooms",
     bathrooms: "Bathrooms",
     district: "District",
     propertyFacts: "Property facts",
+    advisorSummary: "Advisor summary",
+    details: "Details",
     acquisitionNote: "Acquisition note",
     advisoryPath: "Advisory path",
     privateBrief: "Private brief",
@@ -288,7 +291,7 @@ const ui = (lang: Lang) => {
   };
 
   const es = {
-    request: "Solicitar visita",
+    request: "Solicitar ruta de visita",
     backToSearch: "Volver a búsqueda",
     save: "Guardar en dossier",
     saved: "Guardado",
@@ -310,11 +313,14 @@ const ui = (lang: Lang) => {
     readiness: "Preparación de visita",
     priority: "Prioridad shortlist",
     price: "Precio",
+    guidePrice: "Precio guía",
     surface: "Superficie",
     bedrooms: "Habitaciones",
     bathrooms: "Baños",
     district: "Distrito",
     propertyFacts: "Datos del inmueble",
+    advisorSummary: "Resumen del asesor",
+    details: "Detalles",
     acquisitionNote: "Nota de adquisición",
     advisoryPath: "Ruta advisory",
     privateBrief: "Brief privado",
@@ -652,14 +658,40 @@ export default function PropertyShowcase({
 
               <div className="bcn-property-signals bcn-property-signals--compact">
                 <div className="px-1 py-3 text-[11px] uppercase tracking-[0.18em] text-black/42">{L.signals}</div>
-                {signalRows.slice(0, 4).map((row) => (
-                  <div key={row.label} className="bcn-property-signal-readout grid gap-3 border-t border-black/10 px-1 py-3 sm:grid-cols-[124px_1fr]">
+                {signalRows.slice(0, 4).map((row, index) => (
+                  <div
+                    key={row.label}
+                    className={[
+                      "bcn-property-signal-readout grid gap-3 border-t border-black/10 px-1 py-3 sm:grid-cols-[124px_1fr]",
+                      index > 1 ? "bcn-property-signal-readout--secondary" : "",
+                    ].join(" ")}
+                  >
                     <div className="bcn-property-signal-readout__label text-[11px] text-black/42">{row.label}</div>
                     <div className="text-[13px] leading-[1.65] text-black/66">{row.value}</div>
                   </div>
                 ))}
               </div>
             </div>
+
+            {(signalRows.length > 2 || advisoryCopy.acquisitionNote) && (
+              <details className="bcn-property-mobile-extra-signals">
+                <summary>{L.details}</summary>
+                <div>
+                  {signalRows.slice(2, 4).map((row) => (
+                    <div key={`mobile-${row.label}`}>
+                      <span>{row.label}</span>
+                      <p>{row.value}</p>
+                    </div>
+                  ))}
+                  {advisoryCopy.acquisitionNote && (
+                    <div>
+                      <span>{L.acquisitionNote}</span>
+                      <p>{advisoryCopy.acquisitionNote}</p>
+                    </div>
+                  )}
+                </div>
+              </details>
+            )}
 
             {advisoryCopy.acquisitionNote && (
               <p className="mt-3 border-l border-black/10 bg-[rgb(var(--paper))] p-3 text-[12px] leading-[1.65] text-black/56">
@@ -826,6 +858,76 @@ export default function PropertyShowcase({
 
   return (
     <div className="bcn-property-shell bcn-property-chamber-shell bcn-section">
+      <section className="bcn-property-mobile-file">
+        <a href={searchHref} className="bcn-property-mobile-back">
+          <span aria-hidden="true">←</span>
+          <span>{L.backToSearch}</span>
+        </a>
+
+        <button
+          type="button"
+          onClick={() => openLightboxBySrc(listing.images.hero)}
+          className="bcn-property-mobile-media"
+          aria-label={L.inspectGallery}
+        >
+          <img
+            src={listing.images.hero}
+            alt={`${titleText} private recommendation hero image`}
+            loading="eager"
+            decoding="async"
+          />
+          <span>{listing.code}</span>
+        </button>
+
+        <div className="bcn-property-mobile-header">
+          <p>{L.privateRecommendation} / {L.selectedObject} {listing.code}</p>
+          <h1>{titleText}</h1>
+          <div>{districtLabel} / {listing.sqm} m² / {listing.beds} {L.bd} / {listing.baths} {L.ba}</div>
+        </div>
+
+        <div className="bcn-property-mobile-facts" aria-label={L.propertyFacts}>
+          <div>
+            <span>{L.guidePrice}</span>
+            <strong>EUR {fmtEUR(listing.price)}</strong>
+          </div>
+          <div>
+            <span>{L.readiness}</span>
+            <strong>{advisoryCopy.viewingReadinessLabel}</strong>
+          </div>
+          <div>
+            <span>{L.priority}</span>
+            <strong>#{listing.shortlistPriority}</strong>
+          </div>
+        </div>
+
+        <div className="bcn-property-mobile-actions">
+          <button type="button" onClick={() => requestViewing("property")}>
+            {requestLabel}
+          </button>
+          <button type="button" onClick={saveToShortlist}>
+            {saved ? L.saved : L.save}
+          </button>
+          <button type="button" onClick={() => openLightboxBySrc(listing.images.hero)}>
+            {L.inspectGallery}
+          </button>
+        </div>
+
+        <a href={`${prefix}/district/${adv.districtSlug}`} className="bcn-property-mobile-district">
+          {L.openDistrict}
+        </a>
+
+        {ctaMsg && (
+          <div className="bcn-property-mobile-status">
+            {ctaMsg}
+          </div>
+        )}
+
+        <div className="bcn-property-mobile-summary">
+          <span>{L.advisorSummary}</span>
+          <p>{advisorMemo}</p>
+        </div>
+      </section>
+
       <div className="bcn-property-chamber-shell__left">
         <section className="bcn-property-file bcn-property-file-header" data-bcn-reveal="section">
           <div className="bcn-property-file-header__main">

@@ -76,47 +76,47 @@ const ui = (lang: Lang) => {
     copyPrompt: "Copiar resumen del dossier:",
     copyLinkPrompt: "Copiar enlace del dossier:",
     clear: "Limpiar",
-    none: "Aún no hay opciones",
+    none: "Sin opciones seleccionadas",
     saved: "seleccionadas",
-    imported: "Shortlist privada importada desde el enlace.",
+    imported: "Selecci\u00f3n privada importada desde el enlace.",
     open: "Abrir propiedad",
     remove: "Quitar",
-    title: "Dossier privado de selección",
-    subtitle: "Selección preparada para asesoría",
-    intro: "Propiedades seleccionadas para revisar, comparar y solicitar visita.",
-    request: "Solicitar ruta de visita",
-    handoffEyebrow: "Handoff de asesoría",
-    handoffTitle: "¿Listo para convertir esta shortlist en una ruta de visita?",
-    handoffText: "Tus propiedades seleccionadas, prioridades y compensaciones pueden convertirse en un brief preparado para asesoría.",
+    title: "Dossier privado de selecci\u00f3n",
+    subtitle: "Selecci\u00f3n preparada para asesor\u00eda",
+    intro: "Propiedades seleccionadas para revisar, comparar y preparar la ruta de visita.",
+    request: "Solicitud de ruta de visita",
+    handoffEyebrow: "Handoff de asesor\u00eda",
+    handoffTitle: "\u00bfListo para convertir esta selecci\u00f3n en una ruta de visita?",
+    handoffText: "Tus propiedades seleccionadas, prioridades y compensaciones pueden convertirse en un brief preparado para asesor\u00eda.",
     handoffCta: "Preparar solicitud de ruta de visita",
     summaryOnly: "Copiar resumen del dossier exporta solo las propiedades seleccionadas.",
-    inquiryBrief: "Copiar brief de solicitud añade notas, timing y contacto.",
+    inquiryBrief: "Copiar brief a\u00f1ade notas del comprador, timing y contacto.",
     explore: "Explorar recomendaciones",
-    count: "Seleccionadas",
-    highestReadiness: "Mayor preparación",
+    count: "Selecci\u00f3n",
+    highestReadiness: "Mayor preparaci\u00f3n",
     topPriority: "Prioridad principal",
     districts: "Distritos",
-    next: "Siguiente",
+    next: "Acci\u00f3n",
     status: "Estado del dossier",
-    statusEmpty: "Dossier vacío",
-    statusBuilding: "Construyendo shortlist",
-    statusReady: "Preparado para asesoría",
-    comparison: "Comparación de compensaciones",
+    statusEmpty: "Dossier vac\u00edo",
+    statusBuilding: "Selecci\u00f3n en preparaci\u00f3n",
+    statusReady: "Preparado para asesor\u00eda",
+    comparison: "Comparaci\u00f3n de compensaciones",
     property: "Propiedad",
     bestFor: "Ideal para",
-    signal: "Señal",
-    tradeoff: "Compensación",
+    signal: "Se\u00f1al",
+    tradeoff: "Compensaci\u00f3n",
     risk: "Nota de riesgo",
-    viewTradeRisk: "Ver compensación / riesgo",
-    readiness: "Preparación",
+    viewTradeRisk: "Ver compensaci\u00f3n / riesgo",
+    readiness: "Preparaci\u00f3n",
     priority: "Prioridad",
     district: "Distrito",
     area: "Superficie",
     bedrooms: "Dormitorios",
-    nextAction: "Siguiente acción",
-    emptyTitle: "Tu dossier privado está vacío.",
-    emptyCopy: "Selecciona propiedades desde el panel de asesoría para crear una lista enfocada.",
-    summaryTitle: "Dossier privado de selección",
+    nextAction: "Siguiente acci\u00f3n",
+    emptyTitle: "Tu dossier privado est\u00e1 vac\u00edo.",
+    emptyCopy: "Selecciona propiedades desde el panel de asesor\u00eda para crear una lista enfocada.",
+    summaryTitle: "Dossier privado de selecci\u00f3n",
   };
 
   return lang === "es" ? es : en;
@@ -355,7 +355,7 @@ export default function ShortlistWidget({
       {open && (
         <>
           <motion.div
-            className="fixed inset-x-0 top-14 bottom-0 z-[80] bg-[rgba(23,23,22,0.24)] backdrop-blur-sm"
+            className="bcn-dossier-overlay fixed inset-x-0 top-14 bottom-0 z-[80] bg-[rgba(23,23,22,0.24)] backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -372,7 +372,7 @@ export default function ShortlistWidget({
             aria-modal="true"
             aria-labelledby="shortlist-dossier-title"
           >
-            <div className="bg-[var(--bcn-graphite)] px-5 py-4 text-[var(--bcn-porcelain)] sm:px-6">
+            <div className="bcn-dossier-drawer__header bg-[var(--bcn-graphite)] px-5 py-4 text-[var(--bcn-porcelain)] sm:px-6">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <div className="text-[11px] tracking-[0.2em] text-white/52">{L.subtitle}</div>
@@ -391,13 +391,13 @@ export default function ShortlistWidget({
               </div>
 
               <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/14 pt-3">
-                <div className="border border-white/14 px-3 py-2 text-[11px] uppercase tracking-[0.14em] text-white/72">
+                <div className="bcn-dossier-drawer__badge border border-white/14 px-3 py-2 text-[11px] uppercase tracking-[0.14em] text-white/72">
                   {count ? `${count} ${L.saved}` : L.none}
                 </div>
               </div>
             </div>
 
-            <div className="p-4 sm:p-5">
+            <div className="bcn-dossier-drawer__body p-4 sm:p-5">
               {imported && (
                 <div className="mb-3 border border-[var(--bcn-line)] bg-white px-3 py-2 text-[12px] text-[var(--bcn-muted)]">
                   {L.imported}
@@ -405,7 +405,7 @@ export default function ShortlistWidget({
               )}
 
               {!items.length ? (
-                <div className="border border-[var(--bcn-line)] bg-white p-5">
+                <div className="bcn-dossier-empty border border-[var(--bcn-line)] bg-white p-5">
                   <div className="text-[10px] uppercase tracking-[0.16em] text-[var(--bcn-muted)]">
                     {L.status}: {statusLabel(status, L)}
                   </div>
@@ -435,14 +435,14 @@ export default function ShortlistWidget({
                       <button
                         type="button"
                         onClick={() => openDossierInquiry()}
-                        className="justify-self-start rounded-full border border-[var(--bcn-graphite)] bg-[var(--bcn-graphite)] px-4 py-2 text-[12px] text-[var(--bcn-porcelain)] outline-none hover:bg-black focus-visible:ring-2 focus-visible:ring-black/20 lg:justify-self-end"
+                        className="bcn-dossier-command__primary justify-self-start rounded-full border border-[var(--bcn-graphite)] bg-[var(--bcn-graphite)] px-4 py-2 text-[12px] text-[var(--bcn-porcelain)] outline-none hover:bg-black focus-visible:ring-2 focus-visible:ring-black/20 lg:justify-self-end"
                       >
                         {L.handoffCta}
                       </button>
                     </div>
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--bcn-line)] pt-3">
                       <div className="max-w-[320px] text-[11px] leading-[1.4] text-[var(--bcn-muted)]">{L.inquiryBrief}</div>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="bcn-dossier-command__actions flex flex-wrap gap-2">
                       <button
                         type="button"
                         onClick={copyDossierSummary}
@@ -550,7 +550,7 @@ export default function ShortlistWidget({
                           </div>
                         </details>
 
-                        <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                        <div className="bcn-dossier-property-actions mt-2.5 flex flex-wrap items-center gap-2">
                           <a
                             href={`${prefix}/p/${x.id}`}
                             className="rounded-full border border-[var(--bcn-line-strong)] px-3 py-1.5 text-[12px] text-[var(--bcn-graphite)] outline-none hover:border-[var(--bcn-graphite)] focus-visible:ring-2 focus-visible:ring-black/20"

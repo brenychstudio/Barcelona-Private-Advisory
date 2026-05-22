@@ -58,6 +58,7 @@ const ui = (lang: Lang) => {
     buyerIntent: "Buyer intent",
     showingContext: "Showing ranked options for",
     rankedSuffix: "advisory-ranked candidates",
+    mobileRankedSuffix: "advisory-ranked options",
     rankedNote: "Ranked by intent fit, district logic and viewing readiness.",
     reset: "Reset brief",
     field: "Field",
@@ -85,6 +86,7 @@ const ui = (lang: Lang) => {
     activeBrief: "Active brief",
     briefConstraints: "Brief constraints",
     briefComposerCopy: "Lifestyle signals and constraints",
+    moreSignals: "Lifestyle signals",
     lensContext: "Lens context",
     editBrief: "Edit brief",
     closeBrief: "Close brief",
@@ -119,6 +121,7 @@ const ui = (lang: Lang) => {
     curationAxis: "Intent -> lens de distrito -> señal del inmueble",
     buyerIntent: "Intención del comprador",
     showingContext: "Mostrando opciones priorizadas para",
+    mobileRankedSuffix: "opciones priorizadas",
     rankedSuffix: "opciones priorizadas por asesoría",
     rankedNote: "Ordenadas por ajuste de intención, lógica de distrito y preparación para visita.",
     reset: "Reiniciar brief",
@@ -148,6 +151,7 @@ const ui = (lang: Lang) => {
     briefConstraints: "Restricciones del brief",
     briefComposerCopy: "Señales de estilo de vida y restricciones",
     lensContext: "Contexto de lente",
+    moreSignals: "Señales de estilo de vida",
     editBrief: "Editar brief",
     closeBrief: "Cerrar brief",
     bd: "hab",
@@ -595,9 +599,79 @@ export default function SearchExperience({
     });
   };
 
+  const intentOptions = [
+    ["best", L.best],
+    ["investment", L.investment],
+    ["sea", L.sea],
+    ["family", L.family],
+  ] as const;
+
+  const renderIntentButton = ([k, label]: (typeof intentOptions)[number]) => {
+    const active = mode === k;
+    return (
+      <button
+        key={k}
+        type="button"
+        onClick={() => setMode(k as Mode)}
+        className={active ? "is-active" : ""}
+        aria-pressed={active}
+      >
+        {label}
+      </button>
+    );
+  };
+
+  const renderSignalButton = (t: (typeof TAGS)[number]) => {
+    const on = effectiveTags.includes(t.key);
+    const locked =
+      (mode === "sea" && t.key === "sea") ||
+      (mode === "family" && t.key === "family") ||
+      (mode === "investment" && t.key === "investor");
+
+    return (
+      <button
+        key={t.key}
+        type="button"
+        disabled={locked}
+        onClick={() => {
+          if (locked) return;
+          toggleTag(t.key);
+        }}
+        className={[
+          "bcn-buyer-brief-composer__signal rounded-full border px-3 py-1.5 text-[12px] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50",
+          on
+            ? "border-black/25 bg-white text-black"
+            : "border-black/10 text-black/60 hover:border-black/20 hover:text-black",
+          locked ? "cursor-default opacity-80" : "",
+        ].join(" ")}
+      >
+        {lang === "es" ? t.es : t.en}
+      </button>
+    );
+  };
+
   return (
     <div className="bcn-section space-y-8">
-      <div className="bcn-section--threshold border-b border-black/10 pb-8" data-bcn-reveal="section">
+      <section className="bcn-search-mobile-compact" data-bcn-reveal="section">
+        <div>
+          <div className="bcn-search-mobile-compact__eyebrow">{lang === "es" ? "Búsqueda privada" : "Private Search"}</div>
+          <h1>{`${results.length} ${L.mobileRankedSuffix}`}</h1>
+        </div>
+        <div className="bcn-search-mobile-compact__brief" aria-label={brief}>
+          <span>{activeBriefLabel}</span>
+          <strong>{activeBriefSummary}</strong>
+        </div>
+        <button
+          type="button"
+          aria-expanded={briefComposerOpen}
+          aria-controls="bcn-private-brief-composer"
+          onClick={() => setBriefComposerOpen((value) => !value)}
+        >
+          {briefComposerOpen ? L.closeBrief : L.editBrief}
+        </button>
+      </section>
+
+      <div className="bcn-search-hero bcn-section--threshold border-b border-black/10 pb-8" data-bcn-reveal="section">
         <div className="space-y-3">
           <div className="bcn-signal-kicker text-[12px] uppercase tracking-[0.2em] text-black/48">{L.eyebrow}</div>
           <h1 className="bcn-advisory-line max-w-[820px] text-[34px] leading-[1.02] tracking-tight text-black/88 md:text-[54px]">
@@ -616,25 +690,7 @@ export default function SearchExperience({
         <div className="bcn-active-brief-bar__main">
           <div className="bcn-active-brief-bar__heading">{L.privateBuyerBrief}</div>
           <div className="bcn-active-brief-bar__intents" aria-label={L.filters.intent}>
-            {([
-              ["best", L.best],
-              ["investment", L.investment],
-              ["sea", L.sea],
-              ["family", L.family],
-            ] as const).map(([k, label]) => {
-              const active = mode === k;
-              return (
-                <button
-                  key={k}
-                  type="button"
-                  onClick={() => setMode(k as Mode)}
-                  className={active ? "is-active" : ""}
-                  aria-pressed={active}
-                >
-                  {label}
-                </button>
-              );
-            })}
+            {intentOptions.map(renderIntentButton)}
           </div>
         </div>
         <div className="bcn-active-brief-bar__readout" aria-label={brief}>
@@ -686,38 +742,18 @@ export default function SearchExperience({
           </div>
         </div>
 
+        <div className="bcn-buyer-brief-composer__mobile-intents">
+          <div className="bcn-buyer-brief-composer__label">{L.filters.intent}</div>
+          <div className="bcn-buyer-brief-composer__intent-grid">
+            {intentOptions.map(renderIntentButton)}
+          </div>
+        </div>
+
         <div className="bcn-buyer-brief-composer__zones">
           <div className="bcn-buyer-brief-composer__zone bcn-buyer-brief-composer__zone--signals">
             <div className="bcn-buyer-brief-composer__label">{L.filters.lifestyle}</div>
             <div className="bcn-buyer-brief-composer__signals flex flex-wrap gap-2">
-              {TAGS.map((t) => {
-                const on = effectiveTags.includes(t.key);
-                const locked =
-                  (mode === "sea" && t.key === "sea") ||
-                  (mode === "family" && t.key === "family") ||
-                  (mode === "investment" && t.key === "investor");
-
-                return (
-                  <button
-                    key={t.key}
-                    type="button"
-                    disabled={locked}
-                    onClick={() => {
-                      if (locked) return;
-                      toggleTag(t.key);
-                    }}
-                    className={[
-                      "bcn-buyer-brief-composer__signal rounded-full border px-3 py-1.5 text-[12px] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-black/50",
-                      on
-                        ? "border-black/25 bg-white text-black"
-                        : "border-black/10 text-black/60 hover:border-black/20 hover:text-black",
-                      locked ? "cursor-default opacity-80" : "",
-                    ].join(" ")}
-                  >
-                    {lang === "es" ? t.es : t.en}
-                  </button>
-                );
-              })}
+              {TAGS.map(renderSignalButton)}
             </div>
           </div>
 
@@ -772,11 +808,18 @@ export default function SearchExperience({
               </label>
             </div>
           </div>
+
+          <details className="bcn-buyer-brief-composer__mobile-signals">
+            <summary>{L.moreSignals}</summary>
+            <div className="bcn-buyer-brief-composer__signals flex flex-wrap gap-2">
+              {TAGS.map(renderSignalButton)}
+            </div>
+          </details>
         </div>
 
       </section>
 
-      <div className="bcn-section--threshold flex flex-col gap-4 border-b border-black/10 pb-6 lg:flex-row lg:items-end lg:justify-between" data-bcn-reveal="section">
+      <div className="bcn-search-results-header bcn-section--threshold flex flex-col gap-4 border-b border-black/10 pb-6 lg:flex-row lg:items-end lg:justify-between" data-bcn-reveal="section">
         <div>
           <div className="text-[26px] leading-none tracking-tight text-black/86">
             {results.length} {L.rankedSuffix}
@@ -812,6 +855,7 @@ export default function SearchExperience({
       </div>
 
       <div
+        data-bcn-search-results
         className={
           viewMode === "field"
             ? "grid gap-4 lg:grid-cols-2 xl:grid-cols-3"
@@ -927,6 +971,9 @@ export default function SearchExperience({
                       {title}
                     </a>
                   </h2>
+                  <div className="bcn-search-card__mobile-meta">
+                    {`${commercialPriceFor(listing)} · ${listing.sqm} m² · ${listing.beds} ${bedLabelFor(lang)} · ${districtFor(listing)}`}
+                  </div>
                   <div className="bcn-search-card__commercial mt-3">
                     <div className="bcn-search-card__commercial-head">
                       <span className="bcn-search-card__commercial-label">{L.guidePrice}</span>

@@ -18,10 +18,10 @@ const modules = [
   ["Buyer Intent Surface", "Turns browsing into a buyer brief.", "Keeps inventory from taking over before the buyer priority is clear."],
   ["Barcelona Lens Field", "Makes district fit visible.", "Connects rhythm, access, light and value logic to the shortlist."],
   ["Product Object Surface", "Frames each listing as a recommendation.", "Shows why the property belongs before the user opens the detail."],
-  ["Property Detail Chamber", "Expands the object into an acquisition file.", "Keeps memo, risk, readiness and next action in one decision surface."],
-  ["Cinematic Inspect Gallery", "Turns images into inspection context.", "Keeps photo review inside the advisory flow instead of a generic modal."],
   ["Private Shortlist Dossier", "Builds a compact comparison file.", "Turns saved homes into priority, district spread and trade-off logic."],
   ["Advisory Inquiry Flow", "Creates a copy-ready request brief.", "Converts search, property and dossier context into an advisor handoff."],
+  ["Property Detail Chamber", "Expands the object into an acquisition file.", "Keeps memo, risk, readiness and next action in one decision surface."],
+  ["Cinematic Inspect Gallery", "Turns images into inspection context.", "Keeps photo review inside the advisory flow instead of a generic modal."],
 ];
 
 const failures = [
@@ -94,7 +94,7 @@ const faqs = [
     </div>
   </section>
 
-  <section class="bcn-section--threshold mt-28 grid gap-10 border-y border-black/10 py-14 lg:grid-cols-[0.72fr_1.28fr]" data-bcn-reveal="section">
+  <section class="bcn-about-problems bcn-section--threshold mt-28 grid gap-10 border-y border-black/10 py-14 lg:grid-cols-[0.72fr_1.28fr]" data-bcn-reveal="section">
     <div>
       <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Why catalog browsing fails</div>
       <h2 class="mt-4 max-w-[520px] text-[32px] leading-[1.02] tracking-tight">
@@ -156,7 +156,7 @@ const faqs = [
 
     <div class="bcn-operating-layers__stack border-y border-black/10">
       {modules.map(([title, outcome, why], index) => (
-        <article class="bcn-operating-layer grid gap-3 border-b border-black/10 py-5 last:border-b-0 md:grid-cols-[42px_0.75fr_1fr]" data-bcn-reveal="row" data-bcn-reveal-delay={String(Math.min(index + 1, 3))}>
+        <article class={`bcn-operating-layer grid gap-3 border-b border-black/10 py-5 last:border-b-0 md:grid-cols-[42px_0.75fr_1fr] ${index >= 4 ? "bcn-operating-layer--secondary" : ""}`} data-bcn-reveal="row" data-bcn-reveal-delay={String(Math.min(index + 1, 3))}>
           <div class="text-[10px] uppercase tracking-[0.18em] text-black/32">{String(index + 1).padStart(2, "0")}</div>
           <div>
             <h3 class="text-[16px] leading-[1.25] tracking-tight text-black/84">{title}</h3>
@@ -165,6 +165,22 @@ const faqs = [
           <p class="text-[12px] leading-[1.7] text-black/54">{why}</p>
         </article>
       ))}
+
+      <details class="bcn-operating-layers__mobile-more">
+        <summary>More operating layers</summary>
+        <div>
+          {modules.slice(4).map(([title, outcome, why], index) => (
+            <article class="bcn-operating-layer bcn-operating-layer--mobile-extra grid gap-3 border-b border-black/10 py-5 last:border-b-0">
+              <div class="text-[10px] uppercase tracking-[0.18em] text-black/32">{String(index + 5).padStart(2, "0")}</div>
+              <div>
+                <h3 class="text-[16px] leading-[1.25] tracking-tight text-black/84">{title}</h3>
+                <p class="mt-2 text-[13px] leading-[1.55] text-black/70">{outcome}</p>
+              </div>
+              <p class="text-[12px] leading-[1.7] text-black/54">{why}</p>
+            </article>
+          ))}
+        </div>
+      </details>
     </div>
   </section>
 
@@ -202,7 +218,7 @@ const faqs = [
     </div>
   </section>
 
-  <section class="mt-24 grid gap-10 lg:grid-cols-[0.74fr_1.26fr]" data-bcn-reveal="section">
+  <section class="bcn-about-faq mt-24 grid gap-10 lg:grid-cols-[0.74fr_1.26fr]" data-bcn-reveal="section">
     <div class="space-y-4">
       <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">FAQ</div>
       <h2 class="max-w-[520px] text-[32px] leading-[1.03] tracking-tight">
@@ -212,10 +228,16 @@ const faqs = [
 
     <div class="bcn-quiet-faq border-t border-black/10">
       {faqs.map(([q, a], index) => (
-        <div class="grid gap-3 border-b border-black/10 py-5 sm:grid-cols-[240px_1fr]" data-bcn-reveal="row" data-bcn-reveal-delay={String(Math.min(index + 1, 3))}>
-          <h3 class="text-[13px] font-medium leading-[1.45] text-black/78">{q}</h3>
-          <p class="text-[12px] leading-[1.8] text-black/52">{a}</p>
-        </div>
+        <>
+          <div class="bcn-quiet-faq__desktop-row grid gap-3 border-b border-black/10 py-5 sm:grid-cols-[240px_1fr]" data-bcn-reveal="row" data-bcn-reveal-delay={String(Math.min(index + 1, 3))}>
+            <h3 class="text-[13px] font-medium leading-[1.45] text-black/78">{q}</h3>
+            <p class="text-[12px] leading-[1.8] text-black/52">{a}</p>
+          </div>
+          <details class="bcn-quiet-faq__mobile-item border-b border-black/10">
+            <summary>{q}</summary>
+            <p>{a}</p>
+          </details>
+        </>
       ))}
     </div>
   </section>

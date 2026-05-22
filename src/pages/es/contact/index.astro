@@ -10,34 +10,45 @@ const briefRows = [
   ["01", "Intención del comprador", "Nombra la prioridad antes de que el inventario domine."],
   ["02", "Distritos preferidos", "Mantiene la solicitud anclada en vida diaria y lógica de valor."],
   ["03", "Presupuesto / timing", "Enmarca el rango comercial y la urgencia de la ruta de visita."],
-  ["04", "Propiedades seleccionadas", "Lleva shortlist o contexto de propiedad al handoff."],
+  ["04", "Propiedades seleccionadas", "Lleva selección o contexto de propiedad al handoff."],
   ["05", "Compensaciones / límites", "Expone tolerancia a riesgo, cuotas, reforma o privacidad."],
   ["06", "Prioridad de visita", "Aclara qué opciones conviene inspeccionar primero."],
 ];
 
 const requestRows = [
   ["Fuente", "Búsqueda / Propiedad / Dossier"],
-  ["Contexto", "Lente de distrito, propiedades seleccionadas, notas del comprador."],
+  ["Contexto", "Lente de distrito + propiedades seleccionadas"],
   ["Resultado", "Solicitud de ruta de visita lista para copiar."],
 ];
 
 const methodSteps = [
-  ["01", "Preparar brief", "Abre el panel Solicitar ruta de visita y añade timing, presupuesto, límites y preguntas."],
-  ["02", "Revisar ajuste", "Usa propiedades guardadas, contexto de distrito y señales asesoras para enfocar la solicitud."],
-  ["03", "Compartir con asesor", "Copia el brief cuando esté listo. Nada se envía automáticamente en este portfolio build."],
+  ["01", "Preparar brief", "Añade timing, presupuesto y límites."],
+  ["02", "Revisar ajuste", "Usa selección y contexto de distrito."],
+  ["03", "Compartir brief", "Copia cuando esté listo. Nada se envía automáticamente."],
 ];
 ---
 
 <BaseLayout seo={seo}>
-  <section class="bcn-section grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end" data-bcn-reveal="section">
+  <section class="bcn-contact-hero bcn-section grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end" data-bcn-reveal="section">
     <div class="space-y-5">
       <div class="bcn-signal-kicker text-[12px] uppercase tracking-[0.2em] text-black/42">Handoff asesor</div>
       <h1 class="bcn-advisory-line max-w-[780px] text-[42px] leading-[0.98] tracking-tight text-black/90 sm:text-[64px]">
         Prepara una ruta de visita privada.
       </h1>
       <p class="max-w-[700px] text-[14px] leading-[1.85] text-black/58">
-        Construye un brief desde intención, ajuste de distrito, shortlist y timing — y cópialo cuando esté listo.
+        Construye un brief desde intención, ajuste de distrito, selección y timing, y cópialo cuando esté listo.
       </p>
+      <div class="bcn-contact-hero-actions">
+        <button
+          type="button"
+          data-open-inquiry
+          data-inquiry-source="contact"
+          data-inquiry-next-action="Preparar ruta de visita"
+        >
+          Abrir solicitud de ruta de visita
+        </button>
+        <a href="/es/search">Abrir búsqueda privada</a>
+      </div>
     </div>
 
     <figure class="overflow-hidden border border-black/10 bg-[rgb(var(--paper))]" data-bcn-reveal="media" data-bcn-reveal-delay="1">
@@ -53,7 +64,7 @@ const methodSteps = [
     </figure>
   </section>
 
-  <section class="bcn-section--threshold mt-28 grid gap-10 border-y border-black/10 py-14 lg:grid-cols-[0.7fr_1.3fr]" data-bcn-reveal="section">
+  <section class="bcn-contact-anatomy-section bcn-section--threshold mt-28 grid gap-10 border-y border-black/10 py-14 lg:grid-cols-[0.7fr_1.3fr]" data-bcn-reveal="section">
     <div>
       <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Anatomía de solicitud</div>
       <h2 class="mt-4 max-w-[520px] text-[32px] leading-[1.02] tracking-tight">
@@ -133,15 +144,14 @@ const methodSteps = [
             </a>
           </div>
         </div>
-        <div class="mt-6 text-[12px] leading-[1.75] text-black/54">
-          No se envía ningún mensaje automáticamente. No se usan datos de contacto ficticios. Una versión de producción
-          puede conectarse a CRM, email real, calendario o WhatsApp.
+        <div class="bcn-contact-request-note mt-6 text-[12px] leading-[1.75] text-black/54">
+          Preparado localmente. No se envía ningún mensaje automáticamente. Producción puede conectar CRM, email, calendario o WhatsApp.
         </div>
       </div>
     </div>
   </section>
 
-  <section class="mt-24 space-y-8" data-bcn-reveal="section">
+  <section class="bcn-contact-method mt-24 space-y-8" data-bcn-reveal="section">
     <div class="max-w-[680px] space-y-3">
       <div class="text-[12px] uppercase tracking-[0.2em] text-black/42">Método de handoff</div>
       <h2 class="text-[32px] leading-[1.03] tracking-tight">Del contexto de búsqueda al brief preparado para asesoría.</h2>
@@ -158,10 +168,9 @@ const methodSteps = [
     </div>
   </section>
 
-  <section class="mt-20 border-t border-black/10 pt-8" data-bcn-reveal="section">
+  <section class="bcn-contact-privacy mt-20 border-t border-black/10 pt-8" data-bcn-reveal="section">
     <div class="max-w-[820px] text-[13px] leading-[1.85] text-black/56">
-      Nota de privacidad local: este portfolio build prepara el texto localmente en el navegador. No envía formularios,
-      no guarda datos de contacto, no manda mensajes y no usa contactos asesores ficticios.
+      Nota de privacidad local: el texto se prepara localmente en el navegador. Este portfolio build no envía formularios, no guarda datos de contacto ni manda mensajes.
     </div>
   </section>
 </BaseLayout>
