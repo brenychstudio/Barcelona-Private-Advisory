@@ -235,7 +235,7 @@ const ui = (lang: Lang) => {
     gallery: "GALLERY",
     inspectGallery: "Inspect gallery",
     neighborhood: "NEIGHBORHOOD FIT",
-    openDistrict: "Open district →",
+    seeMatchedOptions: "See matched options",
     recommended: "Recommended for:",
     advisorMemo: "Advisor memo",
     signals: "Advisory signals",
@@ -302,7 +302,7 @@ const ui = (lang: Lang) => {
     gallery: "GALERÍA",
     inspectGallery: "Inspeccionar galería",
     neighborhood: "ENCAJE DE BARRIO",
-    openDistrict: "Abrir distrito →",
+    seeMatchedOptions: "Ver opciones similares",
     recommended: "Recomendado para:",
     advisorMemo: "Memo del asesor",
     signals: "Señales de asesoría",
@@ -370,6 +370,11 @@ export default function PropertyShowcase({
   const L = ui(lang);
   const prefix = lang === "es" ? "/es" : "";
   const searchHref = lang === "es" ? "/es/search" : "/search";
+  const primaryIntent = listing.intentIds[0];
+  const searchContextHref = `${searchHref}?${[
+    primaryIntent ? `intent=${encodeURIComponent(primaryIntent)}` : "",
+    `district=${encodeURIComponent(listing.districtId ?? districtToSlug(listing.district))}`,
+  ].filter(Boolean).join("&")}`;
 
   const [activeChamber, setActiveChamber] = useState<PropertyChamberId>("overview");
   const [transitionDirection, setTransitionDirection] = useState<ChamberDirection>("next");
@@ -752,8 +757,8 @@ export default function PropertyShowcase({
           <div className="bcn-property-chamber-panel">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="text-[12px] tracking-[0.18em] text-black/50">{L.neighborhood}</div>
-              <a href={`${prefix}/district/${adv.districtSlug}`} className="text-[12px] text-black/50 hover:text-black">
-                {L.openDistrict}
+              <a href={searchContextHref} className="text-[12px] text-black/50 hover:text-black">
+                {L.seeMatchedOptions}
               </a>
             </div>
 
@@ -912,8 +917,8 @@ export default function PropertyShowcase({
           </button>
         </div>
 
-        <a href={`${prefix}/district/${adv.districtSlug}`} className="bcn-property-mobile-district">
-          {L.openDistrict}
+        <a href={searchContextHref} className="bcn-property-mobile-district">
+          {L.seeMatchedOptions}
         </a>
 
         {ctaMsg && (
@@ -1002,10 +1007,10 @@ export default function PropertyShowcase({
             </button>
 
             <a
-              href={`${prefix}/district/${adv.districtSlug}`}
+              href={searchContextHref}
               className="bcn-property-file-header__district-link rounded-full border border-black/10 px-4 py-2 text-[12px] text-black/70 hover:border-black/20 hover:text-black"
             >
-              {L.openDistrict}
+              {L.seeMatchedOptions}
             </a>
           </div>
 
