@@ -263,9 +263,11 @@ export default function SearchExperience({
 }) {
   const L = ui(lang);
   const prefix = lang === "es" ? "/es" : "";
+  const resultsHeaderRef = useRef<HTMLDivElement | null>(null);
   const expandedAnchorRef = useRef<HTMLElement | null>(null);
   const firstRevealedRef = useRef<HTMLElement | null>(null);
   const expandedOpenedAt = useRef(0);
+  const previousViewModeRef = useRef<ViewMode>("field");
 
   const [mode, setMode] = useState<Mode>("best");
   const [viewMode, setViewMode] = useState<ViewMode>("field");
@@ -416,6 +418,26 @@ export default function SearchExperience({
     expandedAnchorRef.current = null;
     firstRevealedRef.current = null;
   }, [mode, selectedTags, district, minBeds, maxPrice, viewMode]);
+
+  useEffect(() => {
+    if (previousViewModeRef.current === viewMode) return;
+    previousViewModeRef.current = viewMode;
+
+    const frame = window.requestAnimationFrame(() => {
+      const target = resultsHeaderRef.current;
+      if (!target) return;
+
+      const headerOffset = window.innerWidth <= 900 ? 78 : 92;
+      const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
+
+      window.scrollTo({
+        top: Math.max(0, top),
+        behavior: "auto",
+      });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [viewMode]);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -819,7 +841,11 @@ export default function SearchExperience({
 
       </section>
 
-      <div className="bcn-search-results-header bcn-section--threshold flex flex-col gap-4 border-b border-black/10 pb-6 lg:flex-row lg:items-end lg:justify-between" data-bcn-reveal="section">
+      <div
+        ref={resultsHeaderRef}
+        className="bcn-search-results-header bcn-section--threshold flex flex-col gap-4 border-b border-black/10 pb-6 lg:flex-row lg:items-end lg:justify-between"
+        data-bcn-reveal="section"
+      >
         <div>
           <div className="text-[26px] leading-none tracking-tight text-black/86">
             {results.length} {L.rankedSuffix}
@@ -879,8 +905,6 @@ export default function SearchExperience({
                   }
                 }}
                 className="bcn-search-index-row grid gap-3 border border-black/10 bg-[rgb(var(--paper))] p-3 transition hover:border-black/20 sm:grid-cols-[132px_minmax(0,1fr)_auto] sm:items-center"
-                data-bcn-reveal="card-soft"
-                data-bcn-reveal-delay={String(Math.min(index + 1, 3))}
               >
                 <a href={detailHref} aria-label={title} className="block overflow-hidden bg-black/5">
                   <img
@@ -940,8 +964,6 @@ export default function SearchExperience({
                 }
               }}
               data-bcn-search-card
-              data-bcn-reveal="card-soft"
-              data-bcn-reveal-delay={String(Math.min(index + 1, 3))}
               className="bcn-search-card group flex min-h-full flex-col overflow-hidden border border-black/10 bg-[rgb(var(--paper))] transition hover:border-black/20"
             >
               <div className="bcn-search-card__media relative aspect-[5/4] bg-black/5">
