@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { buyerIntents, districtLens, type BuyerIntentId } from "../../data/barcelonaLens";
 import type { Listing } from "../../data/listings";
 import { getListingAdvisoryCopy } from "../../lib/getListingAdvisoryCopy";
@@ -280,6 +280,7 @@ export default function SearchExperience({
   const [note, setNote] = useState<string>("");
   const [queryContextActive, setQueryContextActive] = useState(false);
   const [briefComposerOpen, setBriefComposerOpen] = useState(false);
+  const [indexRowsEntered, setIndexRowsEntered] = useState(false);
 
   useEffect(() => {
     const sp = new URLSearchParams(window.location.search);
@@ -438,6 +439,25 @@ export default function SearchExperience({
 
     return () => window.cancelAnimationFrame(frame);
   }, [viewMode]);
+
+  useEffect(() => {
+    if (viewMode !== "index") {
+      setIndexRowsEntered(false);
+      return;
+    }
+
+    setIndexRowsEntered(false);
+
+    let enterFrame = 0;
+    const prepareFrame = window.requestAnimationFrame(() => {
+      enterFrame = window.requestAnimationFrame(() => setIndexRowsEntered(true));
+    });
+
+    return () => {
+      window.cancelAnimationFrame(prepareFrame);
+      if (enterFrame) window.cancelAnimationFrame(enterFrame);
+    };
+  }, [viewMode, visibleResults.length]);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -882,6 +902,7 @@ export default function SearchExperience({
 
       <div
         data-bcn-search-results
+        data-index-state={viewMode === "index" ? (indexRowsEntered ? "entered" : "entering") : undefined}
         className={
           viewMode === "field"
             ? "grid gap-4 lg:grid-cols-2 xl:grid-cols-3"
@@ -905,6 +926,7 @@ export default function SearchExperience({
                   }
                 }}
                 className="bcn-search-index-row grid gap-3 border border-black/10 bg-[rgb(var(--paper))] p-3 transition hover:border-black/20 sm:grid-cols-[132px_minmax(0,1fr)_auto] sm:items-center"
+                style={{ "--bcn-index-row": Math.min(index, 8) } as CSSProperties}
               >
                 <a href={detailHref} aria-label={title} className="block overflow-hidden bg-black/5">
                   <img
